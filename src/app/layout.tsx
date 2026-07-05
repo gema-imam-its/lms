@@ -14,7 +14,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "LMS Pintar",
+  title: "LMS Gema Imam",
   description: "Platform Pembelajaran",
 };
 
