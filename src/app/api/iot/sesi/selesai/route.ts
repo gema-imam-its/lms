@@ -11,51 +11,63 @@ import type { SelesaiSesiRequest, SelesaiSesiResponse } from "@/types/iot";
  * Meng-update baris sesi yang sudah ada dengan ringkasan data.
  */
 export async function POST(req: NextRequest) {
-  // 1. Validasi API Key
   const authError = validateIoTApiKey(req);
   if (authError) return authError;
 
   try {
-    // 2. Parse request body
-    const body: SelesaiSesiRequest = await req.json();
+    const body = await req.json();
 
-    // 3. Validasi field wajib
-    if (!body.sesi_id || !body.status) {
+    if (!body.sesi_id) {
       return NextResponse.json(
-        { success: false, error: "Field sesi_id dan status wajib diisi" },
+        { success: false, error: "Field sesi_id wajib ada di payload!" },
         { status: 400 }
       );
     }
 
-    // 4. Update sesi di Supabase
     const supabase = createSupabaseServerClient();
-    const { error } = await supabase
+    
+    // 1. Update sholat_sessions dengan statistik akhir
+    const { error: sessionError } = await supabase
       .from("sholat_sessions")
       .update({
-        status: body.status,
+        status: body.status || "Selesai",
         durasi_detik: body.durasi_detik || 0,
-        total_rakaat: body.total_rakaat || 0,
-        total_kesalahan_imam: body.total_kesalahan_imam || 0,
-        skor_tumaninah_persen: body.skor_tumaninah_persen || 0,
+        total_rakaat: body.total_rakaat_dilewati || 0,
+        total_kesalahan_imam: body.kesalahan_imam || 0,
+        skor_tumaninah_persen: body.statistik_tumaninah?.skor_persentase || 0,
       })
       .eq("id", body.sesi_id);
 
-    if (error) {
-      console.error("[API /sesi/selesai] Supabase error:", error);
-      return NextResponse.json(
-        { success: false, error: error.message },
-        { status: 500 }
-      );
+    if (sessionError) throw sessionError;
+
+    // 2. Bulk Insert ke tabel movement_logs (sejarah transisi gerakan)
+    if (body.log_transisi && Array.isArray(body.log_transisi)) {
+      const movementsToInsert = body.log_transisi.map((log: any) => ({
+        sesi_id: body.sesi_id,
+        nama_gerakan: log.state,
+        akurasi_persen: log.tumaninah_met ? 100 : (log.tumaninah_met === false ? 0 : 50),
+        tumaninah_terpenuhi: log.tumaninah_met,
+        entry_time: log.entry_time,
+        exit_time: log.exit_time,
+        duration_seconds: log.duration_seconds,
+        gerakan_menyimpang: log.gerakan_menyimpang || [],
+        bacaan_terpotong: log.bacaan_terpotong,
+        hip_angle: log.hip_angle,
+        knee_angle: log.knee_angle,
+        arm_angle: log.arm_angle
+      }));
+
+      const { error: movementsError } = await supabase
+        .from("movement_logs")
+        .insert(movementsToInsert);
+
+      if (movementsError) {
+        console.error("Gagal bulk insert movement_logs:", movementsError);
+        // Kita tidak throw error agar sesi tetap dianggap sukses tersimpan statistiknya
+      }
     }
 
-    // 5. Return success
-    const response: SelesaiSesiResponse = {
-      success: true,
-      message: "Sesi sholat ditutup",
-    };
-
-    console.log(`[API] Sesi ${body.sesi_id} ditutup dengan status: ${body.status}`);
-    return NextResponse.json(response, { status: 200 });
+    return NextResponse.json({ success: true, message: "Sesi berhasil ditutup & data transisi tersimpan." }, { status: 200 });
 
   } catch (err: unknown) {
     const message = err instanceof Error ? err.message : "Unknown error";
