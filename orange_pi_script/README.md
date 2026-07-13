@@ -42,17 +42,38 @@ Orange Pi melakukan `GET` request ke Web untuk melihat apakah ada sesi praktik y
 }
 ```
 
-### B. Endpoint Kirim Nilai (Mencatat Gerakan)
-Setelah alat mendeteksi Budi selesai melakukan gerakan (misal Rukuk), Orange Pi langsung mengirim nilainya via `POST`.
+### B. Endpoint Kirim Ringkasan (Setelah Sholat Selesai / Dibatalkan)
+Setelah alat mendeteksi Salam (sesi tuntas) ATAU ada perintah Reset dari Telegram (dibatalkan), alat mengumpulkan semua data gerakan menjadi satu JSON utuh dan mengirimkannya sekaligus (Bulk Report).
 
-*   **URL:** `http://[IP_WEB_ATAU_VERCEL]/api/iot/gerakan/catat`
+*   **URL:** `http://[IP_WEB_ATAU_VERCEL]/api/iot/sesi/selesai`
 *   **Header:** `{"x-api-key": "gema-super-rahasia-2025", "Content-Type": "application/json"}`
 *   **Body (JSON):**
     ```json
     {
-      "session_id": "550e8400-e29b-41d4-a716-446655440000",
-      "movement_type": "rukuk",
-      "accuracy_score": 85
+      "sesi_id": "550e8400-e29b-41d4-a716-446655440000",
+      "sholat": "Isya",
+      "durasi_detik": 261.8,
+      "status": "Selesai", // Atau "Dibatalkan" jika di-reset via telegram
+      "total_rakaat_dilewati": 4,
+      "kesalahan_imam": 2,
+      "statistik_tumaninah": {
+        "skor_persentase": 80.0
+      },
+      "log_transisi": [
+        {
+          "rakaat": 1,
+          "state": "RUKUK",
+          "entry_time": "01:15:58",
+          "exit_time": "01:16:07",
+          "duration_seconds": 9.02,
+          "tumaninah_met": true,
+          "gerakan_menyimpang": [],
+          "hip_angle": 126.8,
+          "knee_angle": 163.0,
+          "arm_angle": 175.6
+        }
+        // ... (masukkan semua log transisi ke array ini)
+      ]
     }
     ```
 
@@ -60,14 +81,13 @@ Setelah alat mendeteksi Budi selesai melakukan gerakan (misal Rukuk), Orange Pi 
 
 ## 3. Contoh Implementasi di Python (Pseudo-code)
 
-Berikut adalah kerangka *script* Python (`main.py`) yang bisa di-*copy-paste* dan disesuaikan oleh tim IoT:
+Berikut adalah kerangka *script* Python (`main.py`) yang harus dipastikan agar **AI tidak looping sendirian**:
 
 ```python
 import time
 import requests
-# import modul_ai_kamera_kalian
 
-WEB_URL = "http://192.168.x.x:3000" # Ganti dengan IP laptop atau Vercel URL
+WEB_URL = "https://[nama-vercel-mu].vercel.app" 
 HEADERS = {
     "x-api-key": "gema-super-rahasia-2025",
     "Content-Type": "application/json"
@@ -87,33 +107,40 @@ def start_ai_recording(session_id, student_name):
     """Fungsi utama AI kalian dijalankan di sini"""
     print(f"Memulai rekam untuk {student_name}...")
     
-    # === MASUKKAN KODE AI / OPENCV KALIAN DI SINI ===
+    status_akhir = "Selesai"
+    # === CONTOH LOGIC AI / OPENCV ===
     # kamera.open()
     # while True:
     #     frame = kamera.read()
     #     hasil_ai = model.deteksi(frame)
     # 
-    #     # Saat gerakan RUKUK selesai dideteksi, langsung kirim:
-    #     if hasil_ai.gerakan == 'rukuk':
-    #         kirim_nilai_ke_web(session_id, "rukuk", hasil_ai.akurasi)
+    #     # PENTING: Jika ada trigger RESET dari TELEGRAM:
+    #     if trigger_telegram_reset():
+    #         status_akhir = "Dibatalkan"
+    #         break  <-- Keluar dari loop kamera segera!
     #
-    #     # Jika sequence sholat sudah selesai (salam), break
+    #     # Jika sequence sholat normal sudah selesai (salam):
     #     if hasil_ai.selesai:
-    #         break
+    #         status_akhir = "Selesai"
+    #         break  <-- Keluar dari loop kamera segera!
     # ===============================================
     
-    # Beri tahu web kalau sesi sholat ini sudah tuntas
-    print("Sesi sholat selesai, matikan kamera.")
-    requests.post(f"{WEB_URL}/api/iot/sesi/selesai", json={"session_id": session_id}, headers=HEADERS)
-
-def kirim_nilai_ke_web(session_id, gerakan, nilai):
-    payload = {
-        "session_id": session_id,
-        "movement_type": gerakan,
-        "accuracy_score": nilai
+    # Beri tahu web kalau sesi sholat ini sudah tutup/batal (beserta datanya)
+    print(f"Sesi ditutup dengan status: {status_akhir}")
+    
+    # Kumpulkan summary-nya
+    payload_ai = {
+        "sesi_id": session_id,
+        "status": status_akhir,
+        "sholat": "Isya", # (isi dari AI)
+        "durasi_detik": 120, # (isi dari AI)
+        "total_rakaat_dilewati": 1, # (isi dari AI)
+        "kesalahan_imam": 0, # (isi dari AI)
+        "statistik_tumaninah": { "skor_persentase": 85 },
+        "log_transisi": [] # (isi dengan array log_transisi dari AI)
     }
-    requests.post(f"{WEB_URL}/api/iot/gerakan/catat", json=payload, headers=HEADERS)
-    print(f"Dikirim: {gerakan} -> {nilai}")
+    
+    requests.post(f"{WEB_URL}/api/iot/sesi/selesai", json=payload_ai, headers=HEADERS)
 
 
 # ==========================================

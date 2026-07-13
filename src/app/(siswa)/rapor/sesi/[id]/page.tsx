@@ -128,16 +128,21 @@ export default async function DetailSesiRapor({
                 
                 let iconColor = isNeutral ? "bg-gray-300" : (isCorrect ? "bg-green-500" : "bg-orange-500");
                 
-                // Pesan Feedback
-                let feedbackText = isCorrect 
-                  ? "Tuma'ninah sempurna, postur baik." 
-                  : isWrong 
-                    ? "Terlalu cepat / postur kurang tepat." 
-                    : "Gerakan non-tuma'ninah (Transisi).";
+                // Pesan Feedback (Pedagogical & Informatif)
+                let feedbackText = "";
+                if (isCorrect) {
+                  feedbackText = "Sempurna! Anda menahan postur ini dengan tenang (Tuma'ninah tercapai).";
+                } else if (isWrong) {
+                  feedbackText = "Gerakan terlalu cepat (Tuma'ninah belum tercapai).";
+                } else {
+                  // isNeutral (Transisi seperti Sedekap, Berdiri)
+                  feedbackText = "Postur transisi terekam dengan durasi yang wajar.";
+                }
                     
-                // Kalau ada gerakan_menyimpang, tampilkan
+                // Kalau ada gerakan_menyimpang, tambahkan sebagai catatan perbaikan
                 if (mov.gerakan_menyimpang && mov.gerakan_menyimpang.length > 0) {
-                  feedbackText = mov.gerakan_menyimpang.join(", ");
+                  const penyimpangan = mov.gerakan_menyimpang.join(", ");
+                  feedbackText += ` Catatan Postur: ${penyimpangan}.`;
                 }
 
                 // Coba match nama gerakan dengan gambar yang ada
@@ -169,11 +174,14 @@ export default async function DetailSesiRapor({
                       </div>
                       
                       <div className="flex-1">
-                        <div className="flex justify-between items-start mb-2">
-                          <h3 className="font-gohan text-2xl text-gema-navy capitalize">
+                        <div className="flex flex-col md:flex-row md:justify-between items-start md:items-center mb-2 gap-2">
+                          <h3 className="font-gohan text-2xl text-gema-navy capitalize flex items-center gap-3">
                             {mov.nama_gerakan}
+                            <span className="text-sm font-gilroy text-gray-400 font-normal mt-1">
+                              ({mov.entry_time} - {mov.exit_time || "Batal"})
+                            </span>
                           </h3>
-                          <span className="font-gilroy text-sm font-bold text-gray-400 bg-gray-100 px-3 py-1 rounded-full">
+                          <span className="font-gilroy text-sm font-bold text-gray-400 bg-gray-100 px-3 py-1 rounded-full whitespace-nowrap">
                             {mov.duration_seconds} detik
                           </span>
                         </div>
