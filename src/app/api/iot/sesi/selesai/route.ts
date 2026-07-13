@@ -41,20 +41,25 @@ export async function POST(req: NextRequest) {
     if (sessionError) throw sessionError;
 
     // 2. Bulk Insert ke tabel movement_logs (sejarah transisi gerakan)
-    if (body.log_transisi && Array.isArray(body.log_transisi)) {
-      const movementsToInsert = body.log_transisi.map((log: any) => ({
-        sesi_id: body.sesi_id,
-        rakaat: log.rakaat || 1, // Wajib ada di tabel
-        nama_gerakan: log.state || "Unknown",
-        tumaninah_terpenuhi: log.tumaninah_met,
-        entry_time: log.entry_time || "00:00:00",
-        exit_time: log.exit_time,
-        duration_seconds: log.duration_seconds,
-        gerakan_menyimpang: log.gerakan_menyimpang || [],
-        hip_angle: log.hip_angle,
-        knee_angle: log.knee_angle,
-        arm_angle: log.arm_angle
-      }));
+    if (body.log_transisi && Array.isArray(body.log_transisi) && body.log_transisi.length > 0) {
+      const movementsToInsert = body.log_transisi.map((log: any) => {
+        // Sanitize exit_time karena dari AI bisa berupa "Batal" atau "Selesai"
+        const isInvalidTime = log.exit_time === "Batal" || log.exit_time === "Selesai" || !log.exit_time;
+        
+        return {
+          sesi_id: body.sesi_id,
+          rakaat: log.rakaat || 1, // Wajib ada di tabel
+          nama_gerakan: log.state || "Unknown",
+          tumaninah_terpenuhi: log.tumaninah_met,
+          entry_time: log.entry_time || "00:00:00",
+          exit_time: isInvalidTime ? null : log.exit_time,
+          duration_seconds: log.duration_seconds,
+          gerakan_menyimpang: log.gerakan_menyimpang || [],
+          hip_angle: log.hip_angle,
+          knee_angle: log.knee_angle,
+          arm_angle: log.arm_angle
+        };
+      });
 
       const { error: movementsError } = await supabase
         .from("movement_logs")
