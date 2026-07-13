@@ -143,36 +143,34 @@ export default async function DaftarSesiSiswa({
                 hour: '2-digit', minute: '2-digit'
               });
 
-              // Simple scoring logic for UI (1-3 stars based on tumaninah score)
               let stars = 1;
               const score = session.skor_tumaninah_persen || 0;
               if (score >= 80) stars = 3;
               else if (score >= 50) stars = 2;
 
               return (
-                <Link 
-                  href={`/rapor/sesi/${session.id}`}
+                <div 
                   key={session.id}
-                  className="bg-white p-6 rounded-3xl shadow-sm hover:shadow-md transition-all border-l-8 border-gema-tosca flex flex-col md:flex-row md:items-center justify-between gap-6 group"
+                  className="bg-white p-6 rounded-3xl shadow-sm border-l-8 border-gema-tosca flex flex-col lg:flex-row lg:items-center justify-between gap-6"
                 >
                   <div className="flex-1">
                     <h3 className="font-gohan text-2xl text-gema-navy font-bold mb-2">
                       Sholat {session.nama_sholat}
                     </h3>
-                    <div className="flex flex-wrap gap-4 text-sm font-gilroy text-gray-500">
+                    <div className="flex flex-wrap gap-4 text-sm font-gilroy text-gray-500 mb-4 lg:mb-0">
                       <span className="flex items-center gap-1"><Calendar size={16} /> {formattedDate}</span>
                       <span className="flex items-center gap-1"><Clock size={16} /> {formattedTime}</span>
                       <span className="flex items-center gap-1"><Activity size={16} /> {session.durasi_detik} detik</span>
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-6">
+                  <div className="flex flex-wrap items-center gap-4 lg:gap-8">
                     <div className="text-center">
                       <div className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Skor Tuma'ninah</div>
                       <div className="font-gohan text-3xl text-gema-tosca">{score}%</div>
                     </div>
                     
-                    <div className="flex gap-1">
+                    <div className="flex gap-1 shrink-0">
                       {[1, 2, 3].map((star) => (
                         <span key={star} className={`text-2xl ${star <= stars ? "" : "opacity-20 grayscale"}`}>
                           ⭐
@@ -180,11 +178,27 @@ export default async function DaftarSesiSiswa({
                       ))}
                     </div>
 
-                    <div className="w-10 h-10 bg-gray-50 rounded-full flex items-center justify-center group-hover:bg-gema-tosca group-hover:text-white transition-colors text-gray-400">
-                      &rarr;
+                    <div className="flex gap-2 w-full lg:w-auto mt-4 lg:mt-0">
+                      <form action={async () => {
+                        "use server";
+                        const supabaseServer = createSupabaseServerClient();
+                        await supabaseServer.from("sholat_sessions").delete().eq("id", session.id);
+                        revalidatePath(`/rapor/siswa/${studentId}`);
+                      }}>
+                        <button type="submit" className="min-h-[48px] px-6 border-2 border-red-100 text-red-500 rounded-xl font-gohan font-bold hover:bg-red-50 hover:border-red-200 transition-colors w-full sm:w-auto">
+                          Hapus
+                        </button>
+                      </form>
+                      
+                      <Link 
+                        href={`/rapor/sesi/${session.id}`}
+                        className="min-h-[48px] px-6 bg-gema-navy text-white rounded-xl font-gohan font-bold hover:bg-gema-tosca transition-colors flex items-center justify-center w-full sm:w-auto"
+                      >
+                        Detail &rarr;
+                      </Link>
                     </div>
                   </div>
-                </Link>
+                </div>
               );
             })}
           </div>
