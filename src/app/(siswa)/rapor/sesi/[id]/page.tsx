@@ -60,12 +60,12 @@ export default async function DetailSesiRapor({
     <div className="min-h-screen bg-gray-50 pb-12">
       
       {/* Top Banner (Score) */}
-      <div className={`w-full ${headerColor} pt-20 pb-24 px-4 relative overflow-hidden`}>
+      <div className={`w-full ${headerColor} pt-36 pb-24 px-4 relative overflow-hidden mt-[-80px]`}>
         <div className="max-w-4xl mx-auto relative z-10 flex flex-col md:flex-row items-center justify-between gap-8 text-white">
           <div className="flex-1">
             <Link 
               href={`/rapor/siswa/${student?.id}`}
-              className="inline-flex items-center gap-2 text-white/80 hover:text-white mb-6 transition-colors"
+              className="inline-flex items-center justify-center min-h-[48px] px-6 py-2 bg-white/20 hover:bg-white/30 rounded-xl text-white font-gohan font-bold mb-8 transition-all backdrop-blur-sm gap-2 w-full sm:w-auto"
             >
               <ArrowLeft size={20} /> Kembali ke Riwayat
             </Link>
@@ -75,8 +75,8 @@ export default async function DetailSesiRapor({
             <p className="font-gilroy text-xl opacity-90 mb-8">
               {subtitleMessage}
             </p>
-            <div className="inline-block bg-white/20 px-6 py-2 rounded-full font-gohan text-xl backdrop-blur-sm">
-              Skor Keseluruhan: <span className="font-bold">{score}%</span>
+            <div className="inline-block bg-white/20 px-6 py-3 rounded-2xl font-gohan text-xl backdrop-blur-sm">
+              Skor Keseluruhan: <span className="font-bold text-3xl ml-2">{score}%</span>
             </div>
           </div>
           
