@@ -44,14 +44,13 @@ export async function POST(req: NextRequest) {
     if (body.log_transisi && Array.isArray(body.log_transisi)) {
       const movementsToInsert = body.log_transisi.map((log: any) => ({
         sesi_id: body.sesi_id,
-        nama_gerakan: log.state,
-        akurasi_persen: log.tumaninah_met ? 100 : (log.tumaninah_met === false ? 0 : 50),
+        rakaat: log.rakaat || 1, // Wajib ada di tabel
+        nama_gerakan: log.state || "Unknown",
         tumaninah_terpenuhi: log.tumaninah_met,
-        entry_time: log.entry_time,
+        entry_time: log.entry_time || "00:00:00",
         exit_time: log.exit_time,
         duration_seconds: log.duration_seconds,
         gerakan_menyimpang: log.gerakan_menyimpang || [],
-        bacaan_terpotong: log.bacaan_terpotong,
         hip_angle: log.hip_angle,
         knee_angle: log.knee_angle,
         arm_angle: log.arm_angle
