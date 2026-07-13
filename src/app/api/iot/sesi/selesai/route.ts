@@ -44,15 +44,17 @@ export async function POST(req: NextRequest) {
     if (body.log_transisi && Array.isArray(body.log_transisi) && body.log_transisi.length > 0) {
       const movementsToInsert = body.log_transisi.map((log: any) => {
         // Sanitize exit_time karena dari AI bisa berupa "Batal" atau "Selesai"
-        const isInvalidTime = log.exit_time === "Batal" || log.exit_time === "Selesai" || !log.exit_time;
+        const isInvalidExit = log.exit_time === "Batal" || log.exit_time === "Selesai" || !log.exit_time;
+        // Sanitize entry_time karena dari AI bisa berupa "-"
+        const isInvalidEntry = log.entry_time === "-" || !log.entry_time;
         
         return {
           sesi_id: body.sesi_id,
           rakaat: log.rakaat || 1, // Wajib ada di tabel
           nama_gerakan: log.state || "Unknown",
           tumaninah_terpenuhi: log.tumaninah_met,
-          entry_time: log.entry_time || "00:00:00",
-          exit_time: isInvalidTime ? null : log.exit_time,
+          entry_time: isInvalidEntry ? "00:00:00" : log.entry_time,
+          exit_time: isInvalidExit ? null : log.exit_time,
           duration_seconds: log.duration_seconds,
           gerakan_menyimpang: log.gerakan_menyimpang || [],
           hip_angle: log.hip_angle,
