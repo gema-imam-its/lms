@@ -86,8 +86,19 @@ def kirim_nilai_ke_web(session_id, gerakan, nilai):
 def lapor_sesi_selesai(session_id):
     """Menutup sesi praktik pada Database"""
     try:
-        requests.post(f"{WEB_URL}/api/iot/sesi/selesai", json={"session_id": session_id}, headers=HEADERS)
-        print(" -> Sesi berhasil ditutup di server.")
+        payload = {
+            "sesi_id": session_id,
+            "status": "Selesai",
+            "durasi_detik": 120, # Contoh durasi
+            "total_rakaat": 1,
+            "total_kesalahan_imam": 0,
+            "skor_tumaninah_persen": 85 # Contoh skor akhir
+        }
+        res = requests.post(f"{WEB_URL}/api/iot/sesi/selesai", json=payload, headers=HEADERS)
+        if res.status_code == 200:
+            print(" -> Sesi berhasil ditutup di server.")
+        else:
+            print(f" -> Gagal menutup sesi. Status HTTP: {res.status_code}")
     except Exception as e:
         print(" -> Error saat menutup sesi:", e)
 

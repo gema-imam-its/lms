@@ -92,19 +92,37 @@ export default async function DaftarSesiSiswa({
             </div>
           </div>
           
-          <form action={mulaiPraktikSekarang}>
-            <button 
-              type="submit"
-              disabled={isSesiBerjalan}
-              className={`px-8 py-4 rounded-full font-gohan text-xl font-bold transition-all shrink-0 ${
-                isSesiBerjalan 
-                  ? "bg-gray-300 text-gray-500 cursor-not-allowed"
-                  : "bg-gema-tosca text-white hover:shadow-lg hover:-translate-y-1"
-              }`}
-            >
-              {isSesiBerjalan ? "Sedang Merekam..." : "+ Mulai Sesi Baru"}
-            </button>
-          </form>
+          <div className="flex flex-col sm:flex-row gap-3">
+            {isSesiBerjalan && (
+              <form action={async () => {
+                "use server";
+                const supabaseServer = createSupabaseServerClient();
+                await supabaseServer.from("sholat_sessions")
+                  .update({ status: "Dibatalkan" })
+                  .in("status", ["PENDING", "ACTIVE"])
+                  .eq("imam_id", studentId);
+                revalidatePath(`/rapor/siswa/${studentId}`);
+              }}>
+                <button type="submit" className="px-6 py-4 rounded-full font-gohan text-lg font-bold bg-red-100 text-red-600 hover:bg-red-200 transition-all shrink-0">
+                  Batalkan Sesi
+                </button>
+              </form>
+            )}
+
+            <form action={mulaiPraktikSekarang}>
+              <button 
+                type="submit"
+                disabled={isSesiBerjalan}
+                className={`px-8 py-4 rounded-full font-gohan text-xl font-bold transition-all shrink-0 ${
+                  isSesiBerjalan 
+                    ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                    : "bg-gema-tosca text-white hover:shadow-lg hover:-translate-y-1"
+                }`}
+              >
+                {isSesiBerjalan ? "Sedang Merekam..." : "+ Mulai Sesi Baru"}
+              </button>
+            </form>
+          </div>
         </div>
 
         {/* List of Sessions */}
