@@ -47,7 +47,7 @@ export default function VideoPlayer({
         !triggeredCheckpoints.has(checkpoint.timestamp)
       ) {
         // Pause the video
-        videoRef.current.pause();
+        videoRef.current?.pause();
         if (signLanguageVideoRef.current) {
           signLanguageVideoRef.current.pause();
         }
