@@ -32,9 +32,10 @@ export async function GET(req: NextRequest) {
       .update({ status: "ACTIVE" })
       .eq("id", data.id);
 
-    const studentName = Array.isArray(data.imams) 
-      ? data.imams[0]?.nama 
-      : data.imams?.nama;
+    const imams = data.imams as any;
+    const studentName = Array.isArray(imams) 
+      ? imams[0]?.nama 
+      : imams?.nama;
 
     return NextResponse.json({
       status: "active",

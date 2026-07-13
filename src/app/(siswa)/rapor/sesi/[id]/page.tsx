@@ -34,7 +34,8 @@ export default async function DetailSesiRapor({
     .eq("sesi_id", sessionId)
     .order("entry_time", { ascending: true });
 
-  const student = Array.isArray(session.imams) ? session.imams[0] : session.imams;
+  const imamsData = session.imams as any;
+  const student = Array.isArray(imamsData) ? imamsData[0] : imamsData;
   const score = session.skor_tumaninah_persen || 0;
   
   // Evaluasi UI
