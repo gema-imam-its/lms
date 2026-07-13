@@ -1,0 +1,133 @@
+### ============================================
+### Testing Script — API IoT GEMA Imam
+### ============================================
+### Cara pakai:
+###   - Jika pakai VS Code: Install extension "REST Client"
+###     lalu klik "Send Request" di atas tiap blok.
+###   - Jika pakai Postman/curl: Salin endpoint, header, dan body.
+###
+### Ganti variabel di bawah sesuai environment kamu:
+###   @baseUrl    = URL server Next.js
+###   @apiKey     = IOT_SECRET_KEY dari .env.local
+###   @imamId     = UUID imam dari tabel imams (hasil SQL migration)
+### ============================================
+
+@baseUrl = http://localhost:3000/api
+@apiKey = gema-iot-secret-2026
+
+### -----------------------------------------------
+### 1. Mulai Sesi Sholat
+### -----------------------------------------------
+### Ganti imam_id dengan UUID asli dari tabel imams di Supabase.
+
+POST {{baseUrl}}/iot/sesi/mulai
+Content-Type: application/json
+x-api-key: {{apiKey}}
+
+{
+  "imam_id": "GANTI_DENGAN_UUID_IMAM",
+  "nama_sholat": "Dhuhur",
+  "timestamp": "2026-07-13T12:00:00Z"
+}
+
+### Response yang diharapkan:
+### {
+###   "success": true,
+###   "sesi_id": "c9e2b10a-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+### }
+
+### -----------------------------------------------
+### 2. Kirim Log Gerakan
+### -----------------------------------------------
+### Ganti sesi_id dengan nilai dari response step 1.
+
+POST {{baseUrl}}/iot/gerakan
+Content-Type: application/json
+x-api-key: {{apiKey}}
+
+{
+  "sesi_id": "GANTI_DENGAN_SESI_ID",
+  "rakaat": 1,
+  "nama_gerakan": "rukuk",
+  "entry_time": "12:01:05",
+  "exit_time": "12:01:10",
+  "duration_seconds": 5.0,
+  "tumaninah_terpenuhi": true,
+  "gerakan_menyimpang": [],
+  "hip_angle": 88.5,
+  "knee_angle": 175.2,
+  "arm_angle": 12.0,
+  "foto_pose_url": ""
+}
+
+### Response yang diharapkan:
+### {
+###   "success": true,
+###   "message": "Gerakan tersimpan"
+### }
+
+### -----------------------------------------------
+### 3. Selesai Sesi Sholat
+### -----------------------------------------------
+### Ganti sesi_id dengan nilai dari response step 1.
+
+POST {{baseUrl}}/iot/sesi/selesai
+Content-Type: application/json
+x-api-key: {{apiKey}}
+
+{
+  "sesi_id": "GANTI_DENGAN_SESI_ID",
+  "status": "Selesai",
+  "durasi_detik": 245.0,
+  "total_rakaat": 4,
+  "total_kesalahan_imam": 1,
+  "skor_tumaninah_persen": 85.5
+}
+
+### Response yang diharapkan:
+### {
+###   "success": true,
+###   "message": "Sesi sholat ditutup"
+### }
+
+### -----------------------------------------------
+### 4. Upload Foto Pose (Multipart)
+### -----------------------------------------------
+### Catatan: REST Client VS Code mendukung multipart.
+### Jika pakai Postman, set Body → form-data → key "file" (type: File).
+
+POST {{baseUrl}}/iot/media/upload
+x-api-key: {{apiKey}}
+Content-Type: multipart/form-data; boundary=----FormBoundary
+
+------FormBoundary
+Content-Disposition: form-data; name="file"; filename="test_pose.jpg"
+Content-Type: image/jpeg
+
+< ./test_pose.jpg
+------FormBoundary--
+
+### Response yang diharapkan:
+### {
+###   "success": true,
+###   "url": "https://res.cloudinary.com/xxx/image/upload/v1234/gema_imam_poses/abc123.jpg"
+### }
+
+### -----------------------------------------------
+### 5. Test Unauthorized (Tanpa API Key)
+### -----------------------------------------------
+### Seharusnya gagal dengan 401.
+
+POST {{baseUrl}}/iot/sesi/mulai
+Content-Type: application/json
+
+{
+  "imam_id": "test",
+  "nama_sholat": "Subuh"
+}
+
+### Response yang diharapkan:
+### {
+###   "success": false,
+###   "error": "Unauthorized — API key tidak valid"
+### }
