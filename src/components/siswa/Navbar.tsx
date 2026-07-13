@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { Menu, CircleX, Home, BookOpen, Info } from "lucide-react";
+import { Menu, CircleX, Home, BookOpen, Info, Activity } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
@@ -14,6 +14,7 @@ export default function NavBar() {
   const navLinks = [
     { href: "/", label: "Beranda", icon: Home },
     { href: "/modul", label: "Modul", icon: BookOpen },
+    { href: "/rapor", label: "Rapor", icon: Activity },
     { href: "/tentang", label: "Tentang", icon: Info },
   ];
 

@@ -121,7 +121,8 @@ export default function Home() {
           <div className="flex flex-col gap-4">
             <h4 className="font-gilroy font-bold text-lg text-gema-mint">Menu</h4>
             <Link href="/" className="font-gilroy font-medium text-gray-300 hover:text-white min-h-[48px] flex items-center">Beranda</Link>
-            <Link href="/modul" className="font-gilroy font-medium text-gray-300 hover:text-white min-h-[48px] flex items-center">Modul</Link>
+            <Link href="/modul" className="font-gilroy font-medium text-gray-300 hover:text-white min-h-[48px] flex items-center">Modul Belajar</Link>
+            <Link href="/rapor" className="font-gilroy font-medium text-gema-tosca hover:text-white min-h-[48px] flex items-center">Rapor Praktik (IoT)</Link>
             <Link href="/tentang" className="font-gilroy font-medium text-gray-300 hover:text-white min-h-[48px] flex items-center">Tentang</Link>
           </div>
           <div className="flex flex-col gap-4">
