@@ -48,6 +48,9 @@ export async function POST(req: NextRequest) {
         // Sanitize entry_time karena dari AI bisa berupa "-"
         const isInvalidEntry = log.entry_time === "-" || !log.entry_time;
         
+        // Sanitize numerics karena AI sering kirim "-" untuk angle yang tidak valid
+        const parseNumeric = (val: any) => (val === "-" || isNaN(parseFloat(val))) ? null : parseFloat(val);
+        
         return {
           sesi_id: body.sesi_id,
           rakaat: log.rakaat || 1, // Wajib ada di tabel
@@ -55,11 +58,11 @@ export async function POST(req: NextRequest) {
           tumaninah_terpenuhi: log.tumaninah_met,
           entry_time: isInvalidEntry ? "00:00:00" : log.entry_time,
           exit_time: isInvalidExit ? null : log.exit_time,
-          duration_seconds: log.duration_seconds,
+          duration_seconds: parseNumeric(log.duration_seconds),
           gerakan_menyimpang: log.gerakan_menyimpang || [],
-          hip_angle: log.hip_angle,
-          knee_angle: log.knee_angle,
-          arm_angle: log.arm_angle
+          hip_angle: parseNumeric(log.hip_angle),
+          knee_angle: parseNumeric(log.knee_angle),
+          arm_angle: parseNumeric(log.arm_angle)
         };
       });
 
@@ -69,7 +72,8 @@ export async function POST(req: NextRequest) {
 
       if (movementsError) {
         console.error("Gagal bulk insert movement_logs:", movementsError);
-        // Kita tidak throw error agar sesi tetap dianggap sukses tersimpan statistiknya
+        // Kita KEMBALIKAN error-nya agar terdeteksi di log console IoT, jangan telan error ini!
+        return NextResponse.json({ success: false, error: `Gagal menyimpan log transisi: ${movementsError.message}` }, { status: 500 });
       }
     }
 
