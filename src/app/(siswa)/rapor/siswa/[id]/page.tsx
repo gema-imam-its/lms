@@ -3,6 +3,9 @@ import Link from "next/link";
 import { ArrowLeft, Calendar, Clock, Activity } from "lucide-react";
 import Image from "next/image";
 import { revalidatePath } from "next/cache";
+import DeleteSesiButton from "@/components/siswa/DeleteSesiButton";
+import MulaiSesiButton from "@/components/siswa/MulaiSesiButton";
+import { findBlockingSession, isSessionStale } from "@/lib/sesi-guard";
 
 export const revalidate = 0;
 
@@ -15,24 +18,48 @@ export default async function DaftarSesiSiswa({
   const supabase = createSupabaseServerClient();
 
   // Server action untuk men-trigger Orange Pi
-  async function mulaiPraktikSekarang() {
+  async function mulaiPraktikSekarang(_prevState: { error?: string }, _formData: FormData) {
     "use server";
     const supabaseServer = createSupabaseServerClient();
-    
+
+    // Secara fisik cuma ada satu alat/kamera — cek dulu apakah sesi lain
+    // (siswa manapun) sedang berjalan sebelum membuat sesi PENDING baru.
+    // Ini hanya untuk pesan yang jelas; jaminan sebenarnya ada di partial
+    // unique index `idx_one_active_session_system_wide` pada DB.
+    const blocking = await findBlockingSession(supabaseServer);
+    if (blocking && blocking.imamId !== studentId) {
+      const menit = Math.round(blocking.ageMinutes);
+      return {
+        error: blocking.isStale
+          ? `Alat sedang "dipakai" ${blocking.studentName} sejak ${menit} menit lalu — sesi ini kemungkinan macet. Buka halaman ${blocking.studentName} dan klik "Batalkan Sesi" untuk membebaskan alat.`
+          : `Alat sedang dipakai ${blocking.studentName} (dimulai ${menit} menit lalu). Tunggu sampai sesi tersebut selesai.`,
+      };
+    }
+
     // Kita buat sesi dengan status PENDING
     // Nanti script Python Orange Pi akan mendeteksi baris PENDING ini
-    await supabaseServer.from("sholat_sessions").insert({
+    const { error } = await supabaseServer.from("sholat_sessions").insert({
       imam_id: studentId,
       nama_sholat: "Latihan",
       tanggal: new Date().toISOString(),
-      status: "PENDING", 
+      status: "PENDING",
       durasi_detik: 0,
       total_rakaat: 0,
       total_kesalahan_imam: 0,
       skor_tumaninah_persen: 0
     });
-    
+
+    if (error) {
+      // Safety net untuk race langka: dua guru submit hampir bersamaan dan
+      // lolos pre-check di atas — unique index di DB yang menolaknya.
+      if (error.code === "23505") {
+        return { error: "Alat baru saja dipakai siswa lain. Coba lagi beberapa saat." };
+      }
+      return { error: "Gagal memulai sesi: " + error.message };
+    }
+
     revalidatePath(`/rapor/siswa/${studentId}`);
+    return {};
   }
 
   // 1. Ambil data siswa
@@ -53,8 +80,20 @@ export default async function DaftarSesiSiswa({
     return <div className="p-8 text-center">Siswa tidak ditemukan.</div>;
   }
 
+  // Query sesi gagal (bukan sekadar "belum ada sesi") — jangan lanjut render,
+  // karena `sessions` juga menentukan isSesiBerjalan (status tombol Mulai Sesi).
+  if (sessionError) {
+    return (
+      <div className="p-8 text-center text-red-500">
+        Gagal memuat riwayat sesi: {sessionError.message}
+      </div>
+    );
+  }
+
   // Cek apakah ada sesi yang masih PENDING atau ACTIVE
   const isSesiBerjalan = sessions?.some(s => s.status === "PENDING" || s.status === "ACTIVE");
+  const activeSession = sessions?.find(s => s.status === "PENDING" || s.status === "ACTIVE");
+  const activeIsStale = activeSession ? isSessionStale(activeSession.created_at) : false;
 
   return (
     <div className="min-h-screen bg-gray-50 pt-24 pb-12">
@@ -84,9 +123,11 @@ export default async function DaftarSesiSiswa({
             </div>
             <div>
               <h3 className="font-gohan text-2xl text-gema-navy">Ayo Mulai Praktik!</h3>
-              <p className="font-gilroy text-gray-600">
-                {isSesiBerjalan 
-                  ? "Sesi sedang berlangsung! Alat IoT sedang merekam di depan..." 
+              <p className={`font-gilroy ${activeIsStale ? "text-orange-600 font-bold" : "text-gray-600"}`}>
+                {isSesiBerjalan
+                  ? (activeIsStale
+                      ? "Sesi ini sudah berjalan lama dan mungkin macet. Jika alat tidak lagi merekam, klik \"Batalkan Sesi\"."
+                      : "Sesi sedang berlangsung! Alat IoT sedang merekam di depan...")
                   : "Alat IoT sudah siap? Klik tombol di samping untuk mulai."}
               </p>
             </div>
@@ -109,19 +150,7 @@ export default async function DaftarSesiSiswa({
               </form>
             )}
 
-            <form action={mulaiPraktikSekarang}>
-              <button 
-                type="submit"
-                disabled={isSesiBerjalan}
-                className={`px-8 py-4 rounded-full font-gohan text-xl font-bold transition-all shrink-0 ${
-                  isSesiBerjalan 
-                    ? "bg-gray-300 text-gray-500 cursor-not-allowed"
-                    : "bg-gema-tosca text-white hover:shadow-lg hover:-translate-y-1"
-                }`}
-              >
-                {isSesiBerjalan ? "Sedang Merekam..." : "+ Mulai Sesi Baru"}
-              </button>
-            </form>
+            <MulaiSesiButton action={mulaiPraktikSekarang} disabled={!!isSesiBerjalan} />
           </div>
         </div>
 
@@ -137,10 +166,10 @@ export default async function DaftarSesiSiswa({
             {sessions.map((session) => {
               const date = new Date(session.tanggal);
               const formattedDate = date.toLocaleDateString("id-ID", {
-                weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
+                weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', timeZone: 'Asia/Jakarta'
               });
               const formattedTime = date.toLocaleTimeString("id-ID", {
-                hour: '2-digit', minute: '2-digit'
+                hour: '2-digit', minute: '2-digit', timeZone: 'Asia/Jakarta'
               });
 
               let stars = 1;
@@ -179,18 +208,14 @@ export default async function DaftarSesiSiswa({
                     </div>
 
                     <div className="flex gap-2 w-full lg:w-auto mt-4 lg:mt-0">
-                      <form action={async () => {
+                      <DeleteSesiButton deleteAction={async () => {
                         "use server";
                         const supabaseServer = createSupabaseServerClient();
                         await supabaseServer.from("sholat_sessions").delete().eq("id", session.id);
                         revalidatePath(`/rapor/siswa/${studentId}`);
-                      }}>
-                        <button type="submit" className="min-h-[48px] px-6 border-2 border-red-100 text-red-500 rounded-xl font-gohan font-bold hover:bg-red-50 hover:border-red-200 transition-colors w-full sm:w-auto">
-                          Hapus
-                        </button>
-                      </form>
-                      
-                      <Link 
+                      }} />
+
+                      <Link
                         href={`/rapor/sesi/${session.id}`}
                         className="min-h-[48px] px-6 bg-gema-navy text-white rounded-xl font-gohan font-bold hover:bg-gema-tosca transition-colors flex items-center justify-center w-full sm:w-auto"
                       >

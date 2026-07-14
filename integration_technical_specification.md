@@ -1,6 +1,8 @@
 # Dokumen Spesifikasi Teknis & Integrasi Sistem (IoT & Web LMS)
 ## GEMA Imam — Sholat Tracking System
 
+> **⚠️ Sebagian dokumen ini sudah tidak sesuai implementasi aktual.** §1 (diagram alur data push-based, di mana Orange Pi memanggil `POST /api/iot/sesi/mulai` lalu streaming `POST /api/iot/gerakan` per gerakan) dan §4.A/§4.B (kontrak endpoint tersebut) mendeskripsikan desain awal yang **sudah ditinggalkan** — kedua route itu sudah dihapus dari kode. Implementasi aktual bersifat pull-based: website membuat sesi `PENDING`, Orange Pi polling `GET /api/iot/status`, lalu melapor sekali lewat `POST /api/iot/sesi/selesai` (bulk). Lihat `CLAUDE.md` bagian "IoT ingestion contract" dan file route di `src/app/api/iot/` untuk kontrak yang berlaku sekarang. §2 (skema DB), §3 (ide dashboard/analitik), §6-7 (rencana integrasi Cloudinary) masih relevan sebagai referensi/ide produk yang belum sepenuhnya diimplementasikan.
+
 ---
 
 ## 1. Arsitektur Sistem & Aliran Data

@@ -2,6 +2,8 @@
 
 Dokumen ini berisi informasi mengenai *tech stack*, *deployment* web Gema Imam, dan panduan integrasi untuk tim *Hardware/IoT* (Raspberry Pi).
 
+> **⚠️ Bagian 3 & 4 di bawah ini adalah catatan diskusi awal (pra-implementasi) dan sudah tidak sesuai dengan kode aktual** — `POST /api/iot/gerakan` dan `POST /api/iot/sesi/mulai` sudah dihapus, dan bentuk payload di sini berbeda dari kontrak yang sebenarnya berjalan. Lihat `CLAUDE.md` bagian "IoT ingestion contract" untuk alur dan endpoint yang berlaku sekarang.
+
 ## 1. Tech Stack Web Gema Imam
 
 ### Frontend + Backend

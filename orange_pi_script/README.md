@@ -81,6 +81,8 @@ Setelah alat mendeteksi Salam (sesi tuntas) ATAU ada perintah Reset dari Telegra
 
 ## 3. Contoh Implementasi di Python (Pseudo-code)
 
+> Kode di bawah ini pseudo-code/kerangka awal. Implementasi asli yang sudah berjalan ada di `cv/core/main.py` (metode `check_web_status()` dan `lapor_sesi_selesai()`) — pakai file itu sebagai referensi, bukan `orange_pi_script/main.py` (sudah dihapus, prototype awal yang sudah tidak sesuai kontrak API ini).
+
 Berikut adalah kerangka *script* Python (`main.py`) yang harus dipastikan agar **AI tidak looping sendirian**:
 
 ```python

@@ -11,13 +11,35 @@ export async function GET(req: NextRequest) {
 
   try {
     const supabase = createSupabaseServerClient();
-    
-    // Cari sesi yang statusnya PENDING
+
+    // Mode "cek sesi berjalan": dipanggil oleh Orange Pi SELAMA merekam
+    // (bukan saat standby) untuk tahu apakah sesi ini sudah dibatalkan dari
+    // web (tombol "Batalkan Sesi") sementara alat masih merekam.
+    const checkSessionId = req.nextUrl.searchParams.get("session_id");
+    if (checkSessionId) {
+      const { data: session, error: sessionError } = await supabase
+        .from("sholat_sessions")
+        .select("status")
+        .eq("id", checkSessionId)
+        .single();
+
+      if (sessionError || !session) {
+        // Sesi tidak ditemukan (mis. dihapus) — anggap tidak aktif lagi.
+        return NextResponse.json({ active: false, status: "not_found" }, { status: 200 });
+      }
+
+      return NextResponse.json(
+        { active: session.status === "ACTIVE", status: session.status },
+        { status: 200 }
+      );
+    }
+
+    // Cari sesi yang statusnya PENDING (FIFO — sesi terlama duluan)
     const { data, error } = await supabase
       .from("sholat_sessions")
       .select("id, imam_id, imams(nama)")
       .eq("status", "PENDING")
-      .order("created_at", { ascending: false })
+      .order("created_at", { ascending: true })
       .limit(1)
       .single();
 

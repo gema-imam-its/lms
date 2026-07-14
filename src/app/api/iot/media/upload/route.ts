@@ -8,7 +8,12 @@ import type { MediaUploadResponse } from "@/types/iot";
  *
  * Menerima file gambar (JPG) dari Orange Pi via multipart form-data,
  * mengunggahnya ke Cloudinary, dan mengembalikan URL permanen.
- * Orange Pi kemudian menyertakan URL ini di payload /api/iot/gerakan.
+ * Orange Pi kemudian menyertakan URL ini di log_transisi[].foto_pose_url
+ * pada payload /api/iot/sesi/selesai.
+ *
+ * Catatan: endpoint ini belum dipanggil oleh implementasi Orange Pi saat
+ * ini (cv/core/main.py) — sisi web sudah siap, sisi Pi (capture frame +
+ * upload) belum diimplementasikan.
  */
 export async function POST(req: NextRequest) {
   // 1. Validasi API Key

@@ -28,10 +28,15 @@ export default async function DetailSesiRapor({
   }
 
   // 2. Ambil detail gerakan (movement_logs)
+  // Urutkan berdasarkan `urutan` (index asli dari log_transisi Orange Pi) —
+  // entry_time bisa disanitasi ke "00:00:00" saat data AI tidak valid, jadi
+  // tidak bisa diandalkan sendirian untuk urutan timeline. Baris lama
+  // (sebelum kolom `urutan` ada) fallback ke entry_time.
   const { data: movements, error: movementsError } = await supabase
     .from("movement_logs")
     .select("*")
     .eq("sesi_id", sessionId)
+    .order("urutan", { ascending: true, nullsFirst: false })
     .order("entry_time", { ascending: true });
 
   const imamsData = session.imams as any;
@@ -111,7 +116,11 @@ export default async function DetailSesiRapor({
         {/* Timeline Gerakan */}
         <h2 className="font-gohan text-2xl text-gray-700 mb-6">Detail Evaluasi Tiap Gerakan</h2>
         
-        {(!movements || movements.length === 0) ? (
+        {movementsError ? (
+          <div className="bg-white p-10 rounded-3xl text-center shadow-sm border-2 border-red-100">
+            <p className="font-gilroy text-red-500">Gagal memuat rincian gerakan: {movementsError.message}</p>
+          </div>
+        ) : (!movements || movements.length === 0) ? (
           <div className="bg-white p-10 rounded-3xl text-center shadow-sm">
             <p className="font-gilroy text-gray-500">Belum ada rincian gerakan terekam.</p>
           </div>
@@ -178,23 +187,23 @@ export default async function DetailSesiRapor({
                           <h3 className="font-gohan text-2xl text-gema-navy capitalize flex items-center gap-3">
                             {mov.nama_gerakan}
                             <span className="text-sm font-gilroy text-gray-400 font-normal mt-1">
-                              ({mov.entry_time} - {mov.exit_time || "Batal"})
+                              ({mov.entry_time} - {mov.exit_time || (mov.exit_reason === "CANCELLED" ? "Dibatalkan" : mov.exit_reason === "NORMAL_FINISH" ? "Selesai" : "-")})
                             </span>
                           </h3>
                           <span className="font-gilroy text-sm font-bold text-gray-400 bg-gray-100 px-3 py-1 rounded-full whitespace-nowrap">
-                            {mov.duration_seconds} detik
+                            {mov.duration_seconds != null ? `${mov.duration_seconds} detik` : "-"}
                           </span>
                         </div>
-                        
+
                         <p className={`font-gilroy text-lg ${isWrong ? "text-orange-600" : "text-gray-600"}`}>
                           {feedbackText}
                         </p>
-                        
+
                         {/* Sudut sendi untuk guru (debug info) */}
                         <div className="mt-4 flex gap-4 text-xs font-gilroy text-gray-400 border-t border-gray-100 pt-3">
-                          {mov.hip_angle && <span>Panggul: {mov.hip_angle}°</span>}
-                          {mov.knee_angle && <span>Lutut: {mov.knee_angle}°</span>}
-                          {mov.arm_angle && <span>Lengan: {mov.arm_angle}°</span>}
+                          {mov.hip_angle != null && <span>Panggul: {mov.hip_angle}°</span>}
+                          {mov.knee_angle != null && <span>Lutut: {mov.knee_angle}°</span>}
+                          {mov.arm_angle != null && <span>Lengan: {mov.arm_angle}°</span>}
                         </div>
                       </div>
                       

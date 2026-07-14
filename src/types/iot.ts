@@ -17,7 +17,7 @@ export interface SholatSession {
   nama_sholat: string; // Subuh, Dhuhur, Ashar, Maghrib, Isya
   tanggal: string; // ISO 8601
   durasi_detik: number;
-  status: "Selesai" | "Dibatalkan";
+  status: "PENDING" | "ACTIVE" | "Selesai" | "Dibatalkan";
   total_rakaat: number;
   total_kesalahan_imam: number;
   skor_tumaninah_persen: number;
@@ -30,58 +30,45 @@ export interface MovementLog {
   rakaat: number;
   nama_gerakan: string; // berdiri, sedekap, rukuk, itidal, sujud, duduk, dll
   entry_time: string; // HH:MM:SS
-  exit_time?: string;
-  duration_seconds?: number;
+  exit_time?: string | null;
+  exit_reason?: "NORMAL_FINISH" | "CANCELLED" | null; // kenapa exit_time null
+  duration_seconds?: number | null;
   tumaninah_terpenuhi?: boolean | null;
   gerakan_menyimpang?: string[];
-  hip_angle?: number;
-  knee_angle?: number;
-  arm_angle?: number;
-  foto_pose_url?: string; // URL Cloudinary
+  hip_angle?: number | null;
+  knee_angle?: number | null;
+  arm_angle?: number | null;
+  foto_pose_url?: string | null; // URL Cloudinary
+  urutan?: number | null; // urutan asli di log_transisi, dipakai untuk timeline
 }
 
 // --- API Request Body Types ---
 
-export interface MulaiSesiRequest {
-  imam_id: string;
-  nama_sholat: string;
-  timestamp: string; // ISO 8601
-}
-
-export interface MulaiSesiResponse {
-  success: boolean;
-  sesi_id?: string;
-  error?: string;
-}
-
-export interface GerakanRequest {
-  sesi_id: string;
-  rakaat: number;
-  nama_gerakan: string;
-  entry_time: string;
-  exit_time?: string;
-  duration_seconds?: number;
-  tumaninah_terpenuhi?: boolean | null;
-  gerakan_menyimpang?: string[];
-  hip_angle?: number;
-  knee_angle?: number;
-  arm_angle?: number;
-  foto_pose_url?: string;
-}
-
-export interface GerakanResponse {
-  success: boolean;
-  message?: string;
-  error?: string;
-}
-
 export interface SelesaiSesiRequest {
   sesi_id: string;
-  status: "Selesai" | "Dibatalkan";
-  durasi_detik: number;
-  total_rakaat: number;
-  total_kesalahan_imam: number;
-  skor_tumaninah_persen: number;
+  status?: "Selesai" | "Dibatalkan";
+  durasi_detik?: number;
+  total_rakaat_dilewati?: number;
+  kesalahan_imam?: number;
+  statistik_tumaninah?: {
+    total_gerakan_tumaninah?: number;
+    terpenuhi?: number;
+    tidak_terpenuhi?: number;
+    skor_persentase?: number;
+  };
+  log_transisi?: Array<{
+    rakaat?: number;
+    state?: string;
+    entry_time?: string;
+    exit_time?: string | null;
+    duration_seconds?: number | string | null;
+    tumaninah_met?: boolean | null;
+    gerakan_menyimpang?: string[];
+    hip_angle?: number | string | null;
+    knee_angle?: number | string | null;
+    arm_angle?: number | string | null;
+    foto_pose_url?: string;
+  }>;
 }
 
 export interface SelesaiSesiResponse {
