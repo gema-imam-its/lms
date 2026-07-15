@@ -47,7 +47,7 @@ export default function SlideQuiz({
     <div className="flex flex-col h-full w-full justify-start items-center py-8 animate-in zoom-in-95 fade-in duration-500 relative">
       
       {/* Quiz Header & Mascot Hint */}
-      <div className="w-full max-w-5xl mb-8 flex flex-col md:flex-row items-center justify-between gap-6">
+      <div className="w-full max-w-5xl mb-6 flex flex-col md:flex-row items-center justify-between gap-6 sticky top-0 z-20 bg-white/90 backdrop-blur-sm py-2">
         <h2 className="font-gohan text-3xl md:text-4xl text-gema-navy text-center md:text-left flex-1">
           {slide.question}
         </h2>
@@ -93,6 +93,7 @@ export default function SlideQuiz({
         <QuizFeedback
           correct={feedbackState === "correct"}
           onContinue={handleFeedbackContinue}
+          hint={slide.hint}
         />
       )}
     </div>

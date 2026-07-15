@@ -1,4 +1,7 @@
 @import "tailwindcss";
+/* Revives the animate-in / fade-in / zoom-in / slide-in-from-* enter-animation
+   utilities used across the app (Tailwind v4 has no built-in animate plugin). */
+@import "tw-animate-css";
 
 :root {
   --background: #ffffff;
@@ -64,4 +67,27 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-gohan);
+}
+
+/* Gentle continuous "idle" bob for the learning mascot (issue #8: static mascot).
+   Opt-out for users who prefer reduced motion. */
+@keyframes mascot-bob {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+.animate-mascot-bob {
+  animation: mascot-bob 3s ease-in-out infinite;
+  will-change: transform;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-mascot-bob {
+    animation: none;
+  }
 }

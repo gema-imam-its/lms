@@ -1,9 +1,9 @@
 "use client";
 
-import Image from "next/image";
 import { useState, useEffect } from "react";
 import { SortItem } from "@/types/module";
 import { Check, X } from "lucide-react";
+import ModulImage from "../ModulImage";
 
 interface SortOrderProps {
   items: SortItem[];
@@ -105,9 +105,9 @@ export default function SortOrder({
                   className={`relative w-full aspect-[3/4] rounded-2xl flex flex-col items-center justify-center p-2 transition-all border-4 ${
                     placedItem 
                       ? isChecking
-                        ? isItemCorrect 
-                          ? "bg-white border-green-500 shadow-lg shadow-green-500/20" 
-                          : "bg-white border-red-500 shadow-lg shadow-red-500/20 opacity-80"
+                        ? isItemCorrect
+                          ? "bg-white border-green-500 shadow-lg shadow-green-500/20"
+                          : "bg-white border-amber-400 shadow-lg shadow-amber-400/20 opacity-80"
                         : "bg-white border-gema-tosca shadow-md cursor-pointer hover:bg-red-50 group"
                       : "bg-gray-100 border-dashed border-gray-300"
                   }`}
@@ -115,7 +115,7 @@ export default function SortOrder({
                   {placedItem ? (
                     <>
                       <div className="relative w-full h-2/3">
-                        <Image
+                        <ModulImage
                           src={placedItem.imageUrl}
                           alt={placedItem.label}
                           fill
@@ -136,7 +136,7 @@ export default function SortOrder({
                       {/* Check Status Overlay */}
                       {isChecking && (
                         <div className={`absolute -top-3 -right-3 w-8 h-8 rounded-full flex items-center justify-center z-20 shadow-md ${
-                          isItemCorrect ? "bg-green-500" : "bg-red-500"
+                          isItemCorrect ? "bg-green-500" : "bg-amber-500"
                         }`}>
                           {isItemCorrect ? (
                             <Check size={16} className="text-white" strokeWidth={4} />
@@ -176,7 +176,7 @@ export default function SortOrder({
                 }`}
               >
                 <div className="relative w-full h-2/3">
-                  <Image
+                  <ModulImage
                     src={item.imageUrl}
                     alt={item.label}
                     fill

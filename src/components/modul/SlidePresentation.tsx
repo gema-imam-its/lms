@@ -154,7 +154,7 @@ export default function SlidePresentation({
       <div className="flex flex-col items-center justify-center min-h-[70vh] animate-in fade-in zoom-in-95 duration-700">
         <h1 className="font-gohan text-5xl text-gema-navy mb-8">Selamat! 🎉</h1>
         
-        <div className="relative w-64 h-64 mb-12 drop-shadow-2xl">
+        <div className="relative w-64 h-64 mb-12 drop-shadow-2xl animate-mascot-bob">
           <Image src={MASCOT_URLS.hello} alt="Mascot Happy" fill className="object-contain" />
         </div>
 
@@ -182,7 +182,7 @@ export default function SlidePresentation({
   }
 
   return (
-    <div className="flex flex-col h-[calc(100vh-120px)] max-h-[900px] w-full bg-white rounded-3xl shadow-xl border border-gray-100 overflow-hidden">
+    <div className="flex flex-col h-full min-h-0 w-full bg-white rounded-3xl shadow-xl border border-gray-100 overflow-hidden">
       
       {/* Header / Progress Bar */}
       <div className="p-6 bg-gray-50 border-b border-gray-100">
@@ -196,7 +196,7 @@ export default function SlidePresentation({
       </div>
 
       {/* Main Content Area */}
-      <div className="flex-1 overflow-y-auto p-6 md:p-10">
+      <div className="flex-1 min-h-0 overflow-y-auto p-6 md:p-10">
         {slide.type === "content" ? (
           <SlideContent
             key={`content-${currentIndex}`} // Force re-render for animation

@@ -23,7 +23,7 @@ export default function MascotBubble({
   return (
     <div className="flex flex-col md:flex-row items-center gap-6 animate-in slide-in-from-bottom-4 fade-in duration-500">
       {/* Mascot Image */}
-      <div className={`relative shrink-0 drop-shadow-lg ${sizeClasses[size]}`}>
+      <div className={`relative shrink-0 drop-shadow-lg animate-mascot-bob ${sizeClasses[size]}`}>
         <Image
           src={MASCOT_URLS[mascot]}
           alt="Mascot Gema Imam"

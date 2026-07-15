@@ -9,12 +9,14 @@ interface QuizFeedbackProps {
   correct: boolean;
   onContinue: () => void;
   message?: string;
+  hint?: string;
 }
 
 export default function QuizFeedback({
   correct,
   onContinue,
   message,
+  hint,
 }: QuizFeedbackProps) {
   const [show, setShow] = useState(false);
 
@@ -78,9 +80,22 @@ export default function QuizFeedback({
         </h2>
         
         {!correct && (
-          <p className="font-gilroy text-xl text-gray-600 mb-8">
-            Jangan menyerah, ayo kita coba sekali lagi!
-          </p>
+          <div className="mb-8 w-full">
+            <p className="font-gilroy text-xl text-gray-600 mb-4">
+              Jangan menyerah, ayo kita coba sekali lagi!
+            </p>
+            {hint && (
+              <div className="flex items-start gap-3 bg-amber-50 border-2 border-amber-200 rounded-2xl p-4 text-left">
+                <span className="text-2xl shrink-0" aria-hidden>
+                  💡
+                </span>
+                <p className="font-gilroy text-lg text-amber-900">
+                  <span className="font-bold">Petunjuk: </span>
+                  {hint}
+                </p>
+              </div>
+            )}
+          </div>
         )}
 
         {/* Action Button */}

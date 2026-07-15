@@ -182,7 +182,7 @@ export const modules: ModuleDefinition[] = [
       {
         type: "content",
         mascot: "book",
-        text: "Saat RUKUK, kita membaca Subhaana Rabbiyal 'Azhiim",
+        text: "Saat RUKUK, kita membaca Subhaana Rabbiyal 'Azhiimi wa bihamdih",
         imageUrl: "/images/modul/gerakan-rukuk.png",
       },
       {
@@ -200,7 +200,7 @@ export const modules: ModuleDefinition[] = [
             id: "rukuk-bacaan",
             leftImageUrl: "/images/modul/gerakan-rukuk.png",
             leftLabel: "Rukuk",
-            rightLabel: "Subhaana Rabbiyal 'Azhiim",
+            rightLabel: "Subhaana Rabbiyal 'Azhiimi wa bihamdih",
           },
         ],
         hint: "Perhatikan gerakannya baik-baik.",
@@ -209,7 +209,7 @@ export const modules: ModuleDefinition[] = [
       {
         type: "content",
         mascot: "book",
-        text: "Saat SUJUD, kita membaca Subhaana Rabbiyal A'laa",
+        text: "Saat SUJUD, kita membaca Subhaana Rabbiyal A'laa wa bihamdih",
         imageUrl: "/images/modul/gerakan-sujud.png",
       },
       {
@@ -227,7 +227,7 @@ export const modules: ModuleDefinition[] = [
             id: "sujud-bacaan",
             leftImageUrl: "/images/modul/gerakan-sujud.png",
             leftLabel: "Sujud",
-            rightLabel: "Subhaana Rabbiyal A'laa",
+            rightLabel: "Subhaana Rabbiyal A'laa wa bihamdih",
           },
           {
             id: "duduk-bacaan",
@@ -291,26 +291,34 @@ export const modules: ModuleDefinition[] = [
       {
         type: "content",
         mascot: "book",
-        text: "5. Kelima: Sujud",
+        text: "5. Kelima: Sujud pertama",
         imageUrl: "/images/modul/gerakan-sujud.png",
       },
       {
         type: "content",
         mascot: "book",
         text: "6. Keenam: Duduk di antara dua sujud",
-        imageUrl: "/images/modul/gerakan-duduk.png",
+        imageUrl: "/images/modul/gerakan-duduk-antara-sujud.png",
       },
+      {
+        type: "content",
+        mascot: "book",
+        text: "7. Ketujuh: Sujud kedua",
+        imageUrl: "/images/modul/gerakan-sujud.png",
+      },
+      // NOTE: modul 2 ("nama gerakan") & modul 3 ("gerakan + bacaan") still use
+      // the simplified single-"Duduk" set; add "duduk di antara dua sujud" there
+      // too if we later want full consistency across all modules.
       {
         type: "quiz",
         quizType: "sort-order",
-        question: "Susun gerakan berikut dengan benar!",
+        question: "Susun urutan sujud yang benar!",
         items: [
-          { id: "berdiri", imageUrl: "/images/modul/gerakan-berdiri.png", label: "Berdiri", correctOrder: 1 },
-          { id: "rukuk", imageUrl: "/images/modul/gerakan-rukuk.png", label: "Rukuk", correctOrder: 2 },
-          { id: "sujud", imageUrl: "/images/modul/gerakan-sujud.png", label: "Sujud", correctOrder: 3 },
-          { id: "duduk", imageUrl: "/images/modul/gerakan-duduk.png", label: "Duduk", correctOrder: 4 },
+          { id: "sujud1", imageUrl: "/images/modul/gerakan-sujud.png", label: "Sujud Pertama", correctOrder: 1 },
+          { id: "duduk-antara", imageUrl: "/images/modul/gerakan-duduk-antara-sujud.png", label: "Duduk (2 sujud)", correctOrder: 2 },
+          { id: "sujud2", imageUrl: "/images/modul/gerakan-sujud.png", label: "Sujud Kedua", correctOrder: 3 },
         ],
-        hint: "Mulai dari atas (berdiri), lalu membungkuk (rukuk), menyentuh lantai (sujud), lalu duduk.",
+        hint: "Setelah sujud pertama, kita duduk sebentar, lalu sujud lagi.",
         relatedSlideIndex: 7,
       },
     ],
@@ -387,7 +395,7 @@ export const modules: ModuleDefinition[] = [
             id: "rukuk-bacaan",
             leftImageUrl: "/images/modul/gerakan-rukuk.png",
             leftLabel: "Rukuk",
-            rightLabel: "Subhaana Rabbiyal 'Azhiim",
+            rightLabel: "Subhaana Rabbiyal 'Azhiimi wa bihamdih",
           },
         ],
       },

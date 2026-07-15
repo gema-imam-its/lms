@@ -11,6 +11,11 @@ export default function NavBar() {
   const toggleMenu = () => setIsOpen(!isOpen);
   const pathname = usePathname();
 
+  // The immersive module player (/modul/<id>) renders its own top bar; hide the
+  // global (absolute) nav there so the two don't overlap and the player can use
+  // the full viewport height.
+  if (/^\/modul\/[^/]+$/.test(pathname ?? "")) return null;
+
   const navLinks = [
     { href: "/", label: "Beranda", icon: Home },
     { href: "/modul", label: "Modul", icon: BookOpen },

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { modules } from "@/data/modules";
+import GenderToggle from "@/components/modul/GenderToggle";
 
 export default function ModulListPage() {
   return (
@@ -14,6 +15,10 @@ export default function ModulListPage() {
           <p className="font-gilroy text-xl text-gray-600 max-w-2xl mx-auto">
             Mari belajar langkah demi langkah. Pilih modul di bawah ini untuk memulai!
           </p>
+
+          <div className="mt-8 flex justify-center">
+            <GenderToggle />
+          </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">

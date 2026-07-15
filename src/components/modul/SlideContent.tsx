@@ -1,8 +1,8 @@
 "use client";
 
-import Image from "next/image";
 import { ContentSlide } from "@/types/module";
 import MascotBubble from "./MascotBubble";
+import ModulImage from "./ModulImage";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
 interface SlideContentProps {
@@ -22,11 +22,11 @@ export default function SlideContent({
 }: SlideContentProps) {
   return (
     <div className="flex flex-col h-full w-full justify-between animate-in slide-in-from-right-8 fade-in duration-500">
-      <div className="flex-1 flex flex-col items-center justify-center gap-12 py-8">
+      <div className="flex-1 flex flex-col items-center justify-center gap-6 md:gap-8 py-4">
         {/* Optional Main Image */}
         {slide.imageUrl && (
-          <div className="relative w-64 h-64 md:w-80 md:h-80 lg:w-96 lg:h-96 drop-shadow-xl rounded-3xl overflow-hidden bg-white border-8 border-white">
-            <Image
+          <div className="relative w-52 h-52 md:w-64 md:h-64 lg:w-72 lg:h-72 max-h-[38vh] max-w-[38vh] drop-shadow-xl rounded-3xl overflow-hidden bg-white border-8 border-white">
+            <ModulImage
               src={slide.imageUrl}
               alt="Ilustrasi Materi"
               fill

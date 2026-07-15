@@ -1,0 +1,16 @@
+{
+  "sesi_id": "99999999-9999-9999-9999-999999999999",
+  "sholat": "Isya",
+  "tanggal": "2026-07-14 03:00:14",
+  "durasi_detik": 62.8,
+  "status": "Dibatalkan",
+  "total_rakaat_dilewati": 1,
+  "kesalahan_imam": 4,
+  "statistik_tumaninah": {
+    "total_gerakan_tumaninah": 1,
+    "terpenuhi": 0,
+    "tidak_terpenuhi": 1,
+    "skor_persentase": 50.0
+  },
+  "log_transisi": []
+}

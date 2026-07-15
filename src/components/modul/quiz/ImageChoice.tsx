@@ -1,9 +1,9 @@
 "use client";
 
-import Image from "next/image";
 import { useState } from "react";
 import { ImageChoiceOption } from "@/types/module";
 import { Check, X } from "lucide-react";
+import ModulImage from "../ModulImage";
 
 interface ImageChoiceProps {
   options: ImageChoiceOption[];
@@ -50,7 +50,7 @@ export default function ImageChoice({
               isSelected
                 ? isCorrect
                   ? "border-green-500 scale-105 shadow-xl shadow-green-500/20"
-                  : "border-red-500 scale-95 opacity-80"
+                  : "border-amber-400 scale-95 opacity-80"
                 : disabled
                   ? "border-transparent opacity-50 cursor-not-allowed"
                   : "border-transparent hover:border-gema-tosca hover:shadow-lg hover:-translate-y-2 active:scale-95 cursor-pointer"
@@ -59,7 +59,7 @@ export default function ImageChoice({
             {/* Status Icons */}
             {isSelected && (
               <div className={`absolute top-4 right-4 w-12 h-12 rounded-full flex items-center justify-center z-20 shadow-md ${
-                isCorrect ? "bg-green-500" : "bg-red-500"
+                isCorrect ? "bg-green-500" : "bg-amber-500"
               }`}>
                 {isCorrect ? (
                   <Check size={28} className="text-white" strokeWidth={4} />
@@ -71,7 +71,7 @@ export default function ImageChoice({
 
             {/* Image */}
             <div className="relative w-full aspect-square max-w-[200px] mb-4 drop-shadow-md">
-              <Image
+              <ModulImage
                 src={option.imageUrl}
                 alt={option.label}
                 fill
