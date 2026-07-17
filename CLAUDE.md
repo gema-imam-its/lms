@@ -70,4 +70,4 @@ Tailwind CSS v4 via `@tailwindcss/postcss` (see `postcss.config.mjs`) — no sep
 
 ## Env vars
 
-Required at runtime (see `.env.local`, not committed): `NEXT_PUBLIC_SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, `CLOUDINARY_CLOUD_NAME`, `CLOUDINARY_API_KEY`, `CLOUDINARY_API_SECRET`, `IOT_SECRET_KEY`.
+Required at runtime (see `.env.local`, not committed): `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY` (used by the `@supabase/ssr` auth clients for the guru login/session; the service-role key is **not** used for auth), `SUPABASE_SERVICE_ROLE_KEY`, `CLOUDINARY_CLOUD_NAME`, `CLOUDINARY_API_KEY`, `CLOUDINARY_API_SECRET`, `IOT_SECRET_KEY`.
