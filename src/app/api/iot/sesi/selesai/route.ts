@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { validateIoTApiKey } from "@/lib/auth-iot";
 import { createSupabaseServerClient } from "@/lib/supabase";
+import { computeSholatScore } from "@/lib/scoring";
 import type { SelesaiSesiRequest, SelesaiSesiResponse } from "@/types/iot";
 
 /**
@@ -75,6 +76,14 @@ export async function POST(req: NextRequest) {
         })
       : [];
 
+    // Skor dihitung di sini dari log_transisi yang sudah disanitasi (tuma'ninah +
+    // postur + kesalahan bacaan), bukan dipercaya dari angka yang dikirim Pi —
+    // lihat src/lib/scoring.ts untuk rincian pembobotannya.
+    const skorTumaninahPersen = computeSholatScore(
+      movementsToInsert,
+      body.kesalahan_imam || 0
+    );
+
     const supabase = createSupabaseServerClient();
     const { error } = await supabase.rpc("selesaikan_sesi_sholat", {
       p_sesi_id: body.sesi_id,
@@ -82,7 +91,7 @@ export async function POST(req: NextRequest) {
       p_durasi_detik: body.durasi_detik || 0,
       p_total_rakaat: body.total_rakaat_dilewati || 0,
       p_total_kesalahan_imam: body.kesalahan_imam || 0,
-      p_skor_tumaninah_persen: body.statistik_tumaninah?.skor_persentase || 0,
+      p_skor_tumaninah_persen: skorTumaninahPersen,
       p_movements: movementsToInsert,
     });
 
