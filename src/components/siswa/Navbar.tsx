@@ -26,7 +26,10 @@ export default function NavBar() {
   return (
     <nav className="top-0 absolute w-full z-50 bg-white/90 backdrop-blur-md px-8 lg:px-16 py-5 border-b border-gray-100">
       <div className="flex items-center justify-between max-w-7xl mx-auto">
-        <Link href="/" className="flex items-center gap-3 focus:outline-none focus:ring-2 focus:ring-gema-tosca rounded-lg p-1">
+        <Link
+          href="/"
+          className="flex items-center gap-3 focus:outline-none focus:ring-2 focus:ring-gema-tosca rounded-lg p-1"
+        >
           <Image
             src="/images/logo.svg"
             alt="Logo utama Gema Imam"
@@ -44,7 +47,7 @@ export default function NavBar() {
           {navLinks.map((link) => {
             const IconComponent = link.icon;
             const isActive = pathname === link.href;
-            
+
             return (
               <Link
                 key={link.href}
@@ -75,8 +78,8 @@ export default function NavBar() {
         </div>
 
         <div className="lg:hidden">
-          <button 
-            onClick={toggleMenu} 
+          <button
+            onClick={toggleMenu}
             aria-label="Buka menu navigasi"
             className="min-h-[48px] min-w-[48px] flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-gema-tosca rounded-lg"
           >
@@ -86,7 +89,7 @@ export default function NavBar() {
       </div>
 
       <div
-        className={`fixed inset-0 z-30 bg-white/95 backdrop-blur-sm
+        className={`fixed inset-0 z-40 bg-white/95 backdrop-blur-sm
           transform transition-transform duration-300 ease-in-out
           ${isOpen ? "translate-x-0" : "translate-x-full"} lg:hidden`}
       >
@@ -138,8 +141,8 @@ export default function NavBar() {
               </p>
             </Link>
 
-            <button 
-              onClick={toggleMenu} 
+            <button
+              onClick={toggleMenu}
               aria-label="Tutup menu navigasi"
               className="min-h-[48px] min-w-[48px] flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-gema-tosca rounded-full"
             >
