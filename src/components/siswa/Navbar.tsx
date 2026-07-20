@@ -24,35 +24,36 @@ export default function NavBar() {
   ];
 
   return (
-    <nav className="top-0 absolute w-full z-50 bg-white/90 backdrop-blur-md px-8 lg:px-16 py-5 border-b border-gray-100">
-      <div className="flex items-center justify-between max-w-7xl mx-auto">
-        <Link
-          href="/"
-          className="flex items-center gap-3 focus:outline-none focus:ring-2 focus:ring-gema-tosca rounded-lg p-1"
-        >
-          <Image
-            src="/images/logo.svg"
-            alt="Logo utama Gema Imam"
-            width={40}
-            height={40}
-            className="h-10 w-auto"
-            priority
-          />
-          <p className="font-gohan font-bold text-gema-navy text-xl">
-            Gema Imam
-          </p>
-        </Link>
+    <>
+      <nav className="top-0 absolute w-full z-50 bg-white/90 backdrop-blur-md px-8 lg:px-16 py-5 border-b border-gray-100">
+        <div className="flex items-center justify-between max-w-7xl mx-auto">
+          <Link
+            href="/"
+            className="flex items-center gap-3 focus:outline-none focus:ring-2 focus:ring-gema-tosca rounded-lg p-1"
+          >
+            <Image
+              src="/images/logo.svg"
+              alt="Logo utama Gema Imam"
+              width={40}
+              height={40}
+              className="h-10 w-auto"
+              priority
+            />
+            <p className="font-gohan font-bold text-gema-navy text-xl">
+              Gema Imam
+            </p>
+          </Link>
 
-        <div className="hidden lg:flex items-center gap-8">
-          {navLinks.map((link) => {
-            const IconComponent = link.icon;
-            const isActive = pathname === link.href;
+          <div className="hidden lg:flex items-center gap-8">
+            {navLinks.map((link) => {
+              const IconComponent = link.icon;
+              const isActive = pathname === link.href;
 
-            return (
-              <Link
-                key={link.href}
-                href={link.href}
-                className={`relative flex items-center flex-row gap-1.5 font-gilroy font-medium text-lg min-h-[48px] px-2 py-1
+              return (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  className={`relative flex items-center flex-row gap-1.5 font-gilroy font-medium text-lg min-h-[48px] px-2 py-1
                   after:absolute after:left-0 after:bottom-1 after:h-0.5
                   after:bg-current after:transition-all after:duration-300 focus:outline-none focus:ring-2 focus:ring-gema-tosca rounded-md
                   ${
@@ -60,36 +61,43 @@ export default function NavBar() {
                       ? "text-gema-tosca after:w-full"
                       : "text-gema-navy after:w-0 hover:after:w-full hover:text-gema-tosca"
                   }`}
-              >
-                <IconComponent className="w-4 h-4" />
-                {link.label}
-              </Link>
-            );
-          })}
+                >
+                  <IconComponent className="w-4 h-4" />
+                  {link.label}
+                </Link>
+              );
+            })}
 
-          <Link
-            href="/modul"
-            className="min-h-[48px] px-8 rounded-full bg-gema-tosca text-white
+            <Link
+              href="/modul"
+              className="min-h-[48px] px-8 rounded-full bg-gema-tosca text-white
                        font-gilroy font-medium hover:opacity-90 flex items-center justify-center
                        hover:scale-105 transition-all duration-300 focus:ring-4 focus:ring-gema-tosca/50 focus:outline-none"
-          >
-            Mulai Belajar
-          </Link>
-        </div>
+            >
+              Mulai Belajar
+            </Link>
+          </div>
 
-        <div className="lg:hidden">
-          <button
-            onClick={toggleMenu}
-            aria-label="Buka menu navigasi"
-            className="min-h-[48px] min-w-[48px] flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-gema-tosca rounded-lg"
-          >
-            <Menu color="#10B5AE" size={28} />
-          </button>
+          <div className="lg:hidden">
+            <button
+              onClick={toggleMenu}
+              aria-label="Buka menu navigasi"
+              className="min-h-[48px] min-w-[48px] flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-gema-tosca rounded-lg"
+            >
+              <Menu color="#10B5AE" size={28} />
+            </button>
+          </div>
         </div>
-      </div>
+      </nav>
 
+      {/* Rendered as a SIBLING of <nav>, not a descendant — <nav> has
+          backdrop-blur-md, and per the CSS spec, filter/backdrop-filter on an
+          ancestor makes it the containing block for `fixed` descendants (same
+          rule as `transform`). Nesting this overlay inside <nav> meant its
+          "fixed inset-0" was sizing itself to nav's own ~90px-tall box instead
+          of the viewport, crushing the whole mobile menu into that strip. */}
       <div
-        className={`fixed inset-0 z-40 bg-white/95 backdrop-blur-sm
+        className={`fixed inset-0 z-[60] bg-white/95 backdrop-blur-sm
           transform transition-transform duration-300 ease-in-out
           ${isOpen ? "translate-x-0" : "translate-x-full"} lg:hidden`}
       >
@@ -151,6 +159,6 @@ export default function NavBar() {
           </div>
         </div>
       </div>
-    </nav>
+    </>
   );
 }
