@@ -42,14 +42,20 @@ export default async function DetailSesiRapor({
   const imamsData = session.imams as any;
   const student = Array.isArray(imamsData) ? imamsData[0] : imamsData;
   const score = session.skor_tumaninah_persen || 0;
-  
+  const isCancelled = session.status === "Dibatalkan";
+
   // Evaluasi UI
   let mascot = "/images/mascot-hello.svg";
   let titleMessage = "Hebat Sekali!";
   let subtitleMessage = "Pertahankan gerakan sholatmu ya!";
   let headerColor = "bg-green-500";
-  
-  if (score < 50) {
+
+  if (isCancelled) {
+    mascot = "/images/mascot-book.svg";
+    titleMessage = "Sesi Dibatalkan";
+    subtitleMessage = "Latihan ini dihentikan sebelum selesai — sebagian gerakan mungkin belum sempat terekam.";
+    headerColor = "bg-gray-400";
+  } else if (score < 50) {
     mascot = "/images/mascot-book.svg";
     titleMessage = "Ayo Semangat Latihan!";
     subtitleMessage = "Masih ada beberapa gerakan yang perlu diperbaiki.";
@@ -106,6 +112,12 @@ export default async function DetailSesiRapor({
           <div>
             <div className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Materi</div>
             <div className="font-gohan text-2xl text-gema-navy">Sholat {session.nama_sholat}</div>
+          </div>
+          <div>
+            <div className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Status</div>
+            <div className={`font-gohan text-2xl ${isCancelled ? "text-gray-500" : "text-green-600"}`}>
+              {isCancelled ? "Dibatalkan" : "Selesai"}
+            </div>
           </div>
           <div>
             <div className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Total Kesalahan</div>
