@@ -54,6 +54,11 @@
   --color-gema-tosca: #10b5ae;
   --color-gema-ocean: #1a8493;
 
+  /* Non-punitive quiz feedback palette (lessons.md §4.3): green = correct,
+     amber = "not yet" (never red), teal reuses gema-tosca for active/selected. */
+  --color-feedback-correct: #22c55e;
+  --color-feedback-retry: #f59e0b;
+
   --background-image-geometric-blue-ocean: url('/assets/backgrounds/bg-geometric-blue-ocean.svg');
   --background-image-geometric-pink-blue: url('/assets/backgrounds/bg-geometric-pink-blue.svg');
   --background-image-geometric-pink-mint: url('/assets/backgrounds/bg-geometric-pink-mint.svg');

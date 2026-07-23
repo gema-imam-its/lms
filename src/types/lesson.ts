@@ -6,6 +6,7 @@ export type MascotState =
   | "tepuk-tangan";
 
 export interface ContentSlide {
+  id: string;
   type: "content";
   image: string;
   text: string | string[];
@@ -15,6 +16,7 @@ export interface ContentSlide {
 }
 
 export interface ImageChoiceSlide {
+  id: string;
   type: "image-choice";
   question: string;
   options: {
@@ -23,10 +25,11 @@ export interface ImageChoiceSlide {
   }[];
   correctIndex: number;
   hint?: string;
-  relatedSlideIndex?: number;
+  relatedSlideId?: string;
 }
 
 export interface MatchingSlide {
+  id: string;
   type: "matching-line";
   question: string;
   pairs: {
@@ -34,10 +37,11 @@ export interface MatchingSlide {
     label: string;
   }[];
   hint?: string;
-  relatedSlideIndex?: number;
+  relatedSlideId?: string;
 }
 
 export interface SortOrderSlide {
+  id: string;
   type: "sort-order";
   question: string;
   items: {
@@ -47,7 +51,7 @@ export interface SortOrderSlide {
   }[];
   correctOrder: string[];
   hint?: string;
-  relatedSlideIndex?: number;
+  relatedSlideId?: string;
 }
 
 export type Slide =

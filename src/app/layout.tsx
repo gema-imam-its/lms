@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import NavBar from "@/components/Navbar";
+import { GenderProvider } from "@/context/GenderContext";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -30,9 +31,11 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-gray-50/50">
-        <NavBar />
-        {/* pb clears the mobile bottom tab bar; lg drops it (top nav only) */}
-        <main className="flex-1 w-full pb-20 lg:pb-0">{children}</main>
+        <GenderProvider>
+          <NavBar />
+          {/* pb clears the mobile bottom tab bar; lg drops it (top nav only) */}
+          <main className="flex-1 w-full pb-20 lg:pb-0">{children}</main>
+        </GenderProvider>
       </body>
     </html>
   );
