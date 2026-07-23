@@ -3,6 +3,7 @@ import { requireGuru } from "@/lib/auth-guru";
 import Link from "next/link";
 import { UserCircle2, Plus } from "lucide-react";
 import { revalidatePath } from "next/cache";
+import DeleteSiswaButton from "@/components/guru/DeleteSiswaButton";
 
 export const revalidate = 0;
 
@@ -30,10 +31,46 @@ export default async function DaftarSiswaRapor() {
     revalidatePath("/rapor");
   }
 
-  // Ambil daftar imam/siswa dari Supabase
+  // Server Action untuk hapus siswa — mengecek ulang di server (bukan cuma
+  // mengandalkan tombol yang di-disable di client) supaya sesi PENDING/ACTIVE
+  // yang baru dibuat detik itu juga tetap memblokir penghapusan.
+  async function hapusSiswa(imamId: string) {
+    "use server";
+    await requireGuru();
+    const supabaseServer = await createClient();
+
+    const { data: activeSession } = await supabaseServer
+      .from("sholat_sessions")
+      .select("id")
+      .eq("imam_id", imamId)
+      .in("status", ["PENDING", "ACTIVE"])
+      .maybeSingle();
+
+    if (activeSession) {
+      return {
+        error:
+          "Tidak bisa dihapus — siswa ini sedang punya sesi yang berjalan. Selesaikan atau batalkan sesi tersebut dulu.",
+      };
+    }
+
+    const { error } = await supabaseServer
+      .from("imams")
+      .delete()
+      .eq("id", imamId);
+
+    if (error) {
+      return { error: "Gagal menghapus siswa: " + error.message };
+    }
+
+    revalidatePath("/rapor");
+    return {};
+  }
+
+  // Ambil daftar imam/siswa dari Supabase, sekaligus status sesi mereka —
+  // dipakai untuk pesan konfirmasi hapus (jumlah sesi) dan guard sesi aktif.
   const { data: imams, error } = await supabase
     .from("imams")
-    .select("*")
+    .select("*, sholat_sessions(id, status)")
     .order("nama", { ascending: true });
 
   if (error) {
@@ -80,23 +117,47 @@ export default async function DaftarSiswaRapor() {
         </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-          {imams.map((imam) => (
-            <Link
-              href={`/rapor/siswa/${imam.id}`}
-              key={imam.id}
-              className="group flex flex-col items-center bg-white p-8 rounded-3xl shadow-sm hover:shadow-xl hover:border-gema-tosca border-4 border-transparent transition-all hover:-translate-y-2"
-            >
-              <div className="w-24 h-24 bg-gema-sky/20 rounded-full flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-                <UserCircle2 size={64} className="text-gema-navy" strokeWidth={1.5} />
+          {imams.map((imam) => {
+            const sessions = imam.sholat_sessions as { id: string; status: string }[] | null;
+            const sessionCount = sessions?.length ?? 0;
+            const hasActiveSession =
+              sessions?.some((s) => s.status === "PENDING" || s.status === "ACTIVE") ?? false;
+
+            return (
+              <div
+                key={imam.id}
+                className="group relative flex flex-col items-center bg-white p-8 rounded-3xl shadow-sm hover:shadow-xl hover:border-gema-tosca border-4 border-transparent transition-all hover:-translate-y-2"
+              >
+                <Link
+                  href={`/rapor/siswa/${imam.id}`}
+                  aria-label={`Lihat riwayat ${imam.nama}`}
+                  className="absolute inset-0 rounded-3xl"
+                />
+
+                <div className="w-24 h-24 bg-gema-sky/20 rounded-full flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                  <UserCircle2 size={64} className="text-gema-navy" strokeWidth={1.5} />
+                </div>
+                <h2 className="font-gohan text-2xl text-gema-navy font-bold text-center mb-2">
+                  {imam.nama}
+                </h2>
+                <div className="px-4 py-1 bg-gray-100 rounded-full font-gilroy text-gray-600 text-sm font-semibold mb-4">
+                  Kelas: {imam.kelas || "-"}
+                </div>
+
+                <DeleteSiswaButton
+                  deleteAction={hapusSiswa.bind(null, imam.id)}
+                  studentName={imam.nama}
+                  sessionCount={sessionCount}
+                  disabled={hasActiveSession}
+                  disabledReason={
+                    hasActiveSession
+                      ? "Ada sesi berjalan — selesaikan/batalkan dulu"
+                      : undefined
+                  }
+                />
               </div>
-              <h2 className="font-gohan text-2xl text-gema-navy font-bold text-center mb-2">
-                {imam.nama}
-              </h2>
-              <div className="px-4 py-1 bg-gray-100 rounded-full font-gilroy text-gray-600 text-sm font-semibold">
-                Kelas: {imam.kelas || "-"}
-              </div>
-            </Link>
-          ))}
+            );
+          })}
         </div>
       )}
     </div>
