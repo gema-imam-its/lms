@@ -74,13 +74,13 @@ export default async function DetailSesiRapor({
     <div className="min-h-screen bg-gray-50 pb-12">
       {/* Top Banner (Score) */}
       <div
-        className={`w-full ${headerColor} pt-48 pb-24 px-4 relative overflow-hidden mt-[-80px]`}
+        className={`w-full ${headerColor} pt-48 pb-24 px-4 relative overflow-hidden -mt-20`}
       >
         <div className="max-w-4xl mx-auto relative z-10 flex flex-col md:flex-row items-center justify-between gap-8 text-white">
           <div className="flex-1">
             <Link
               href={`/rapor/siswa/${student?.id}`}
-              className="inline-flex items-center justify-center min-h-[48px] px-6 py-2 bg-white/20 hover:bg-white/30 rounded-xl text-white font-gohan font-bold mb-8 transition-all backdrop-blur-sm gap-2 w-full sm:w-auto"
+              className="inline-flex items-center justify-center min-h-12 px-6 py-2 bg-white/20 hover:bg-white/30 rounded-xl text-white font-gohan font-bold mb-8 transition-all backdrop-blur-sm gap-2 w-full sm:w-auto"
             >
               <ArrowLeft size={20} /> Kembali ke Riwayat
             </Link>
@@ -237,7 +237,7 @@ export default async function DetailSesiRapor({
                   <div key={mov.id} className="relative pl-8 md:pl-12">
                     {/* Node di garis vertikal */}
                     <div
-                      className={`absolute -left-[14px] top-2 w-6 h-6 rounded-full border-4 border-white shadow-sm flex items-center justify-center ${iconColor}`}
+                      className={`absolute -left-3.5 top-2 w-6 h-6 rounded-full border-4 border-white shadow-sm flex items-center justify-center ${iconColor}`}
                     >
                       {isCorrect && (
                         <CheckCircle2 size={12} className="text-white" />
