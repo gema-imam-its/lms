@@ -5,6 +5,12 @@ import Image from "next/image";
 
 export const revalidate = 0;
 
+interface ImamRelation {
+  id: string;
+  nama: string;
+  kelas: string | null;
+}
+
 export default async function DetailSesiRapor({
   params,
 }: {
@@ -41,7 +47,7 @@ export default async function DetailSesiRapor({
     .order("urutan", { ascending: true, nullsFirst: false })
     .order("entry_time", { ascending: true });
 
-  const imamsData = session.imams as any;
+  const imamsData = session.imams as ImamRelation | ImamRelation[] | null;
   const student = Array.isArray(imamsData) ? imamsData[0] : imamsData;
   const score = session.skor_tumaninah_persen || 0;
   const isCancelled = session.status === "Dibatalkan";
@@ -170,14 +176,14 @@ export default async function DetailSesiRapor({
         ) : (
           <div className="bg-white rounded-3xl shadow-sm p-6 md:p-10">
             <div className="relative border-l-4 border-gray-100 ml-6 md:ml-8 space-y-10 py-4">
-              {movements.map((mov, index) => {
+              {movements.map((mov) => {
                 // Tentukan status UI
                 // Karena tumaninah_terpenuhi bersifat nullable (bool | null), kita cek eksplisit
                 const isCorrect = mov.tumaninah_terpenuhi === true;
                 const isWrong = mov.tumaninah_terpenuhi === false;
                 const isNeutral = mov.tumaninah_terpenuhi === null;
 
-                let iconColor = isNeutral
+                const iconColor = isNeutral
                   ? "bg-gray-300"
                   : isCorrect
                     ? "bg-green-500"

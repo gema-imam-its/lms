@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { SortItem } from "@/types/module";
 import { Check, X } from "lucide-react";
 import ModulImage from "../ModulImage";
@@ -16,17 +16,16 @@ export default function SortOrder({
   onAnswer,
   disabled,
 }: SortOrderProps) {
-  const [shuffledItems, setShuffledItems] = useState<SortItem[]>([]);
+  // Shuffled once at mount via lazy initializer — this component is always
+  // given a fresh instance when `items` changes (the parent key-remounts the
+  // whole quiz on slide/attempt change), so `placedItemIds`/`isChecking`
+  // already start at their defaults without needing an effect to reset them.
+  const [shuffledItems] = useState<SortItem[]>(() =>
+    [...items].sort(() => Math.random() - 0.5),
+  );
   // Array of placed item IDs. Index represents the slot (0-based)
   const [placedItemIds, setPlacedItemIds] = useState<string[]>([]);
   const [isChecking, setIsChecking] = useState(false);
-
-  useEffect(() => {
-    // Shuffle on mount
-    setShuffledItems([...items].sort(() => Math.random() - 0.5));
-    setPlacedItemIds([]);
-    setIsChecking(false);
-  }, [items]);
 
   const handlePlaceItem = (id: string) => {
     if (disabled || isChecking) return;
@@ -77,13 +76,11 @@ export default function SortOrder({
             const placedId = placedItemIds[index];
             const placedItem = placedId ? items.find(i => i.id === placedId) : null;
             
-            // Validation states
+            // Validation state
             let isItemCorrect = false;
-            let isItemWrong = false;
-            
+
             if (isChecking && placedItem) {
               isItemCorrect = placedItem.correctOrder === index + 1;
-              isItemWrong = !isItemCorrect;
             }
 
             return (

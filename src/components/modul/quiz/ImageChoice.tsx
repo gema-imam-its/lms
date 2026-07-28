@@ -39,7 +39,6 @@ export default function ImageChoice({
       {options.map((option) => {
         const isSelected = selectedId === option.id;
         const isCorrect = isSelected && option.id === correctAnswerId;
-        const isWrong = isSelected && option.id !== correctAnswerId;
 
         return (
           <button

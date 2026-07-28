@@ -244,7 +244,6 @@ export default function SlidePresentation({
             slide={slide}
             onCorrect={handleCorrect}
             onWrong={handleWrong}
-            attempts={currentAttempts}
             showHint={showHint}
             hasInteracted={hasInteracted}
           />

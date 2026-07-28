@@ -13,7 +13,6 @@ interface SlideQuizProps {
   slide: QuizSlide;
   onCorrect: () => void;
   onWrong: () => void;
-  attempts: number;
   showHint: boolean;
   hasInteracted: boolean;
 }
@@ -22,7 +21,6 @@ export default function SlideQuiz({
   slide,
   onCorrect,
   onWrong,
-  attempts,
   showHint,
   hasInteracted,
 }: SlideQuizProps) {

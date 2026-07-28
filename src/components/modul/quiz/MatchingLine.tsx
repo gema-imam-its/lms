@@ -38,9 +38,16 @@ export default function MatchingLine({
   onAnswer,
   disabled,
 }: MatchingLineProps) {
-  // Shuffle arrays on mount
-  const [leftItems, setLeftItems] = useState<MatchingPair[]>([]);
-  const [rightItems, setRightItems] = useState<MatchingPair[]>([]);
+  // Shuffled once at mount via lazy initializer — this component is always
+  // given a fresh instance when `pairs` changes (the parent key-remounts the
+  // whole quiz on slide/attempt change), so there's no case where these need
+  // to re-shuffle without a full remount already resetting everything else.
+  const [leftItems] = useState<MatchingPair[]>(() =>
+    [...pairs].sort(() => Math.random() - 0.5),
+  );
+  const [rightItems] = useState<MatchingPair[]>(() =>
+    [...pairs].sort(() => Math.random() - 0.5),
+  );
 
   // State for selections
   const [selectedLeftId, setSelectedLeftId] = useState<string | null>(null);
@@ -56,20 +63,6 @@ export default function MatchingLine({
   const containerRef = useRef<HTMLDivElement | null>(null);
   const leftRefs = useRef<Record<string, HTMLButtonElement | null>>({});
   const rightRefs = useRef<Record<string, HTMLButtonElement | null>>({});
-
-  useEffect(() => {
-    // Shuffle arrays independently
-    const shuffledLeft = [...pairs].sort(() => Math.random() - 0.5);
-    const shuffledRight = [...pairs].sort(() => Math.random() - 0.5);
-    setLeftItems(shuffledLeft);
-    setRightItems(shuffledRight);
-
-    // Reset state when pairs change
-    setSelectedLeftId(null);
-    setMatches({});
-    setMatchColors({});
-    setLines([]);
-  }, [pairs]);
 
   // Draw a line between each matched left/right box. Recompute on match changes
   // and on resize; all DOM measurement happens here (in an effect), not render.

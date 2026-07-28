@@ -4,6 +4,10 @@ import { createSupabaseServerClient } from "@/lib/supabase";
 
 export const dynamic = 'force-dynamic'; // Selalu ambil data terbaru
 
+interface ImamNameRelation {
+  nama: string;
+}
+
 export async function GET(req: NextRequest) {
   // 1. Validasi API Key
   const authError = validateIoTApiKey(req);
@@ -54,7 +58,7 @@ export async function GET(req: NextRequest) {
       .update({ status: "ACTIVE" })
       .eq("id", data.id);
 
-    const imams = data.imams as any;
+    const imams = data.imams as ImamNameRelation | ImamNameRelation[] | null;
     const studentName = Array.isArray(imams) 
       ? imams[0]?.nama 
       : imams?.nama;
