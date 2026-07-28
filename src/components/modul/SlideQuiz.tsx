@@ -2,6 +2,7 @@
 
 import { QuizSlide } from "@/types/module";
 import MascotBubble from "./MascotBubble";
+import NarrationPlayer from "./NarrationPlayer";
 import ImageChoice from "./quiz/ImageChoice";
 import MatchingLine from "./quiz/MatchingLine";
 import SortOrder from "./quiz/SortOrder";
@@ -14,6 +15,7 @@ interface SlideQuizProps {
   onWrong: () => void;
   attempts: number;
   showHint: boolean;
+  hasInteracted: boolean;
 }
 
 export default function SlideQuiz({
@@ -22,6 +24,7 @@ export default function SlideQuiz({
   onWrong,
   attempts,
   showHint,
+  hasInteracted,
 }: SlideQuizProps) {
   const [feedbackState, setFeedbackState] = useState<"idle" | "correct" | "wrong">("idle");
   const [disabled, setDisabled] = useState(false);
@@ -51,6 +54,8 @@ export default function SlideQuiz({
         <h2 className="font-gohan text-3xl md:text-4xl text-gema-navy text-center md:text-left flex-1">
           {slide.question}
         </h2>
+
+        <NarrationPlayer src={slide.narrationUrl} hasInteracted={hasInteracted} />
 
         {/* Mascot Hint Area */}
         {showHint && slide.hint && (

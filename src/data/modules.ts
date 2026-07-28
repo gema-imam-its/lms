@@ -6,76 +6,66 @@ export const modules: ModuleDefinition[] = [
     title: "Perbedaan Imam dan Makmum",
     description: "Pelajari siapa itu Imam dan Makmum dalam sholat berjamaah.",
     iconUrl: "/assets/items/quran-open.svg",
+    locked: false,
     slides: [
       {
         type: "content",
         mascot: "hello",
         text: "Assalamu'alaikum! Hari ini kita belajar siapa itu Imam dan Makmum",
+        narrationUrl: "/audio/modul-1/01-intro.mp3",
       },
       {
         type: "content",
         mascot: "book",
         text: "Imam adalah orang yang memimpin sholat",
         imageUrl: "/images/modul/formasi-imam.png",
+        narrationUrl: "/audio/modul-1/02-imam.mp3",
       },
       {
         type: "content",
         mascot: "book",
         text: "Makmum adalah orang yang mengikuti imam dari belakang",
         imageUrl: "/images/modul/formasi-makmum.png",
+        narrationUrl: "/audio/modul-1/03-makmum.mp3",
       },
       {
         type: "content",
         mascot: "book",
         text: "Imam berdiri sendiri di depan. Makmum berdiri di belakang imam",
         imageUrl: "/images/modul/formasi-jamaah.png",
+        narrationUrl: "/audio/modul-1/04-formasi.mp3",
       },
       {
         type: "quiz",
-        quizType: "matching-line",
-        question: "Hubungkan gambar dengan posisinya yang benar!",
-        pairs: [
-          {
-            id: "imam",
-            leftImageUrl: "/images/modul/formasi-imam.png",
-            leftLabel: "Sendiri di depan",
-            rightLabel: "IMAM",
-          },
-          {
-            id: "makmum",
-            leftImageUrl: "/images/modul/formasi-makmum.png",
-            leftLabel: "Banyak di belakang",
-            rightLabel: "MAKMUM",
-          },
+        quizType: "image-choice",
+        question: "Siapa yang berdiri sendiri di depan?",
+        options: [
+          { id: "imam", imageUrl: "/images/modul/formasi-imam.png", label: "Imam" },
+          { id: "makmum", imageUrl: "/images/modul/formasi-makmum.png", label: "Makmum" },
         ],
+        correctAnswerId: "imam",
         hint: "Ingat, Imam selalu di depan!",
         relatedSlideIndex: 3,
+        narrationUrl: "/audio/modul-1/05-quiz-imam-depan.mp3",
       },
       {
         type: "content",
         mascot: "book",
         text: "Imam mengucapkan takbir lebih dulu, makmum mengikuti setelahnya",
+        narrationUrl: "/audio/modul-1/06-takbir.mp3",
       },
       {
         type: "quiz",
-        quizType: "matching-line",
+        quizType: "image-choice",
         question: "Siapa yang takbir duluan?",
-        pairs: [
-          {
-            id: "imam-takbir",
-            leftImageUrl: "/images/modul/formasi-imam.png",
-            leftLabel: "Takbir Duluan",
-            rightLabel: "IMAM",
-          },
-          {
-            id: "makmum-takbir",
-            leftImageUrl: "/images/modul/formasi-makmum.png",
-            leftLabel: "Takbir Belakangan",
-            rightLabel: "MAKMUM",
-          },
+        options: [
+          { id: "imam", imageUrl: "/images/modul/formasi-imam.png", label: "Imam" },
+          { id: "makmum", imageUrl: "/images/modul/formasi-makmum.png", label: "Makmum" },
         ],
+        correctAnswerId: "imam",
         hint: "Makmum selalu mengikuti Imam.",
         relatedSlideIndex: 5,
+        narrationUrl: "/audio/modul-1/07-quiz-takbir.mp3",
       },
     ],
   },
@@ -84,6 +74,7 @@ export const modules: ModuleDefinition[] = [
     title: "Nama-Nama Gerakan Sholat",
     description: "Mari kenali nama setiap gerakan dalam sholat.",
     iconUrl: "/assets/items/quran-closed-green.svg",
+    locked: true,
     slides: [
       {
         type: "content",
@@ -167,6 +158,7 @@ export const modules: ModuleDefinition[] = [
     title: "Mencocokkan Gerakan dan Bacaan Sholat",
     description: "Belajar mengaitkan gerakan dengan bacaannya.",
     iconUrl: "/assets/architecture/lantern.svg",
+    locked: true,
     slides: [
       {
         type: "content",
@@ -246,6 +238,7 @@ export const modules: ModuleDefinition[] = [
     title: "Urutan Gerakan Sholat",
     description: "Mengetahui urutan gerakan sholat yang benar.",
     iconUrl: "/assets/shapes/star-green.svg",
+    locked: true,
     slides: [
       {
         type: "content",
@@ -328,6 +321,7 @@ export const modules: ModuleDefinition[] = [
     title: "Evaluasi Akhir",
     description: "Uji pengetahuanmu tentang semua materi sholat.",
     iconUrl: "/assets/shapes/sparkle-blue.svg",
+    locked: true,
     slides: [
       {
         type: "quiz",

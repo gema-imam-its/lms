@@ -19,6 +19,16 @@ export default function QuizFeedback({
   hint,
 }: QuizFeedbackProps) {
   const [show, setShow] = useState(false);
+  // Seeded once at mount (lazy initializer), never recomputed during render —
+  // Math.random() directly in JSX is a React purity violation.
+  const [confetti] = useState(() =>
+    Array.from({ length: 20 }, () => ({
+      left: `${Math.random() * 100}%`,
+      top: `${Math.random() * 100}%`,
+      animationDelay: `${Math.random() * 0.5}s`,
+      animationDuration: `${1 + Math.random()}s`,
+    })),
+  );
 
   useEffect(() => {
     // Small delay to trigger entry animation safely
@@ -114,16 +124,11 @@ export default function QuizFeedback({
       {/* Basic Confetti Effect if correct */}
       {correct && show && (
         <div className="absolute inset-0 pointer-events-none overflow-hidden">
-          {[...Array(20)].map((_, i) => (
+          {confetti.map((c, i) => (
             <div
               key={i}
               className="absolute animate-bounce"
-              style={{
-                left: `${Math.random() * 100}%`,
-                top: `${Math.random() * 100}%`,
-                animationDelay: `${Math.random() * 0.5}s`,
-                animationDuration: `${1 + Math.random()}s`
-              }}
+              style={c}
             >
               <span className="text-3xl">⭐</span>
             </div>

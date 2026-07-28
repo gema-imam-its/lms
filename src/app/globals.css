@@ -90,4 +90,16 @@ body {
   .animate-mascot-bob {
     animation: none;
   }
+
+  /* Covers tw-animate-css's animate-in/fade-in/zoom-in/slide-in-from-* and
+     animate-bounce/animate-pulse used across the modul slides/quiz feedback,
+     without needing to sweep every component's classNames individually. */
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }

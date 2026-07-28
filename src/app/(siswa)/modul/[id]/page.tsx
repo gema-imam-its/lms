@@ -20,14 +20,18 @@ export default function ModulDetailPage({
   const { id } = use(params);
   const modul = getModuleById(id);
 
-  if (!modul) {
+  if (!modul || modul.locked) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center p-8 text-center bg-gray-50">
-        <h1 className="font-gohan text-4xl text-gema-navy mb-4">Modul tidak ditemukan!</h1>
+        <h1 className="font-gohan text-4xl text-gema-navy mb-4">
+          {modul?.locked ? "Modul ini segera hadir!" : "Modul tidak ditemukan!"}
+        </h1>
         <p className="font-gilroy text-xl text-gray-600 mb-8">
-          Maaf, modul yang kamu cari tidak ada.
+          {modul?.locked
+            ? "Modul ini belum bisa diakses sekarang. Coba modul lain dulu, ya!"
+            : "Maaf, modul yang kamu cari tidak ada."}
         </p>
-        <Link 
+        <Link
           href="/modul"
           className="px-8 py-4 bg-gema-tosca text-white rounded-full font-gohan font-bold text-xl"
         >

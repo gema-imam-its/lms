@@ -3,6 +3,7 @@
 import { ContentSlide } from "@/types/module";
 import MascotBubble from "./MascotBubble";
 import ModulImage from "./ModulImage";
+import NarrationPlayer from "./NarrationPlayer";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
 interface SlideContentProps {
@@ -11,6 +12,7 @@ interface SlideContentProps {
   onPrev: () => void;
   isFirst: boolean;
   isLast: boolean;
+  hasInteracted: boolean;
 }
 
 export default function SlideContent({
@@ -19,6 +21,7 @@ export default function SlideContent({
   onPrev,
   isFirst,
   isLast,
+  hasInteracted,
 }: SlideContentProps) {
   return (
     <div className="flex flex-col h-full w-full justify-between animate-in slide-in-from-right-8 fade-in duration-500">
@@ -36,12 +39,15 @@ export default function SlideContent({
         )}
 
         {/* Mascot + Text */}
-        <div className="w-full max-w-4xl">
-          <MascotBubble
-            mascot={slide.mascot}
-            message={slide.text}
-            size="lg"
-          />
+        <div className="w-full max-w-4xl flex items-start gap-3">
+          <div className="flex-1">
+            <MascotBubble
+              mascot={slide.mascot}
+              message={slide.text}
+              size="lg"
+            />
+          </div>
+          <NarrationPlayer src={slide.narrationUrl} hasInteracted={hasInteracted} />
         </div>
       </div>
 

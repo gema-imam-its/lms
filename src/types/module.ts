@@ -36,6 +36,7 @@ export interface ContentSlide {
   text: string; // 1-2 kalimat saja (prinsip tuna grahita)
   imageUrl?: string;
   mascot: MascotVariant;
+  narrationUrl?: string; // Rekaman suara opsional (pelengkap, bukan pengganti teks)
 }
 
 export interface ImageChoiceQuizSlide {
@@ -46,6 +47,7 @@ export interface ImageChoiceQuizSlide {
   correctAnswerId: string;
   hint?: string; // Petunjuk jika salah
   relatedSlideIndex?: number; // Index slide materi terkait (untuk review)
+  narrationUrl?: string;
 }
 
 export interface MatchingLineQuizSlide {
@@ -55,6 +57,7 @@ export interface MatchingLineQuizSlide {
   pairs: MatchingPair[];
   hint?: string;
   relatedSlideIndex?: number;
+  narrationUrl?: string;
 }
 
 export interface SortOrderQuizSlide {
@@ -64,6 +67,7 @@ export interface SortOrderQuizSlide {
   items: SortItem[];
   hint?: string;
   relatedSlideIndex?: number;
+  narrationUrl?: string;
 }
 
 export type QuizSlide = ImageChoiceQuizSlide | MatchingLineQuizSlide | SortOrderQuizSlide;
@@ -75,6 +79,7 @@ export interface ModuleDefinition {
   title: string;
   description: string;
   iconUrl: string;
+  locked?: boolean;
   slides: Slide[];
 }
 
@@ -83,6 +88,7 @@ export interface QuizResult {
   slideIndex: number;
   correct: boolean;
   attempts: number; // Jumlah percobaan
+  reviewed?: boolean; // true jika baru benar setelah siklus re-teach (3x salah)
 }
 
 // --- Module Result ---

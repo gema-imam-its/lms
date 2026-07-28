@@ -1,10 +1,9 @@
 import { createSupabaseServerClient } from "@/lib/supabase";
 import Link from "next/link";
 import { ArrowLeft, Calendar, Clock, Activity } from "lucide-react";
-import Image from "next/image";
-import { revalidatePath } from "next/cache";
+import { revalidatePath, refresh } from "next/cache";
 import DeleteSesiButton from "@/components/siswa/DeleteSesiButton";
-import MulaiSesiButton from "@/components/siswa/MulaiSesiButton";
+import SesiAktifCard from "@/components/siswa/SesiAktifCard";
 import { findBlockingSession, isSessionStale } from "@/lib/sesi-guard";
 
 export const revalidate = 0;
@@ -67,6 +66,46 @@ export default async function DaftarSesiSiswa({
     return {};
   }
 
+  // Dipoll dari client (SesiAktifCard) tiap beberapa detik selagi status
+  // PENDING/ACTIVE, supaya transisi standby -> merekam (dan akhir sesi yang
+  // terjadi di luar tab ini, mis. Orange Pi menyelesaikan sesi) terlihat
+  // tanpa guru perlu me-refresh halaman secara manual.
+  async function cekStatusSesi() {
+    "use server";
+    const supabaseServer = createSupabaseServerClient();
+    const { data } = await supabaseServer
+      .from("sholat_sessions")
+      .select("status, created_at")
+      .eq("imam_id", studentId)
+      .in("status", ["PENDING", "ACTIVE"])
+      .order("created_at", { ascending: true })
+      .limit(1)
+      .maybeSingle();
+
+    if (!data) {
+      // Sesi baru saja selesai/dibatalkan dari luar tab ini — sinkronkan
+      // seluruh halaman (daftar sesi, tombol Mulai Sesi) lewat client router.
+      refresh();
+      return null;
+    }
+
+    return {
+      status: data.status as "PENDING" | "ACTIVE",
+      isStale: isSessionStale(data.created_at),
+    };
+  }
+
+  async function batalkanSesi() {
+    "use server";
+    const supabaseServer = createSupabaseServerClient();
+    await supabaseServer
+      .from("sholat_sessions")
+      .update({ status: "Dibatalkan" })
+      .in("status", ["PENDING", "ACTIVE"])
+      .eq("imam_id", studentId);
+    revalidatePath(`/rapor/siswa/${studentId}`);
+  }
+
   // 1. Ambil data siswa
   const { data: student, error: studentError } = await supabase
     .from("imams")
@@ -96,15 +135,24 @@ export default async function DaftarSesiSiswa({
   }
 
   // Cek apakah ada sesi yang masih PENDING atau ACTIVE
-  const isSesiBerjalan = sessions?.some(
-    (s) => s.status === "PENDING" || s.status === "ACTIVE",
-  );
   const activeSession = sessions?.find(
     (s) => s.status === "PENDING" || s.status === "ACTIVE",
   );
   const activeIsStale = activeSession
     ? isSessionStale(activeSession.created_at)
     : false;
+
+  // Sesi yang dibatalkan lewat tombol "Batalkan Sesi" sebelum Orange Pi
+  // pernah memanggil /api/iot/sesi/selesai tidak punya movement_logs atau
+  // skor sama sekali — durasi_detik/skor_tumaninah_persen masih nilai
+  // default 0 dari INSERT awal, karena cuma RPC selesaikan_sesi_sholat yang
+  // mengisinya. Menampilkannya di riwayat cuma menambah baris "0%" yang
+  // tidak berarti apa-apa, jadi disaring di sini — bukan dihapus, sesi yang
+  // Pi sempat laporkan sebagian (dibatalkan di tengah tapi ada datanya)
+  // tetap tampil normal.
+  const riwayatSessions = sessions?.filter(
+    (s) => !(s.status === "Dibatalkan" && s.durasi_detik === 0),
+  );
 
   return (
     <div className="min-h-screen bg-gray-50 pt-24 pb-12">
@@ -128,68 +176,23 @@ export default async function DaftarSesiSiswa({
         </div>
 
         {/* Cta Mulai Praktik */}
-        <div className="bg-white rounded-3xl p-6 shadow-sm border-2 border-gema-tosca/30 flex flex-col sm:flex-row items-center justify-between gap-6 mb-10">
-          <div className="flex items-center gap-6">
-            <div className="w-20 h-20 relative shrink-0">
-              <Image
-                src="/images/mascot-hello.svg"
-                alt="Mascot"
-                fill
-                className="object-contain"
-              />
-            </div>
-            <div>
-              <h3 className="font-gohan text-2xl text-gema-navy">
-                Ayo Mulai Praktik!
-              </h3>
-              <p
-                className={`font-gilroy ${activeIsStale ? "text-orange-600 font-bold" : "text-gray-600"}`}
-              >
-                {isSesiBerjalan
-                  ? activeIsStale
-                    ? 'Sesi ini sudah berjalan lama dan mungkin macet. Jika alat tidak lagi merekam, klik "Batalkan Sesi".'
-                    : "Sesi sedang berlangsung! Alat IoT sedang merekam di depan..."
-                  : "Alat IoT sudah siap? Klik tombol di samping untuk mulai."}
-              </p>
-            </div>
-          </div>
-
-          <div className="flex flex-col sm:flex-row gap-3">
-            {isSesiBerjalan && (
-              <form
-                action={async () => {
-                  "use server";
-                  const supabaseServer = createSupabaseServerClient();
-                  await supabaseServer
-                    .from("sholat_sessions")
-                    .update({ status: "Dibatalkan" })
-                    .in("status", ["PENDING", "ACTIVE"])
-                    .eq("imam_id", studentId);
-                  revalidatePath(`/rapor/siswa/${studentId}`);
-                }}
-              >
-                <button
-                  type="submit"
-                  className="px-6 py-4 rounded-full font-gohan text-lg font-bold bg-red-100 text-red-600 hover:bg-red-200 transition-all shrink-0"
-                >
-                  Batalkan Sesi
-                </button>
-              </form>
-            )}
-
-            <MulaiSesiButton
-              action={mulaiPraktikSekarang}
-              disabled={!!isSesiBerjalan}
-            />
-          </div>
-        </div>
+        <SesiAktifCard
+          key={activeSession?.id ?? "none"}
+          initialStatus={
+            activeSession ? (activeSession.status as "PENDING" | "ACTIVE") : null
+          }
+          initialIsStale={activeIsStale}
+          checkStatus={cekStatusSesi}
+          cancelSesi={batalkanSesi}
+          mulaiSesiAction={mulaiPraktikSekarang}
+        />
 
         {/* List of Sessions */}
         <h2 className="font-gohan text-2xl text-gray-700 mb-6">
           Daftar Sesi Sebelumnya
         </h2>
 
-        {!sessions || sessions.length === 0 ? (
+        {!riwayatSessions || riwayatSessions.length === 0 ? (
           <div className="bg-white p-10 rounded-3xl text-center shadow-sm">
             <p className="font-gilroy text-xl text-gray-500">
               {student.nama} belum pernah melakukan praktik sholat.
@@ -197,7 +200,7 @@ export default async function DaftarSesiSiswa({
           </div>
         ) : (
           <div className="flex flex-col gap-4">
-            {sessions.map((session) => {
+            {riwayatSessions.map((session) => {
               const date = new Date(session.tanggal);
               const formattedDate = date.toLocaleDateString("id-ID", {
                 weekday: "long",
