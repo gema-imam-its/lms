@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import { ModuleDefinition, ModuleResult, QuizResult, MAX_QUIZ_ATTEMPTS, MASCOT_URLS } from "@/types/module";
+import { playSystemSound, playSystemSounds } from "@/lib/systemSounds";
 import ProgressBar from "./ProgressBar";
 import SlideContent from "./SlideContent";
 import SlideQuiz from "./SlideQuiz";
@@ -54,6 +55,7 @@ export default function SlidePresentation({
     setHasInteracted(true);
     if (state === "reviewing") {
       // Done reviewing, go back to the quiz
+      playSystemSound("cobaLagi");
       setState("presenting");
       setCurrentIndex(reviewTargetIndex!);
       setReviewTargetIndex(null);
@@ -79,6 +81,7 @@ export default function SlidePresentation({
   // Quiz handlers
   const handleCorrect = () => {
     setHasInteracted(true);
+    playSystemSound("benar");
     // Record result
     setQuizResults((prev) => [
       ...prev,
@@ -100,6 +103,7 @@ export default function SlidePresentation({
 
     if (state === "reviewing") {
       // Failed final retry after review. Still give partial reward
+      playSystemSound("berusaha");
       setQuizResults((prev) => [
         ...prev,
         { slideIndex: currentIndex, correct: false, attempts: newAttempts, reviewed: reviewedSlides.has(currentIndex) }
@@ -108,6 +112,7 @@ export default function SlidePresentation({
     } else if (newAttempts >= MAX_QUIZ_ATTEMPTS) {
       // Failed 3 times. Go to review mode if there is a related slide
       if (slide.type === "quiz" && slide.relatedSlideIndex !== undefined) {
+        playSystemSound("ulang");
         setReviewedSlides((prev) => new Set(prev).add(currentIndex));
         setReviewTargetIndex(currentIndex);
         setCurrentIndex(slide.relatedSlideIndex);
@@ -122,13 +127,15 @@ export default function SlidePresentation({
       }
     } else {
       // Show hint for next try
+      playSystemSound(newAttempts === 1 ? "belum" : "hampir");
       setShowHint(true);
     }
   };
 
   const completeModule = () => {
     setState("completed");
-    
+    playSystemSounds(["bintang", "selesai"]);
+
     // Calculate final score
     const totalQuizzes = module.slides.filter(s => s.type === "quiz").length;
     const correctAnswers = quizResults.filter(r => r.correct).length;

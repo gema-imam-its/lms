@@ -12,7 +12,7 @@ export const modules: ModuleDefinition[] = [
         type: "content",
         mascot: "hello",
         text: "Assalamu'alaikum! Hari ini kita belajar siapa itu Imam dan Makmum",
-        narrationUrl: "/audio/modul-1/intro.ogg",
+        narrationUrl: ["/audio/system/mulai.ogg", "/audio/modul-1/intro.ogg"],
       },
       {
         type: "content",
@@ -70,7 +70,9 @@ export const modules: ModuleDefinition[] = [
         correctAnswerId: "imam",
         hint: "Makmum selalu mengikuti Imam.",
         relatedSlideIndex: 5,
-        // No recorded/scripted narration exists for this quiz (takbir) yet.
+        // No custom line recorded for this quiz — reuses the generic
+        // image-choice prompt instead of staying silent.
+        narrationUrl: "/audio/system/pilih.ogg",
       },
     ],
   },
