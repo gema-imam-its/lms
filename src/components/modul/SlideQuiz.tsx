@@ -8,6 +8,7 @@ import MatchingLine from "./quiz/MatchingLine";
 import SortOrder from "./quiz/SortOrder";
 import QuizFeedback from "./quiz/QuizFeedback";
 import { useState } from "react";
+import { stopCurrentAudio } from "@/lib/audioChannel";
 
 interface SlideQuizProps {
   slide: QuizSlide;
@@ -28,6 +29,12 @@ export default function SlideQuiz({
   const [disabled, setDisabled] = useState(false);
 
   const handleAnswer = (isCorrect: boolean) => {
+    // Cut the quiz's own narration the instant an answer is picked — a
+    // quick student can answer well before a multi-clip sequence finishes,
+    // and letting it keep talking under the feedback modal (and the
+    // benar/belum sound about to play) is exactly what caused sounds to
+    // overlap/crash into each other.
+    stopCurrentAudio();
     setDisabled(true);
     setFeedbackState(isCorrect ? "correct" : "wrong");
   };
