@@ -22,7 +22,9 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          # pnpm 11.9.0 (pinned above) requires Node >=22.13 to run at all —
+          # unrelated to the app's own runtime (Docker still uses Node 20).
+          node-version: 22
           cache: pnpm
 
       - name: Install dependencies
