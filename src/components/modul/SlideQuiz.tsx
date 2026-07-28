@@ -2,13 +2,15 @@
 
 import { QuizSlide } from "@/types/module";
 import MascotBubble from "./MascotBubble";
-import NarrationPlayer from "./NarrationPlayer";
+import HighlightedText from "./HighlightedText";
+import NarrationButton from "./NarrationButton";
 import ImageChoice from "./quiz/ImageChoice";
 import MatchingLine from "./quiz/MatchingLine";
 import SortOrder from "./quiz/SortOrder";
 import QuizFeedback from "./quiz/QuizFeedback";
 import { useState } from "react";
 import { stopCurrentAudio } from "@/lib/audioChannel";
+import { useNarrationPlayback } from "@/lib/useNarrationPlayback";
 
 interface SlideQuizProps {
   slide: QuizSlide;
@@ -25,6 +27,7 @@ export default function SlideQuiz({
 }: SlideQuizProps) {
   const [feedbackState, setFeedbackState] = useState<"idle" | "correct" | "wrong">("idle");
   const [disabled, setDisabled] = useState(false);
+  const { progress, isPlaying, replay, hasNarration } = useNarrationPlayback(slide.narrationUrl);
 
   const handleAnswer = (isCorrect: boolean) => {
     // Cut the quiz's own narration the instant an answer is picked — a
@@ -54,11 +57,14 @@ export default function SlideQuiz({
       
       {/* Quiz Header & Mascot Hint */}
       <div className="w-full max-w-5xl mb-6 flex flex-col md:flex-row items-center justify-between gap-6 sticky top-0 z-20 bg-white/90 backdrop-blur-sm py-2">
-        <h2 className="font-gohan text-3xl md:text-4xl text-gema-navy text-center md:text-left flex-1">
-          {slide.question}
-        </h2>
+        <HighlightedText
+          text={slide.question}
+          progress={progress}
+          active={isPlaying}
+          className="font-gohan text-3xl md:text-4xl text-gema-navy text-center md:text-left flex-1"
+        />
 
-        <NarrationPlayer src={slide.narrationUrl} />
+        {hasNarration && <NarrationButton onClick={replay} />}
 
         {/* Mascot Hint Area */}
         {showHint && slide.hint && (

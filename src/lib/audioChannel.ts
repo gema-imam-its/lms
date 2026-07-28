@@ -16,16 +16,26 @@ export function stopCurrentAudio() {
 
 /**
  * Plays one clip, stopping anything else first. Fires onEnded when it
- * finishes naturally (not when interrupted). Returns a "safe stop" — it
- * only stops audio if this clip is still the one actually playing, so a
- * caller that stops late (e.g. a slide's cleanup running after some other,
- * newer sound already took over) can't accidentally cut off that newer
- * sound.
+ * finishes naturally (not when interrupted), and onProgress (0-1) as it
+ * plays, for UI that wants to sync to playback (e.g. a word-highlight
+ * effect). Returns a "safe stop" — it only stops audio if this clip is
+ * still the one actually playing, so a caller that stops late (e.g. a
+ * slide's cleanup running after some other, newer sound already took over)
+ * can't accidentally cut off that newer sound.
  */
-export function playAudioClip(src: string, onEnded?: () => void): () => void {
+export function playAudioClip(
+  src: string,
+  onEnded?: () => void,
+  onProgress?: (ratio: number) => void,
+): () => void {
   stopCurrentAudio();
   const audio = new Audio(src);
   current = audio;
+  if (onProgress) {
+    audio.addEventListener("timeupdate", () => {
+      if (audio.duration > 0) onProgress(audio.currentTime / audio.duration);
+    });
+  }
   audio.addEventListener(
     "ended",
     () => {
@@ -36,7 +46,7 @@ export function playAudioClip(src: string, onEnded?: () => void): () => void {
   );
   audio.play().catch(() => {
     // Autoplay blocked or file missing — caller has no fallback UI here by
-    // design; NarrationPlayer's replay button is the recovery path.
+    // design; the replay button is the recovery path.
   });
   return () => {
     if (current === audio) stopCurrentAudio();

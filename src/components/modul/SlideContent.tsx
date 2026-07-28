@@ -3,7 +3,6 @@
 import { ContentSlide } from "@/types/module";
 import MascotBubble from "./MascotBubble";
 import ModulImage from "./ModulImage";
-import NarrationPlayer from "./NarrationPlayer";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { playSoundEffect } from "@/lib/soundEffects";
 
@@ -38,15 +37,13 @@ export default function SlideContent({
         )}
 
         {/* Mascot + Text */}
-        <div className="w-full max-w-4xl flex items-start gap-3">
-          <div className="flex-1">
-            <MascotBubble
-              mascot={slide.mascot}
-              message={slide.text}
-              size="lg"
-            />
-          </div>
-          <NarrationPlayer src={slide.narrationUrl} />
+        <div className="w-full max-w-4xl">
+          <MascotBubble
+            mascot={slide.mascot}
+            message={slide.text}
+            size="lg"
+            narrationUrl={slide.narrationUrl}
+          />
         </div>
       </div>
 

@@ -15,9 +15,9 @@ export type SystemSoundName = keyof typeof SYSTEM_SOUNDS;
 
 /**
  * Event-triggered feedback (correct/wrong/retry/complete) — separate from
- * NarrationPlayer, which handles per-slide narration tied to slide entry.
- * Same accessibility contract as that component: purely supplementary, so a
- * blocked/missing file is silently swallowed rather than surfaced. Routes
+ * useNarrationPlayback, which handles per-slide narration tied to slide
+ * entry. Same accessibility contract as that hook: purely supplementary, so
+ * a blocked/missing file is silently swallowed rather than surfaced. Routes
  * through the shared audio channel, so playing this always stops whatever
  * narration or other system sound was playing before it.
  */
