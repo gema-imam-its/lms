@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Image from "next/image";
+import { PartyPopper, Star } from "lucide-react";
 import { ModuleDefinition, ModuleResult, QuizResult, MAX_QUIZ_ATTEMPTS, MASCOT_URLS } from "@/types/module";
 import { playSystemSound, playSystemSounds } from "@/lib/systemSounds";
 import ProgressBar from "./ProgressBar";
@@ -171,7 +172,9 @@ export default function SlidePresentation({
         <div className="flex-1 min-h-0 overflow-y-auto p-6 md:p-10 flex flex-col items-center justify-center animate-in fade-in zoom-in-95 duration-700">
           {/* Header: celebration + mascot */}
           <div className="flex flex-col items-center mb-8 shrink-0">
-            <h1 className="font-gohan text-5xl text-gema-navy mb-4">Selamat! 🎉</h1>
+            <h1 className="font-gohan text-5xl text-gema-navy mb-4 flex items-center gap-3">
+              Selamat! <PartyPopper size={40} className="text-gema-tosca" />
+            </h1>
             <div className="relative w-56 h-56 drop-shadow-2xl animate-mascot-bob">
               <Image src={MASCOT_URLS.hello} alt="Mascot Happy" fill className="object-contain" />
             </div>
@@ -181,9 +184,15 @@ export default function SlidePresentation({
           <div className="bg-white rounded-3xl p-8 shadow-xl border-4 border-gema-mint text-center max-w-md w-full mb-8 shrink-0">
             <div className="flex justify-center gap-4 mb-4">
               {[1, 2, 3].map((star) => (
-                <div key={star} className={`text-6xl transition-all duration-700 transform ${star <= stars ? 'scale-110' : 'scale-90 opacity-30 grayscale'}`}>
-                  ⭐
-                </div>
+                <Star
+                  key={star}
+                  size={48}
+                  className={`transition-all duration-700 transform ${
+                    star <= stars
+                      ? "scale-110 fill-yellow-400 text-yellow-500"
+                      : "scale-90 opacity-30 fill-gray-300 text-gray-300"
+                  }`}
+                />
               ))}
             </div>
 

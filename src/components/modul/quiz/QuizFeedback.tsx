@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { MASCOT_URLS } from "@/types/module";
-import { Check, X } from "lucide-react";
+import { Check, X, PartyPopper, Sparkles, Lightbulb, Star } from "lucide-react";
 
 interface QuizFeedbackProps {
   correct: boolean;
@@ -83,10 +83,16 @@ export default function QuizFeedback({
         </div>
 
         {/* Text Content */}
-        <h2 className={`font-gohan text-4xl mb-4 ${
+        <h2 className={`font-gohan text-4xl mb-4 flex items-center justify-center gap-2 ${
           correct ? "text-green-600" : "text-orange-500"
         }`}>
-          {message || (correct ? "Horeee, Benar! 🎉" : "Masih Kurang Tepat 💪")}
+          {message ? (
+            message
+          ) : correct ? (
+            <>Horeee, Benar! <PartyPopper size={32} /></>
+          ) : (
+            <>Masih Kurang Tepat <Sparkles size={32} /></>
+          )}
         </h2>
         
         {!correct && (
@@ -96,9 +102,7 @@ export default function QuizFeedback({
             </p>
             {hint && (
               <div className="flex items-start gap-3 bg-amber-50 border-2 border-amber-200 rounded-2xl p-4 text-left">
-                <span className="text-2xl shrink-0" aria-hidden>
-                  💡
-                </span>
+                <Lightbulb size={28} className="shrink-0 text-amber-500" aria-hidden />
                 <p className="font-gilroy text-lg text-amber-900">
                   <span className="font-bold">Petunjuk: </span>
                   {hint}
@@ -130,7 +134,7 @@ export default function QuizFeedback({
               className="absolute animate-bounce"
               style={c}
             >
-              <span className="text-3xl">⭐</span>
+              <Star size={28} className="fill-yellow-400 text-yellow-500" />
             </div>
           ))}
         </div>

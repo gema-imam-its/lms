@@ -1,6 +1,6 @@
 import { createSupabaseServerClient } from "@/lib/supabase";
 import Link from "next/link";
-import { ArrowLeft, Calendar, Clock, Activity } from "lucide-react";
+import { ArrowLeft, Calendar, Clock, Activity, Star } from "lucide-react";
 import { revalidatePath, refresh } from "next/cache";
 import DeleteSesiButton from "@/components/siswa/DeleteSesiButton";
 import SesiAktifCard from "@/components/siswa/SesiAktifCard";
@@ -254,12 +254,11 @@ export default async function DaftarSesiSiswa({
 
                     <div className="flex gap-1 shrink-0">
                       {[1, 2, 3].map((star) => (
-                        <span
+                        <Star
                           key={star}
-                          className={`text-2xl ${star <= stars ? "" : "opacity-20 grayscale"}`}
-                        >
-                          ⭐
-                        </span>
+                          size={24}
+                          className={star <= stars ? "fill-yellow-400 text-yellow-500" : "fill-gray-200 text-gray-200"}
+                        />
                       ))}
                     </div>
 
