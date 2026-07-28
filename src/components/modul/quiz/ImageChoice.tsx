@@ -4,6 +4,7 @@ import { useState } from "react";
 import { ImageChoiceOption } from "@/types/module";
 import { Check, X } from "lucide-react";
 import ModulImage from "../ModulImage";
+import { playSoundEffect } from "@/lib/soundEffects";
 
 interface ImageChoiceProps {
   options: ImageChoiceOption[];
@@ -22,7 +23,8 @@ export default function ImageChoice({
 
   const handleSelect = (id: string) => {
     if (disabled || selectedId !== null) return;
-    
+
+    playSoundEffect("click");
     setSelectedId(id);
     const isCorrect = id === correctAnswerId;
     

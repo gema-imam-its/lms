@@ -5,6 +5,7 @@ import MascotBubble from "./MascotBubble";
 import ModulImage from "./ModulImage";
 import NarrationPlayer from "./NarrationPlayer";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { playSoundEffect } from "@/lib/soundEffects";
 
 interface SlideContentProps {
   slide: ContentSlide;
@@ -52,7 +53,10 @@ export default function SlideContent({
       {/* Navigation Controls */}
       <div className="flex justify-between items-center pt-8 border-t-2 border-gray-100">
         <button
-          onClick={onPrev}
+          onClick={() => {
+            playSoundEffect("whoosh");
+            onPrev();
+          }}
           disabled={isFirst}
           className={`min-h-[64px] min-w-[64px] rounded-full flex items-center justify-center transition-all ${
             isFirst
@@ -65,7 +69,10 @@ export default function SlideContent({
         </button>
 
         <button
-          onClick={onNext}
+          onClick={() => {
+            playSoundEffect("whoosh");
+            onNext();
+          }}
           className="min-h-[64px] px-8 rounded-full flex items-center justify-center gap-4 bg-gema-tosca hover:bg-[#1bb3a2] text-white shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all active:scale-95 active:translate-y-0"
         >
           <span className="font-gohan text-2xl font-bold">
