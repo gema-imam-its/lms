@@ -12,7 +12,6 @@ interface SlideContentProps {
   onPrev: () => void;
   isFirst: boolean;
   isLast: boolean;
-  hasInteracted: boolean;
 }
 
 export default function SlideContent({
@@ -21,7 +20,6 @@ export default function SlideContent({
   onPrev,
   isFirst,
   isLast,
-  hasInteracted,
 }: SlideContentProps) {
   return (
     <div className="flex flex-col h-full w-full justify-between animate-in slide-in-from-right-8 fade-in duration-500">
@@ -47,7 +45,7 @@ export default function SlideContent({
               size="lg"
             />
           </div>
-          <NarrationPlayer src={slide.narrationUrl} hasInteracted={hasInteracted} />
+          <NarrationPlayer src={slide.narrationUrl} />
         </div>
       </div>
 

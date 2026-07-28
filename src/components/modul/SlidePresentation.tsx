@@ -39,10 +39,6 @@ export default function SlidePresentation({
   const [reviewTargetIndex, setReviewTargetIndex] = useState<number | null>(null);
   const [reviewedSlides, setReviewedSlides] = useState<Set<number>>(new Set());
 
-  // First real user gesture (any nav/answer click) — unlocks narration
-  // autoplay, since browsers block unmuted audio before user interaction.
-  const [hasInteracted, setHasInteracted] = useState(false);
-
   // Results
   const [quizResults, setQuizResults] = useState<QuizResult[]>([]);
 
@@ -52,7 +48,6 @@ export default function SlidePresentation({
 
   // Navigation handlers
   const handleNext = () => {
-    setHasInteracted(true);
     if (state === "reviewing") {
       // Done reviewing, go back to the quiz
       playSystemSound("cobaLagi");
@@ -72,7 +67,6 @@ export default function SlidePresentation({
   };
 
   const handlePrev = () => {
-    setHasInteracted(true);
     if (!isFirst && state === "presenting") {
       setCurrentIndex((prev) => prev - 1);
     }
@@ -80,7 +74,6 @@ export default function SlidePresentation({
 
   // Quiz handlers
   const handleCorrect = () => {
-    setHasInteracted(true);
     playSystemSound("benar");
     // Record result
     setQuizResults((prev) => [
@@ -97,7 +90,6 @@ export default function SlidePresentation({
   };
 
   const handleWrong = () => {
-    setHasInteracted(true);
     const newAttempts = currentAttempts + 1;
     setCurrentAttempts(newAttempts);
 
@@ -243,7 +235,6 @@ export default function SlidePresentation({
             onPrev={handlePrev}
             isFirst={isFirst}
             isLast={isLast}
-            hasInteracted={hasInteracted}
           />
         ) : (
           <SlideQuiz
@@ -252,7 +243,6 @@ export default function SlidePresentation({
             onCorrect={handleCorrect}
             onWrong={handleWrong}
             showHint={showHint}
-            hasInteracted={hasInteracted}
           />
         )}
       </div>

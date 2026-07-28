@@ -15,7 +15,6 @@ interface SlideQuizProps {
   onCorrect: () => void;
   onWrong: () => void;
   showHint: boolean;
-  hasInteracted: boolean;
 }
 
 export default function SlideQuiz({
@@ -23,7 +22,6 @@ export default function SlideQuiz({
   onCorrect,
   onWrong,
   showHint,
-  hasInteracted,
 }: SlideQuizProps) {
   const [feedbackState, setFeedbackState] = useState<"idle" | "correct" | "wrong">("idle");
   const [disabled, setDisabled] = useState(false);
@@ -60,7 +58,7 @@ export default function SlideQuiz({
           {slide.question}
         </h2>
 
-        <NarrationPlayer src={slide.narrationUrl} hasInteracted={hasInteracted} />
+        <NarrationPlayer src={slide.narrationUrl} />
 
         {/* Mascot Hint Area */}
         {showHint && slide.hint && (

@@ -6,7 +6,6 @@ import { playAudioClip } from "@/lib/audioChannel";
 
 interface NarrationPlayerProps {
   src?: string | string[];
-  hasInteracted: boolean;
 }
 
 /** Plays clips back-to-back; returns a stop function for whichever clip is currently active. */
@@ -37,12 +36,21 @@ function playSequence(clips: string[]): () => void {
  * or an array played back-to-back as one sequence (e.g. a quiz narrated
  * across a few short recorded lines).
  *
+ * Always attempts to autoplay on mount — the student always arrives here via
+ * a real click (from the modul list, or from "Lanjut"), which is enough of a
+ * gesture for browsers to allow it; if a browser blocks it anyway (e.g. a
+ * fresh direct URL load with no prior interaction), it fails silently and
+ * the replay button is the fallback. An earlier version gated this behind a
+ * "has the user interacted yet" flag, but that flag became true on the exact
+ * same click that advanced past slide 1, so slide 1's narration could never
+ * play automatically — removed rather than patched.
+ *
  * Routes through the shared audio channel (src/lib/audioChannel.ts) and
  * stops itself on unmount — the stop is ownership-safe, so if some other
  * sound (a different slide's narration, or a "Benar!" feedback chime)
  * already took over by the time cleanup runs, this won't cut that one off.
  */
-export default function NarrationPlayer({ src, hasInteracted }: NarrationPlayerProps) {
+export default function NarrationPlayer({ src }: NarrationPlayerProps) {
   const clips = src ? (Array.isArray(src) ? src : [src]) : [];
   const clipsKey = clips.join("|");
   const stopRef = useRef<(() => void) | null>(null);
@@ -52,13 +60,13 @@ export default function NarrationPlayer({ src, hasInteracted }: NarrationPlayerP
   };
 
   useEffect(() => {
-    if (!hasInteracted || clips.length === 0) return;
+    if (clips.length === 0) return;
     play();
     return () => {
       stopRef.current?.();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [hasInteracted, clipsKey]);
+  }, [clipsKey]);
 
   if (clips.length === 0) return null;
 
