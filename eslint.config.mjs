@@ -12,6 +12,8 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Disposable local debug/test scripts, not part of the app itself.
+    "scratch/**",
   ]),
 ]);
 
