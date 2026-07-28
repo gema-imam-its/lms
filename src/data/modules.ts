@@ -12,28 +12,28 @@ export const modules: ModuleDefinition[] = [
         type: "content",
         mascot: "hello",
         text: "Assalamu'alaikum! Hari ini kita belajar siapa itu Imam dan Makmum",
-        narrationUrl: "/audio/modul-1/01-intro.mp3",
+        narrationUrl: "/audio/modul-1/intro.ogg",
       },
       {
         type: "content",
         mascot: "book",
         text: "Imam adalah orang yang memimpin sholat",
         imageUrl: "/images/modul/formasi-imam.png",
-        narrationUrl: "/audio/modul-1/02-imam.mp3",
+        narrationUrl: "/audio/modul-1/imam.ogg",
       },
       {
         type: "content",
         mascot: "book",
         text: "Makmum adalah orang yang mengikuti imam dari belakang",
         imageUrl: "/images/modul/formasi-makmum.png",
-        narrationUrl: "/audio/modul-1/03-makmum.mp3",
+        narrationUrl: "/audio/modul-1/makmum.ogg",
       },
       {
         type: "content",
         mascot: "book",
         text: "Imam berdiri sendiri di depan. Makmum berdiri di belakang imam",
         imageUrl: "/images/modul/formasi-jamaah.png",
-        narrationUrl: "/audio/modul-1/04-formasi.mp3",
+        narrationUrl: "/audio/modul-1/formasi.ogg",
       },
       {
         type: "quiz",
@@ -46,13 +46,18 @@ export const modules: ModuleDefinition[] = [
         correctAnswerId: "imam",
         hint: "Ingat, Imam selalu di depan!",
         relatedSlideIndex: 3,
-        narrationUrl: "/audio/modul-1/05-quiz-imam-depan.mp3",
+        narrationUrl: [
+          "/audio/modul-1/kuis-1-tanya-imam.ogg",
+          "/audio/modul-1/kuis-1-tanya-makmum.ogg",
+          "/audio/modul-1/kuis-1-instruksi.ogg",
+        ],
       },
       {
         type: "content",
         mascot: "book",
         text: "Imam mengucapkan takbir lebih dulu, makmum mengikuti setelahnya",
-        narrationUrl: "/audio/modul-1/06-takbir.mp3",
+        // No recorded/scripted narration exists for this slide (takbir) —
+        // silent is fine per the app's own "operable without sound" rule.
       },
       {
         type: "quiz",
@@ -65,7 +70,7 @@ export const modules: ModuleDefinition[] = [
         correctAnswerId: "imam",
         hint: "Makmum selalu mengikuti Imam.",
         relatedSlideIndex: 5,
-        narrationUrl: "/audio/modul-1/07-quiz-takbir.mp3",
+        // No recorded/scripted narration exists for this quiz (takbir) yet.
       },
     ],
   },

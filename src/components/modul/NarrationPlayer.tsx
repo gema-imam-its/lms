@@ -1,10 +1,10 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Volume2 } from "lucide-react";
 
 interface NarrationPlayerProps {
-  src?: string;
+  src?: string | string[];
   hasInteracted: boolean;
 }
 
@@ -12,31 +12,55 @@ interface NarrationPlayerProps {
  * Optional recorded-voice narration for a slide. Purely supplementary —
  * the on-screen text is always the source of truth (deaf students must lose
  * nothing by not hearing this), so a missing file or playback failure is
- * swallowed silently and never blocks navigation.
+ * swallowed silently and never blocks navigation. `src` can be a single clip
+ * or an array played back-to-back as one sequence (e.g. a quiz narrated
+ * across a few short recorded lines).
  */
 export default function NarrationPlayer({ src, hasInteracted }: NarrationPlayerProps) {
+  const clips = src ? (Array.isArray(src) ? src : [src]) : [];
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const [clipIndex, setClipIndex] = useState(0);
 
   useEffect(() => {
-    if (hasInteracted && src) {
-      audioRef.current?.play().catch(() => {
-        // Autoplay blocked or file missing — the replay button still works.
-      });
-    }
-  }, [src, hasInteracted]);
+    const audio = audioRef.current;
+    if (!hasInteracted || !audio || clips.length === 0) return;
+    audio.load();
+    audio.play().catch(() => {
+      // Autoplay blocked or file missing — the replay button still works.
+    });
+    // Re-runs when the auto-play gesture happens and each time the sequence
+    // advances to its next clip — not on unrelated re-renders.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [hasInteracted, clipIndex]);
 
-  if (!src) return null;
+  if (clips.length === 0) return null;
+
+  const handleEnded = () => {
+    if (clipIndex < clips.length - 1) {
+      setClipIndex((i) => i + 1);
+    }
+  };
 
   const handleReplay = () => {
-    const audio = audioRef.current;
-    if (!audio) return;
-    audio.currentTime = 0;
-    audio.play().catch(() => {});
+    if (clipIndex === 0) {
+      const audio = audioRef.current;
+      if (!audio) return;
+      audio.currentTime = 0;
+      audio.play().catch(() => {});
+    } else {
+      setClipIndex(0);
+    }
   };
 
   return (
     <div>
-      <audio ref={audioRef} src={src} preload="none" onError={() => {}} />
+      <audio
+        ref={audioRef}
+        src={clips[clipIndex]}
+        preload="none"
+        onEnded={handleEnded}
+        onError={() => {}}
+      />
       <button
         type="button"
         onClick={handleReplay}

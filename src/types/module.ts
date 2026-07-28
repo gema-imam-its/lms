@@ -36,7 +36,7 @@ export interface ContentSlide {
   text: string; // 1-2 kalimat saja (prinsip tuna grahita)
   imageUrl?: string;
   mascot: MascotVariant;
-  narrationUrl?: string; // Rekaman suara opsional (pelengkap, bukan pengganti teks)
+  narrationUrl?: string | string[]; // Satu file, atau beberapa yang diputar berurutan (pelengkap, bukan pengganti teks)
 }
 
 export interface ImageChoiceQuizSlide {
@@ -47,7 +47,7 @@ export interface ImageChoiceQuizSlide {
   correctAnswerId: string;
   hint?: string; // Petunjuk jika salah
   relatedSlideIndex?: number; // Index slide materi terkait (untuk review)
-  narrationUrl?: string;
+  narrationUrl?: string | string[]; // Satu file, atau beberapa yang diputar berurutan
 }
 
 export interface MatchingLineQuizSlide {
@@ -57,7 +57,7 @@ export interface MatchingLineQuizSlide {
   pairs: MatchingPair[];
   hint?: string;
   relatedSlideIndex?: number;
-  narrationUrl?: string;
+  narrationUrl?: string | string[]; // Satu file, atau beberapa yang diputar berurutan
 }
 
 export interface SortOrderQuizSlide {
@@ -67,7 +67,7 @@ export interface SortOrderQuizSlide {
   items: SortItem[];
   hint?: string;
   relatedSlideIndex?: number;
-  narrationUrl?: string;
+  narrationUrl?: string | string[]; // Satu file, atau beberapa yang diputar berurutan
 }
 
 export type QuizSlide = ImageChoiceQuizSlide | MatchingLineQuizSlide | SortOrderQuizSlide;
