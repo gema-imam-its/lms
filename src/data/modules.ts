@@ -56,12 +56,7 @@ export const modules: ModuleDefinition[] = [
         type: "content",
         mascot: "book",
         text: "Imam mengucapkan takbir lebih dulu, makmum mengikuti setelahnya",
-        // No line was recorded specifically for takbir (the word doesn't
-        // exist in any clip, so it can't be spliced together). Reusing
-        // imam.ogg + makmum.ogg as a stand-in — they say "Imam memimpin di
-        // depan" / "Makmum mengikuti imam", the same leads/follows idea
-        // this slide is teaching, just without naming takbir specifically.
-        narrationUrl: ["/audio/modul-1/imam.ogg", "/audio/modul-1/makmum.ogg"],
+        narrationUrl: "/audio/modul-1/takbir.ogg",
       },
       {
         type: "quiz",
