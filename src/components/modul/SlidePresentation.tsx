@@ -169,24 +169,24 @@ export default function SlidePresentation({
 
     return (
       <div className="flex flex-col h-full min-h-0 w-full bg-white rounded-3xl shadow-xl border border-gray-100 overflow-hidden">
-        <div className="flex-1 min-h-0 overflow-y-auto p-6 md:p-10 flex flex-col items-center justify-center animate-in fade-in zoom-in-95 duration-700">
+        <div className="flex-1 min-h-0 overflow-y-auto p-4 md:p-6 flex flex-col items-center justify-center animate-in fade-in zoom-in-95 duration-700">
           {/* Header: celebration + mascot */}
-          <div className="flex flex-col items-center mb-8 shrink-0">
-            <h1 className="font-gohan text-5xl text-gema-navy mb-4 flex items-center gap-3">
-              Selamat! <PartyPopper size={40} className="text-gema-tosca" />
+          <div className="flex flex-col items-center mb-3 shrink-0">
+            <h1 className="font-gohan text-2xl md:text-3xl text-gema-navy mb-2 flex items-center gap-2">
+              Selamat! <PartyPopper size={28} className="text-gema-tosca" />
             </h1>
-            <div className="relative w-56 h-56 drop-shadow-2xl animate-mascot-bob">
+            <div className="relative w-24 h-24 md:w-32 md:h-32 drop-shadow-2xl animate-mascot-bob">
               <Image src={MASCOT_URLS.hello} alt="Mascot Happy" fill className="object-contain" />
             </div>
           </div>
 
           {/* Score card */}
-          <div className="bg-white rounded-3xl p-8 shadow-xl border-4 border-gema-mint text-center max-w-md w-full mb-8 shrink-0">
-            <div className="flex justify-center gap-4 mb-4">
+          <div className="bg-white rounded-3xl p-4 md:p-5 shadow-xl border-4 border-gema-mint text-center max-w-md w-full mb-3 shrink-0">
+            <div className="flex justify-center gap-2 mb-2">
               {[1, 2, 3].map((star) => (
                 <Star
                   key={star}
-                  size={48}
+                  size={32}
                   className={`transition-all duration-700 transform ${
                     star <= stars
                       ? "scale-110 fill-yellow-400 text-yellow-500"
@@ -197,21 +197,21 @@ export default function SlidePresentation({
             </div>
 
             {totalQuizzes > 0 && (
-              <p className="font-gohan text-2xl text-gema-tosca mb-4">
+              <p className="font-gohan text-lg text-gema-tosca mb-2">
                 {correctAnswers} dari {totalQuizzes} jawaban benar
               </p>
             )}
 
-            <div className="border-t-2 border-gray-100 pt-4">
-              <p className="font-gilroy text-lg text-gray-600 mb-1">Kamu berhasil menyelesaikan</p>
-              <p className="font-gohan text-2xl text-gema-navy">{module.title}</p>
+            <div className="border-t-2 border-gray-100 pt-2">
+              <p className="font-gilroy text-sm text-gray-600 mb-0.5">Kamu berhasil menyelesaikan</p>
+              <p className="font-gohan text-lg text-gema-navy">{module.title}</p>
             </div>
           </div>
 
           {/* Action */}
           <button
             onClick={onBack}
-            className="px-12 py-4 bg-gema-navy text-white font-gohan text-2xl font-bold rounded-full shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all shrink-0"
+            className="px-8 py-3 bg-gema-navy text-white font-gohan text-lg font-bold rounded-full shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all shrink-0"
           >
             Kembali ke Daftar Modul
           </button>

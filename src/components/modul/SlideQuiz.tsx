@@ -53,15 +53,15 @@ export default function SlideQuiz({
   };
 
   return (
-    <div className="flex flex-col h-full w-full justify-start items-center py-8 animate-in zoom-in-95 fade-in duration-500 relative">
-      
+    <div className="flex flex-col h-full w-full justify-start items-center py-2 animate-in zoom-in-95 fade-in duration-500 relative">
+
       {/* Quiz Header & Mascot Hint */}
-      <div className="w-full max-w-5xl mb-6 flex flex-col md:flex-row items-center justify-between gap-6 sticky top-0 z-20 bg-white/90 backdrop-blur-sm py-2">
+      <div className="w-full max-w-5xl mb-3 flex flex-col md:flex-row items-center justify-between gap-3 sticky top-0 z-20 bg-white/90 backdrop-blur-sm py-1">
         <HighlightedText
           text={slide.question}
           progress={progress}
           active={isPlaying}
-          className="font-gohan text-3xl md:text-4xl text-gema-navy text-center md:text-left flex-1"
+          className="font-gohan text-xl md:text-2xl text-gema-navy text-center md:text-left flex-1"
         />
 
         {hasNarration && <NarrationButton onClick={replay} />}
@@ -75,7 +75,7 @@ export default function SlideQuiz({
       </div>
 
       {/* Quiz Content Container */}
-      <div className="w-full flex-1 flex items-center justify-center bg-gray-50/50 rounded-3xl p-4 md:p-8">
+      <div className="w-full flex-1 flex items-center justify-center bg-gray-50/50 rounded-3xl p-2 md:p-4">
         {slide.quizType === "image-choice" && (
           <ImageChoice
             options={slide.options}

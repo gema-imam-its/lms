@@ -37,7 +37,7 @@ export default function ImageChoice({
   };
 
   return (
-    <div className={`grid grid-cols-1 sm:grid-cols-2 ${options.length > 2 ? 'lg:grid-cols-3' : ''} gap-6 w-full max-w-5xl mx-auto p-4`}>
+    <div className={`grid grid-cols-1 sm:grid-cols-2 ${options.length > 2 ? 'lg:grid-cols-3' : ''} gap-3 md:gap-4 w-full max-w-3xl mx-auto p-2`}>
       {options.map((option) => {
         const isSelected = selectedId === option.id;
         const isCorrect = isSelected && option.id === correctAnswerId;
@@ -47,31 +47,31 @@ export default function ImageChoice({
             key={option.id}
             onClick={() => handleSelect(option.id)}
             disabled={disabled || selectedId !== null}
-            className={`relative flex flex-col items-center p-6 bg-white rounded-3xl shadow-md transition-all duration-300 min-h-[200px] border-4 ${
+            className={`relative flex flex-col items-center p-3 md:p-4 bg-white rounded-2xl shadow-md transition-all duration-300 min-h-[48px] border-4 ${
               isSelected
                 ? isCorrect
                   ? "border-green-500 scale-105 shadow-xl shadow-green-500/20"
                   : "border-amber-400 scale-95 opacity-80"
                 : disabled
                   ? "border-transparent opacity-50 cursor-not-allowed"
-                  : "border-transparent hover:border-gema-tosca hover:shadow-lg hover:-translate-y-2 active:scale-95 cursor-pointer"
+                  : "border-transparent hover:border-gema-tosca hover:shadow-lg hover:-translate-y-1 active:scale-95 cursor-pointer"
             }`}
           >
             {/* Status Icons */}
             {isSelected && (
-              <div className={`absolute top-4 right-4 w-12 h-12 rounded-full flex items-center justify-center z-20 shadow-md ${
+              <div className={`absolute top-2 right-2 w-8 h-8 rounded-full flex items-center justify-center z-20 shadow-md ${
                 isCorrect ? "bg-green-500" : "bg-amber-500"
               }`}>
                 {isCorrect ? (
-                  <Check size={28} className="text-white" strokeWidth={4} />
+                  <Check size={18} className="text-white" strokeWidth={4} />
                 ) : (
-                  <X size={28} className="text-white" strokeWidth={4} />
+                  <X size={18} className="text-white" strokeWidth={4} />
                 )}
               </div>
             )}
 
             {/* Image */}
-            <div className="relative w-full aspect-square max-w-[200px] mb-4 drop-shadow-md">
+            <div className="relative w-full aspect-square max-w-[120px] md:max-w-[140px] mb-2 drop-shadow-md">
               <ModulImage
                 src={option.imageUrl}
                 alt={option.label}
@@ -81,7 +81,7 @@ export default function ImageChoice({
             </div>
 
             {/* Label */}
-            <span className="font-gohan text-2xl text-gema-navy font-bold mt-auto w-full text-center">
+            <span className="font-gohan text-lg text-gema-navy font-bold mt-auto w-full text-center">
               {option.label}
             </span>
           </button>
