@@ -33,7 +33,12 @@ export const modules: ModuleDefinition[] = [
         mascot: "book",
         text: "Imam berdiri sendiri di depan. Makmum berdiri di belakang imam",
         imageUrl: "/images/modul/formasi-jamaah.png",
-        narrationUrl: "/audio/modul-1/formasi.ogg",
+        // formasi.ogg ("Semuanya menghadap kiblat") doesn't match this
+        // slide's actual text/visual (imam-in-front/makmum-behind
+        // positioning, not qiblat-facing) — reusing imam.ogg + makmum.ogg
+        // instead, which says exactly "Imam memimpin di depan" / "Makmum
+        // mengikuti imam".
+        narrationUrl: ["/audio/modul-1/imam.ogg", "/audio/modul-1/makmum.ogg"],
       },
       {
         type: "quiz",
@@ -46,11 +51,7 @@ export const modules: ModuleDefinition[] = [
         correctAnswerId: "imam",
         hint: "Ingat, Imam selalu di depan!",
         relatedSlideIndex: 3,
-        narrationUrl: [
-          "/audio/modul-1/kuis-1-tanya-imam.ogg",
-          "/audio/modul-1/kuis-1-tanya-makmum.ogg",
-          "/audio/modul-1/kuis-1-instruksi.ogg",
-        ],
+        narrationUrl: "/audio/modul-1/kuis-1-instruksi.ogg",
       },
       {
         type: "content",
