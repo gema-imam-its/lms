@@ -226,9 +226,9 @@ export default function SlidePresentation({
     <div className="flex flex-col h-full min-h-0 w-full bg-white rounded-3xl shadow-xl border border-gray-100 overflow-hidden">
       
       {/* Header / Progress Bar */}
-      <div className="p-6 bg-gray-50 border-b border-gray-100">
+      <div className="px-4 py-2.5 md:px-6 md:py-3 bg-gray-50 border-b border-gray-100">
         {state === "reviewing" ? (
-          <div className="w-full text-center bg-orange-100 text-orange-600 p-3 rounded-xl font-gohan text-xl">
+          <div className="w-full text-center bg-orange-100 text-orange-600 py-1.5 px-3 rounded-xl font-gohan text-base">
             Mari kita ingat kembali materinya!
           </div>
         ) : (
