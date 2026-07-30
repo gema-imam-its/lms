@@ -45,29 +45,51 @@ export default function QuizFeedback({
     })),
   );
 
+  // Always the latest onContinue, without making it an effect dependency —
+  // SlideQuiz passes a plain (non-memoized) callback, so its identity can
+  // change on every parent re-render. If that identity were a dependency of
+  // the celebration effect below, a re-render mid-celebration would re-run
+  // the effect; the cleanup from the first run would clear the real pending
+  // dismiss timer, and the hasCelebratedRef guard would then block the
+  // second run from ever scheduling a new one — the modal would get stuck
+  // open forever.
+  const onContinueRef = useRef(onContinue);
+  useEffect(() => {
+    onContinueRef.current = onContinue;
+  });
+
   useEffect(() => {
     const t = setTimeout(() => setShow(true), 50);
+    return () => clearTimeout(t);
+  }, []);
 
-    let t2: NodeJS.Timeout;
-    if (correct) {
-      // Guarded so this only ever fires once per modal, even if the effect
-      // re-runs (e.g. onContinue's identity changing on a parent re-render)
-      // — otherwise the celebration sound could replay mid-animation.
-      if (!hasCelebratedRef.current) {
-        hasCelebratedRef.current = true;
-        playSystemSound("benar");
-        playSoundEffect("celebrate");
+  useEffect(() => {
+    if (!correct || hasCelebratedRef.current) return;
+    hasCelebratedRef.current = true;
+
+    // Wait for both the "benar" voice line and the celebrate chime to
+    // actually finish (rather than a fixed guess like 2500ms) so the sound
+    // is never cut off mid-playback. A short buffer after both finish, plus
+    // a safety timeout in case a browser ever fails to fire "ended".
+    let finished = 0;
+    let dismissTimer: ReturnType<typeof setTimeout> | undefined;
+    const onOneFinished = () => {
+      finished += 1;
+      if (finished >= 2) {
+        dismissTimer = setTimeout(() => onContinueRef.current(), 400);
       }
-      t2 = setTimeout(() => {
-        onContinue();
-      }, 2500);
-    }
+    };
+
+    playSystemSound("benar", onOneFinished);
+    playSoundEffect("celebrate", onOneFinished);
+
+    const safetyTimer = setTimeout(() => onContinueRef.current(), 8000);
 
     return () => {
-      clearTimeout(t);
-      if (t2) clearTimeout(t2);
+      if (dismissTimer) clearTimeout(dismissTimer);
+      clearTimeout(safetyTimer);
     };
-  }, [correct, onContinue]);
+  }, [correct]);
 
   return (
     <div

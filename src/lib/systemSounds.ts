@@ -21,16 +21,17 @@ export type SystemSoundName = keyof typeof SYSTEM_SOUNDS;
  * through the shared audio channel, so playing this always stops whatever
  * narration or other system sound was playing before it.
  */
-export function playSystemSound(name: SystemSoundName) {
-  playSystemSounds([name]);
+export function playSystemSound(name: SystemSoundName, onEnded?: () => void) {
+  playSystemSounds([name], onEnded);
 }
 
-/** Plays several system sounds back-to-back (e.g. star reveal, then "selesai"). */
-export function playSystemSounds(names: SystemSoundName[]) {
+/** Plays several system sounds back-to-back (e.g. star reveal, then "selesai"). onAllEnded fires once the whole chain finishes. */
+export function playSystemSounds(names: SystemSoundName[], onAllEnded?: () => void) {
   const [first, ...rest] = names;
   if (!first) {
     stopCurrentAudio();
+    onAllEnded?.();
     return;
   }
-  playAudioClip(SYSTEM_SOUNDS[first], () => playSystemSounds(rest));
+  playAudioClip(SYSTEM_SOUNDS[first], () => playSystemSounds(rest, onAllEnded));
 }

@@ -14,10 +14,17 @@ export type SoundEffectName = keyof typeof SOUND_EFFECTS;
  * two spoken lines overlapping, which is genuinely confusing. This never
  * stops, and is never stopped by, voice playback.
  */
-export function playSoundEffect(name: SoundEffectName) {
+export function playSoundEffect(name: SoundEffectName, onEnded?: () => void) {
   try {
-    new Audio(SOUND_EFFECTS[name]).play().catch(() => {});
+    const audio = new Audio(SOUND_EFFECTS[name]);
+    if (onEnded) audio.addEventListener("ended", onEnded, { once: true });
+    audio.play().catch(() => {
+      // Blocked or missing — fire onEnded anyway so a caller waiting on
+      // this (e.g. a celebration modal waiting to dismiss) doesn't hang.
+      onEnded?.();
+    });
   } catch {
     // Ignore — e.g. Audio() unavailable outside a real browser context.
+    onEnded?.();
   }
 }

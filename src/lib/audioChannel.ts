@@ -45,8 +45,12 @@ export function playAudioClip(
     { once: true },
   );
   audio.play().catch(() => {
-    // Autoplay blocked or file missing — caller has no fallback UI here by
-    // design; the replay button is the recovery path.
+    // Autoplay blocked or file missing. Still fire onEnded — otherwise a
+    // caller waiting for this clip to finish (e.g. a celebration modal
+    // waiting to dismiss) would wait forever for an "ended" event that can
+    // now never happen, since the clip never actually started.
+    if (current === audio) current = null;
+    onEnded?.();
   });
   return () => {
     if (current === audio) stopCurrentAudio();
