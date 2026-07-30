@@ -57,7 +57,7 @@ export const modules: ModuleDefinition[] = [
       {
         type: "quiz",
         quizType: "image-choice",
-        question: "Pilih gambar yang benar, ya",
+        question: "Siapa yang takbir duluan?",
         options: [
           { id: "imam", imageUrl: "/images/modul/formasi-imam.png", label: "Imam" },
           { id: "makmum", imageUrl: "/images/modul/formasi-makmum.png", label: "Makmum" },
@@ -65,8 +65,11 @@ export const modules: ModuleDefinition[] = [
         correctAnswerId: "imam",
         hint: "Makmum selalu mengikuti Imam.",
         relatedSlideIndex: 5,
-        // No custom line recorded for this quiz — reuses the generic
-        // image-choice prompt instead of staying silent.
+        // Reverted from the generic "Pilih gambar yang benar, ya" (which
+        // matched pilih.ogg's audio but gave no clue this quiz is about
+        // takbir order rather than position, reusing the same Imam/Makmum
+        // images as Quiz 1) — the specific question is clearer even though
+        // it no longer matches the generic audio prompt verbatim.
         narrationUrl: "/audio/system/pilih.ogg",
       },
     ],
