@@ -11,39 +11,34 @@ export const modules: ModuleDefinition[] = [
       {
         type: "content",
         mascot: "hello",
-        text: "Assalamu'alaikum! Hari ini kita belajar siapa itu Imam dan Makmum",
+        text: "Ayo mulai belajar! Halo teman-teman, ayo belajar sholat berjamaah",
         narrationUrl: ["/audio/system/mulai.ogg", "/audio/modul-1/intro.ogg"],
       },
       {
         type: "content",
         mascot: "book",
-        text: "Imam adalah orang yang memimpin sholat",
+        text: "Imam memimpin di depan",
         imageUrl: "/images/modul/formasi-imam.png",
         narrationUrl: "/audio/modul-1/imam.ogg",
       },
       {
         type: "content",
         mascot: "book",
-        text: "Makmum adalah orang yang mengikuti imam dari belakang",
+        text: "Makmum mengikuti Imam",
         imageUrl: "/images/modul/formasi-makmum.png",
         narrationUrl: "/audio/modul-1/makmum.ogg",
       },
       {
         type: "content",
         mascot: "book",
-        text: "Imam berdiri sendiri di depan. Makmum berdiri di belakang imam",
+        text: "Imam memimpin di depan, Makmum mengikuti Imam",
         imageUrl: "/images/modul/formasi-jamaah.png",
-        // formasi.ogg ("Semuanya menghadap kiblat") doesn't match this
-        // slide's actual text/visual (imam-in-front/makmum-behind
-        // positioning, not qiblat-facing) — reusing imam.ogg + makmum.ogg
-        // instead, which says exactly "Imam memimpin di depan" / "Makmum
-        // mengikuti imam".
         narrationUrl: ["/audio/modul-1/imam.ogg", "/audio/modul-1/makmum.ogg"],
       },
       {
         type: "quiz",
         quizType: "image-choice",
-        question: "Siapa yang berdiri sendiri di depan?",
+        question: "Sekarang pasangkan dengan benar",
         options: [
           { id: "imam", imageUrl: "/images/modul/formasi-imam.png", label: "Imam" },
           { id: "makmum", imageUrl: "/images/modul/formasi-makmum.png", label: "Makmum" },
@@ -56,13 +51,13 @@ export const modules: ModuleDefinition[] = [
       {
         type: "content",
         mascot: "book",
-        text: "Imam mengucapkan takbir lebih dulu, makmum mengikuti setelahnya",
+        text: "Imam bertakbir dulu, Makmum mengikuti setelahnya",
         narrationUrl: "/audio/modul-1/takbir.ogg",
       },
       {
         type: "quiz",
         quizType: "image-choice",
-        question: "Siapa yang takbir duluan?",
+        question: "Pilih gambar yang benar, ya",
         options: [
           { id: "imam", imageUrl: "/images/modul/formasi-imam.png", label: "Imam" },
           { id: "makmum", imageUrl: "/images/modul/formasi-makmum.png", label: "Makmum" },
