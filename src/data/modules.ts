@@ -51,7 +51,7 @@ export const modules: ModuleDefinition[] = [
       {
         type: "content",
         mascot: "book",
-        text: "Imam bertakbir dulu, Makmum mengikuti setelahnya",
+        text: "Imam bertakbir dulu, Makmum mengikuti sesudahnya",
         narrationUrl: "/audio/modul-1/takbir.ogg",
       },
       {
