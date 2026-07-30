@@ -1,0 +1,56 @@
+[2m$ next dev[22m
+[1m[38;2;173;127;168m▲ Next.js 16.2.9[39m[22m (Turbopack)
+- Local:         http://localhost:3000
+- Network:       http://192.168.48.1:3000
+- Environments: .env.local
+[32m[1m✓[22m[39m Ready in 1843ms
+
+ GET / [32m200[39m in 2.1s[2m (next.js: 818ms, application-code: 1272ms)[22m
+ GET /rapor/siswa/e1d056f3-ae2a-49b8-9ff2-f57f0aa96fad [32m200[39m in 6.8s[2m (next.js: 4.4s, application-code: 2.4s)[22m
+ GET / [32m200[39m in 243ms[2m (next.js: 12ms, application-code: 232ms)[22m
+ GET /rapor/siswa/e1d056f3-ae2a-49b8-9ff2-f57f0aa96fad [32m200[39m in 2.4s[2m (next.js: 145ms, application-code: 2.3s)[22m
+[36m[browser][39m A tree hydrated but some attributes of the server rendered HTML didn't match the client properties. This won't be patched up. This can happen if a SSR-ed Client Component used:
+
+- A server/client branch `if (typeof window !== 'undefined')`.
+- Variable input such as `Date.now()` or `Math.random()` which changes each time it's called.
+- Date formatting in a user's locale which doesn't match the server.
+- External changing data without sending a snapshot of it along with the HTML.
+- Invalid HTML tag nesting.
+
+It can also happen if the client has a browser extension installed which messes with the HTML before React loaded.
+
+https://react.dev/link/hydration-mismatch
+
+  ...
+    <HotReload globalError={[...]} webSocket={WebSocket} staticIndicatorState={{pathname:null, ...}}>
+      <AppDevOverlayErrorBoundary globalError={[...]}>
+        <ReplaySsrOnlyErrors>
+        <DevRootHTTPAccessFallbackBoundary>
+          <HTTPAccessFallbackBoundary notFound={<NotAllowedRootHTTPFallbackError>}>
+            <HTTPAccessFallbackErrorBoundary pathname="/rapor/sis..." notFound={<NotAllowedRootHTTPFallbackError>} ...>
+              <RedirectBoundary>
+                <RedirectErrorBoundary router={{...}}>
+                  <Head>
+                  <__next_root_layout_boundary__>
+                    <SegmentViewNode type="layout" pagePath="layout.tsx">
+                      <SegmentTrieNode>
+                      <link>
+                      <script>
+                      <script>
+                      <script>
+                      <RootLayout>
+                        <html lang="id" suppressHydrationWarning={true} className="geist_a715...">
+                          <body
+                            className="min-h-full flex flex-col bg-gray-50/50"
+-                           data-new-gr-c-s-check-loaded="14.1139.0"
+-                           data-gr-ext-installed=""
+                          >
+                  ...
+ 
+[36m[browser][39m [33mImage with src "http://localhost:3000/images/logo.svg" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.[39m
+ POST /rapor/siswa/e1d056f3-ae2a-49b8-9ff2-f57f0aa96fad [32m200[39m in 2.5s[2m (next.js: 136ms, application-code: 2.3s)[22m
+  └─ ƒ <inline action>({"reason":{"count":184,"fork":false},"status":"fulfilled","value":"fr0CKerpTi/b7fCgMebGMqlALedbst2/OoHOLZ35LupMghEBU0dMR55Wmx5Ov6CrcqWGsRP7Zcp4FRTSl/Hs3qSmtX81v8e+LmO/u69dfzN8MsJpHQe+g+z4BcCl/fK8SEkSfYxq5FijFR3nupIF06AeIlIV3G6h7H2vD/RtyCL8YUnjgm7ew5PI"}, {}, {}) in 1155ms [2msrc/app/(siswa)/rapor/siswa/[id]/page.tsx[22m
+ POST /rapor/siswa/e1d056f3-ae2a-49b8-9ff2-f57f0aa96fad [32m200[39m in 2.2s[2m (next.js: 135ms, application-code: 2.1s)[22m
+  └─ ƒ <inline action>({"reason":{"count":184,"fork":false},"status":"fulfilled","value":"xwf2MUK6gn9PvP3HOI5XZ2p7TACKCM23O5Z+YV97NVwLJlM6JIAziVG0Hf3oZPvDtMlaKG8WFcW5QNOvyAkdin6PcWvDfXZrUj/DR+VS7nbHhH/2Hzw/VNYF17IY0997Qyt+EUOtxYej7MoNL8f/BG9ffsnEaYMx52YPAxTfQ374uW4cDaz1SqN3"}) in 940ms [2msrc/app/(siswa)/rapor/siswa/[id]/page.tsx[22m
+ POST /rapor/siswa/e1d056f3-ae2a-49b8-9ff2-f57f0aa96fad [32m200[39m in 1291ms[2m (next.js: 17ms, application-code: 1274ms)[22m
+  └─ ƒ <inline action>({"reason":{"count":184,"fork":false},"status":"fulfilled","value":"xwf2MUK6gn9PvP3HOI5XZ2p7TACKCM23O5Z+YV97NVwLJlM6JIAziVG0Hf3oZPvDtMlaKG8WFcW5QNOvyAkdin6PcWvDfXZrUj/DR+VS7nbHhH/2Hzw/VNYF17IY0997Qyt+EUOtxYej7MoNL8f/BG9ffsnEaYMx52YPAxTfQ374uW4cDaz1SqN3"}) in 361ms [2msrc/app/(siswa)/rapor/siswa/[id]/page.tsx[22m
