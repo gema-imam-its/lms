@@ -1,6 +1,7 @@
 const SOUND_EFFECTS = {
   click: "/audio/sfx/click.mp3",
   whoosh: "/audio/sfx/whoosh.mp3",
+  celebrate: "/audio/sfx/celebrate.mp3",
 } as const;
 
 export type SoundEffectName = keyof typeof SOUND_EFFECTS;

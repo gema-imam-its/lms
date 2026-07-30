@@ -75,7 +75,9 @@ export default function SlidePresentation({
 
   // Quiz handlers
   const handleCorrect = () => {
-    playSystemSound("benar");
+    // "benar" now plays from QuizFeedback itself, synced to when the
+    // celebration modal actually appears rather than when it's about to
+    // auto-dismiss (this handler only fires at that later point).
     // Record result
     setQuizResults((prev) => [
       ...prev,

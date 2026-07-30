@@ -1,9 +1,11 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { MASCOT_URLS } from "@/types/module";
 import { Check, X, PartyPopper, Sparkles, Lightbulb, Star } from "lucide-react";
+import { playSystemSound } from "@/lib/systemSounds";
+import { playSoundEffect } from "@/lib/soundEffects";
 
 interface QuizFeedbackProps {
   correct: boolean;
@@ -12,6 +14,14 @@ interface QuizFeedbackProps {
   hint?: string;
 }
 
+const CONFETTI_COLORS = [
+  "text-gema-tosca fill-gema-tosca",
+  "text-yellow-400 fill-yellow-400",
+  "text-gema-pink fill-gema-pink",
+  "text-gema-mint fill-gema-mint",
+  "text-gema-sky fill-gema-sky",
+];
+
 export default function QuizFeedback({
   correct,
   onContinue,
@@ -19,29 +29,40 @@ export default function QuizFeedback({
   hint,
 }: QuizFeedbackProps) {
   const [show, setShow] = useState(false);
+  const hasCelebratedRef = useRef(false);
   // Seeded once at mount (lazy initializer), never recomputed during render —
   // Math.random() directly in JSX is a React purity violation.
   const [confetti] = useState(() =>
-    Array.from({ length: 20 }, () => ({
+    Array.from({ length: 40 }, (_, i) => ({
       left: `${Math.random() * 100}%`,
       top: `${Math.random() * 100}%`,
-      animationDelay: `${Math.random() * 0.5}s`,
-      animationDuration: `${1 + Math.random()}s`,
+      animationDelay: `${Math.random() * 0.6}s`,
+      animationDuration: `${0.8 + Math.random()}s`,
+      rotate: Math.round(Math.random() * 360),
+      size: 16 + Math.round(Math.random() * 16),
+      color: CONFETTI_COLORS[i % CONFETTI_COLORS.length],
+      shape: i % 3 === 0 ? "sparkle" : "star",
     })),
   );
 
   useEffect(() => {
-    // Small delay to trigger entry animation safely
     const t = setTimeout(() => setShow(true), 50);
-    
-    // Auto-dismiss if correct
+
     let t2: NodeJS.Timeout;
     if (correct) {
+      // Guarded so this only ever fires once per modal, even if the effect
+      // re-runs (e.g. onContinue's identity changing on a parent re-render)
+      // — otherwise the celebration sound could replay mid-animation.
+      if (!hasCelebratedRef.current) {
+        hasCelebratedRef.current = true;
+        playSystemSound("benar");
+        playSoundEffect("celebrate");
+      }
       t2 = setTimeout(() => {
         onContinue();
       }, 2500);
     }
-    
+
     return () => {
       clearTimeout(t);
       if (t2) clearTimeout(t2);
@@ -49,15 +70,15 @@ export default function QuizFeedback({
   }, [correct, onContinue]);
 
   return (
-    <div 
+    <div
       className={`fixed inset-0 z-50 flex items-center justify-center p-4 transition-colors duration-300 ${
         show ? (correct ? "bg-green-500/20 backdrop-blur-sm" : "bg-orange-500/20 backdrop-blur-sm") : "bg-transparent backdrop-blur-none"
       }`}
     >
-      <div 
+      <div
         className={`bg-white rounded-3xl shadow-2xl p-8 max-w-lg w-full flex flex-col items-center text-center transform transition-all duration-500 ${
           show ? "scale-100 opacity-100 translate-y-0" : "scale-90 opacity-0 translate-y-8"
-        }`}
+        } ${correct && show ? "animate-mascot-bob" : ""}`}
       >
         {/* Icon & Mascot Header */}
         <div className="relative w-full flex justify-center mb-6">
@@ -69,7 +90,7 @@ export default function QuizFeedback({
               className="object-contain"
             />
           </div>
-          
+
           {/* Status Badge */}
           <div className={`absolute -bottom-4 z-20 flex items-center justify-center w-16 h-16 rounded-full border-4 border-white shadow-lg ${
             correct ? "bg-green-500" : "bg-orange-500"
@@ -94,7 +115,7 @@ export default function QuizFeedback({
             <>Masih Kurang Tepat <Sparkles size={32} /></>
           )}
         </h2>
-        
+
         {!correct && (
           <div className="mb-8 w-full">
             <p className="font-gilroy text-xl text-gray-600 mb-4">
@@ -116,8 +137,8 @@ export default function QuizFeedback({
         <button
           onClick={onContinue}
           className={`w-full min-h-[64px] rounded-full font-gohan text-2xl font-bold text-white transition-transform active:scale-95 shadow-lg hover:shadow-xl ${
-            correct 
-              ? "bg-green-500 hover:bg-green-600" 
+            correct
+              ? "bg-green-500 hover:bg-green-600"
               : "bg-orange-500 hover:bg-orange-600"
           }`}
         >
@@ -125,16 +146,26 @@ export default function QuizFeedback({
         </button>
       </div>
 
-      {/* Basic Confetti Effect if correct */}
+      {/* Confetti burst if correct */}
       {correct && show && (
         <div className="absolute inset-0 pointer-events-none overflow-hidden">
           {confetti.map((c, i) => (
             <div
               key={i}
               className="absolute animate-bounce"
-              style={c}
+              style={{
+                left: c.left,
+                top: c.top,
+                animationDelay: c.animationDelay,
+                animationDuration: c.animationDuration,
+                transform: `rotate(${c.rotate}deg)`,
+              }}
             >
-              <Star size={28} className="fill-yellow-400 text-yellow-500" />
+              {c.shape === "sparkle" ? (
+                <Sparkles size={c.size} className={c.color} />
+              ) : (
+                <Star size={c.size} className={c.color} />
+              )}
             </div>
           ))}
         </div>
