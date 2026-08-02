@@ -3,6 +3,13 @@ import Image from "next/image";
 import { Lock } from "lucide-react";
 import { modules } from "@/data/modules";
 import GenderToggle from "@/components/modul/GenderToggle";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Daftar Modul Belajar Sholat",
+  description:
+    "Pilih modul belajar sholat bergambar dengan kuis interaktif, dirancang untuk siswa tuli, tunarungu, dan tunagrahita.",
+};
 
 export default function ModulListPage() {
   return (

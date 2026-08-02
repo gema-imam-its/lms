@@ -2,8 +2,16 @@ import { createSupabaseServerClient } from "@/lib/supabase";
 import Link from "next/link";
 import { ArrowLeft, CheckCircle2, XCircle } from "lucide-react";
 import Image from "next/image";
+import type { Metadata } from "next";
 
 export const revalidate = 0;
+
+// Shows one student's individual movement/evaluation data with no auth
+// gate — noindex is deliberate (see src/app/(siswa)/rapor/page.tsx).
+export const metadata: Metadata = {
+  title: "Detail Sesi Praktik",
+  robots: { index: false, follow: false },
+};
 
 interface ImamRelation {
   id: string;

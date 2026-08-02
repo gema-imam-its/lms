@@ -5,8 +5,16 @@ import { revalidatePath, refresh } from "next/cache";
 import DeleteSesiButton from "@/components/siswa/DeleteSesiButton";
 import SesiAktifCard from "@/components/siswa/SesiAktifCard";
 import { findBlockingSession, isSessionStale } from "@/lib/sesi-guard";
+import type { Metadata } from "next";
 
 export const revalidate = 0;
+
+// Shows one student's real name and full session history with no auth
+// gate — noindex is deliberate (see src/app/(siswa)/rapor/page.tsx).
+export const metadata: Metadata = {
+  title: "Riwayat Praktik Siswa",
+  robots: { index: false, follow: false },
+};
 
 export default async function DaftarSesiSiswa({
   params,
