@@ -1,8 +1,16 @@
 import Link from "next/link";
-import Image from "next/image";
 import { ArrowRight } from "lucide-react";
 import HeroSection from "@/components/siswa/HeroSection";
 import FiturCard from "@/components/siswa/FiturCard";
+import StatsStrip from "@/components/siswa/StatsStrip";
+import InteractiveMascot from "@/components/siswa/InteractiveMascot";
+import { modules } from "@/data/modules";
+
+const moduleCount = modules.length;
+const quizCount = modules.reduce(
+  (count, mod) => count + mod.slides.filter((slide) => slide.type === "quiz").length,
+  0
+);
 
 const fitur = [
   {
@@ -31,7 +39,9 @@ const fitur = [
 export default function Page() {
   return (
     <div>
-      <HeroSection />
+      <HeroSection moduleCount={moduleCount} />
+
+      <StatsStrip moduleCount={moduleCount} quizCount={quizCount} />
 
       {/* Fitur Utama */}
       <section className="max-w-7xl mx-auto px-8 lg:px-16 py-20">
@@ -63,14 +73,7 @@ export default function Page() {
           <div className="absolute -top-10 -right-10 w-40 h-40 bg-gema-mint opacity-20 rounded-full blur-3xl" />
           <div className="absolute -bottom-10 -left-10 w-40 h-40 bg-gema-sky opacity-20 rounded-full blur-3xl" />
 
-          <div className="relative z-10 w-40 h-40 -mt-4 drop-shadow-xl animate-mascot-bob">
-            <Image
-              src="/images/mascot-hello.svg"
-              alt="Mascot Gema Imam"
-              fill
-              className="object-contain"
-            />
-          </div>
+          <InteractiveMascot interactive={false} className="relative z-10 w-40 h-40 -mt-4 drop-shadow-xl" />
 
           <h2 className="font-gohan text-3xl md:text-4xl relative z-10">
             Yuk, Mulai Belajar Sholat!

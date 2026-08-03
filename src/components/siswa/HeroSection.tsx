@@ -1,8 +1,12 @@
 import React from "react";
 import Link from "next/link";
-import Image from "next/image";
+import InteractiveMascot from "./InteractiveMascot";
 
-export default function HeroSection() {
+interface HeroSectionProps {
+  moduleCount: number;
+}
+
+export default function HeroSection({ moduleCount }: HeroSectionProps) {
   return (
     <section className="relative w-full pt-32 pb-20 px-8 lg:px-16 overflow-hidden bg-geometric-pink-blue bg-cover bg-center flex items-center justify-center">
       {/* Background decorative elements */}
@@ -47,13 +51,22 @@ export default function HeroSection() {
           <div className="w-80 h-80 lg:w-[28rem] lg:h-[28rem] relative flex items-center justify-center group">
             <div className="w-full h-full bg-gradient-to-tr from-gema-mint to-gema-tosca rounded-[3rem] rotate-6 absolute inset-0 opacity-20 shadow-xl group-hover:rotate-12 transition-transform duration-500 ease-in-out" />
             <div className="w-full h-full bg-white rounded-[3rem] -rotate-3 absolute inset-0 border border-gray-100 flex items-center justify-center p-8 group-hover:-rotate-6 transition-transform duration-500 ease-in-out">
-              <Image
-                src="/images/mascot-hello.svg"
-                alt="Maskot Gema Imam melambaikan tangan menyapa"
-                fill
-                className="object-contain p-4 hover:scale-110 transition-transform duration-500 drop-shadow-md"
-                priority
+              <InteractiveMascot
+                greeting="Halo! Aku siap bantu kamu belajar sholat 👋"
+                className="w-full h-full p-4"
               />
+            </div>
+
+            {/* Floating stat badge, echoing the reference's completion-rate card */}
+            <div className="absolute -bottom-4 -left-4 md:-left-10 bg-white rounded-2xl shadow-xl border border-gray-100 px-4 py-3 flex items-center gap-3 z-20">
+              <div className="w-10 h-10 rounded-full bg-gema-tosca/10 flex items-center justify-center">
+                <span className="font-gohan text-gema-tosca text-lg">{moduleCount}</span>
+              </div>
+              <p className="font-gilroy font-semibold text-xs text-gema-navy leading-tight">
+                Modul Interaktif
+                <br />
+                Siap Dipelajari
+              </p>
             </div>
           </div>
         </div>
