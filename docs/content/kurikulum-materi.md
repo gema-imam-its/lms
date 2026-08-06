@@ -177,8 +177,8 @@ I'tidal → Sujud → Duduk (antara dua sujud) → Duduk Tasyahud → Salam.
 **Slide 11 — Kuis 4 (Urutkan — label tetap tampil, menguji urutan bukan pengenalan)**
 
 - Pertanyaan: "Susun urutan gerakan ini!"
-- Kartu (acak): "Takbir", "Rukuk", "Sujud" · Urutan benar: Takbir → Rukuk → Sujud
-- Hint: "Mulai dari Takbir, lalu Rukuk, baru Sujud." (ulang ke Slide 1) · Suara: `modul-2/kuis-urutkan.ogg`
+- Kartu (acak): "Takbir", "Rukuk", "I'tidal" · Urutan benar: Takbir → Rukuk → I'tidal
+- Hint: "Mulai dari Takbir, lalu Rukuk, baru I'tidal." (ulang ke Slide 1) · Suara: `modul-2/kuis-urutkan.ogg`
 
 **Slide 12 — Kuis 5 (Pilih Gambar, label disembunyikan)**
 
