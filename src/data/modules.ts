@@ -98,33 +98,35 @@ export const modules: ModuleDefinition[] = [
     locked: false,
     slides: [
       {
-        // index 0
+        // index 0 — text matches the recorded intro.ogg exactly ("Modul 2,
+        // ayo belajar nama gerakan sholat"), not a paraphrase, so the
+        // read-along highlight tracks correctly.
         type: "content",
         mascot: "hello",
-        text: "Ayo kenali gerakan-gerakan sholat!",
+        text: "Modul 2. Ayo belajar nama gerakan sholat!",
         narrationUrl: ["/audio/system/mulai.ogg", "/audio/modul-2/intro.ogg"],
       },
       {
-        // index 1
+        // index 1 — text matches takbir.ogg ("Ini takbir, sholat dimulai").
         type: "content",
         mascot: "book",
-        text: "Ini Takbiratul Ihram. Tangan diangkat, sholat dimulai.",
+        text: "Ini Takbir. Sholat dimulai.",
         imageUrl: "/images/modul/gerakan-takbiratul-ihram.png",
         narrationUrl: "/audio/modul-2/takbir.ogg",
       },
       {
-        // index 2
+        // index 2 — text matches rukuk.ogg ("Ini rukuk, punggung lurus dan datar").
         type: "content",
         mascot: "book",
-        text: "Ini Rukuk. Badan membungkuk, punggung lurus.",
+        text: "Ini Rukuk. Punggung lurus dan datar.",
         imageUrl: "/images/modul/gerakan-rukuk.png",
         narrationUrl: "/audio/modul-2/rukuk.ogg",
       },
       {
-        // index 3
+        // index 3 — text matches itidal.ogg ("Ini i'tidal, kita berdiri tegak lagi").
         type: "content",
         mascot: "book",
-        text: "Ini I'tidal. Berdiri tegak lagi setelah rukuk.",
+        text: "Ini I'tidal. Kita berdiri tegak lagi.",
         imageUrl: "/images/modul/gerakan-itidal.png",
         narrationUrl: "/audio/modul-2/itidal.ogg",
       },
@@ -137,10 +139,10 @@ export const modules: ModuleDefinition[] = [
         narrationUrl: "/audio/modul-2/sujud.ogg",
       },
       {
-        // index 5
+        // index 5 — text matches duduk.ogg ("Ini duduk di antara dua sujud").
         type: "content",
         mascot: "book",
-        text: "Ini Duduk. Duduk sebentar di antara dua sujud.",
+        text: "Ini Duduk di Antara Dua Sujud.",
         imageUrl: "/images/modul/gerakan-duduk-antara-sujud.png",
         narrationUrl: "/audio/modul-2/duduk.ogg",
       },
@@ -148,18 +150,19 @@ export const modules: ModuleDefinition[] = [
         // index 6 — distinct pose from the "Duduk" above (index 5); the
         // matching-line/sort-order quizzes below only cover
         // takbir/rukuk/sujud/salam, so this stays taught-not-quizzed, same
-        // as I'tidal (index 3).
+        // as I'tidal (index 3). Text matches duduk-tasyahud.ogg ("Ini duduk
+        // tasyahud").
         type: "content",
         mascot: "book",
-        text: "Ini Duduk Tasyahud. Duduk di akhir sholat, sambil membaca tasyahud.",
+        text: "Ini Duduk Tasyahud.",
         imageUrl: "/images/modul/gerakan-duduk-tahiyat.png",
         narrationUrl: "/audio/modul-2/duduk-tasyahud.ogg",
       },
       {
-        // index 7
+        // index 7 — text matches salam.ogg ("Ini salam, sholat selesai").
         type: "content",
         mascot: "book",
-        text: "Ini Salam. Menoleh kanan-kiri, sholat pun selesai.",
+        text: "Ini Salam. Sholat Selesai.",
         imageUrl: "/images/modul/gerakan-salam.png",
         narrationUrl: "/audio/modul-2/salam.ogg",
       },
@@ -189,6 +192,7 @@ export const modules: ModuleDefinition[] = [
         hint: "Rukuk itu membungkuk, punggung lurus.",
         relatedSlideIndex: 2,
         narrationUrl: "/audio/modul-2/kuis-rukuk-instruksi.ogg",
+        hideLabels: true,
       },
       {
         // index 9 — quiz 2
@@ -216,6 +220,7 @@ export const modules: ModuleDefinition[] = [
         hint: "Sujud itu dahi menyentuh lantai.",
         relatedSlideIndex: 4,
         narrationUrl: "/audio/system/pilih.ogg",
+        hideLabels: true,
       },
       {
         // index 10 — quiz 3
@@ -251,6 +256,7 @@ export const modules: ModuleDefinition[] = [
         hint: "Ingat lagi bentuk setiap gerakan, ya.",
         relatedSlideIndex: 1,
         narrationUrl: "/audio/modul-2/kuis-cocokkan.ogg",
+        hideLabels: true,
       },
       {
         // index 11 — quiz 4
@@ -282,20 +288,28 @@ export const modules: ModuleDefinition[] = [
         narrationUrl: "/audio/modul-2/kuis-urutkan.ogg",
       },
       {
-        // index 12 — quiz 5
+        // index 12 — quiz 5. Question spells out WHICH duduk (the module now
+        // teaches two: antara-sujud at index 5, tasyahud at index 6) and
+        // includes the tasyahud pose as a distractor so the quiz actually
+        // tests telling the two apart, not just "duduk vs. everything else".
         type: "quiz",
         quizType: "image-choice",
-        question: "Mana gambar DUDUK?",
+        question: "Mana gambar DUDUK ANTARA DUA SUJUD?",
         options: [
-          {
-            id: "duduk",
-            imageUrl: "/images/modul/gerakan-duduk-antara-sujud.png",
-            label: "Duduk (Antara Sujud)",
-          },
           {
             id: "sujud",
             imageUrl: "/images/modul/gerakan-sujud.png",
             label: "Sujud",
+          },
+          {
+            id: "duduk-tasyahud",
+            imageUrl: "/images/modul/gerakan-duduk-tahiyat.png",
+            label: "Duduk Tasyahud",
+          },
+          {
+            id: "duduk",
+            imageUrl: "/images/modul/gerakan-duduk-antara-sujud.png",
+            label: "Duduk (Antara Sujud)",
           },
           {
             id: "salam",
@@ -304,9 +318,10 @@ export const modules: ModuleDefinition[] = [
           },
         ],
         correctAnswerId: "duduk",
-        hint: "Duduk dilakukan setelah Sujud selesai.",
+        hint: "Bukan yang duduk tasyahud. Duduk ini ada di antara dua sujud.",
         relatedSlideIndex: 5,
         narrationUrl: "/audio/system/pilih.ogg",
+        hideLabels: true,
       },
     ],
   },

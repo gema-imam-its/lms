@@ -11,6 +11,7 @@ interface ImageChoiceProps {
   correctAnswerId: string;
   onAnswer: (correct: boolean) => void;
   disabled: boolean;
+  hideLabels?: boolean;
 }
 
 export default function ImageChoice({
@@ -18,6 +19,7 @@ export default function ImageChoice({
   correctAnswerId,
   onAnswer,
   disabled,
+  hideLabels = false,
 }: ImageChoiceProps) {
   const [selectedId, setSelectedId] = useState<string | null>(null);
 
@@ -80,10 +82,13 @@ export default function ImageChoice({
               />
             </div>
 
-            {/* Label */}
-            <span className="font-gohan text-lg text-gema-navy font-bold mt-auto w-full text-center">
-              {option.label}
-            </span>
+            {/* Label — hidden when the quiz tests recognizing the pose from
+                the image alone; showing the name here would give it away. */}
+            {!hideLabels && (
+              <span className="font-gohan text-lg text-gema-navy font-bold mt-auto w-full text-center">
+                {option.label}
+              </span>
+            )}
           </button>
         );
       })}

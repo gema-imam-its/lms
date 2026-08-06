@@ -79,16 +79,20 @@ Ini kalimat tetap mascot yang muncul di mana-mana. Aman direkam sekarang (tidak 
 > (`public/audio/modul-1/*.ogg`). Until recorded, narration is silently skipped — the app stays
 > fully usable text-only, so these can be recorded incrementally.
 
+> Teks yang dibaca di kolom "Kata yang dibaca" adalah isi **audio yang sudah direkam**
+> (dikonfirmasi oleh yang merekam) — teks di layar (`src/data/modules.ts`) sudah disamakan
+> persis dengan ini, bukan sebaliknya, supaya highlight kata-per-kata tetap sinkron.
+
 | Status | Nama file (di `public/audio/modul-2/`) | Kata yang dibaca | Dipakai di |
 |---|---|---|---|
-| ✅ | `intro.ogg` | "Ayo kenali gerakan-gerakan sholat!" | Slide pembuka (setelah `system/mulai.ogg`) |
-| ✅ | `takbir.ogg` | "Ini Takbiratul Ihram. Tangan diangkat, sholat dimulai." | Slide materi Takbir |
-| ✅ | `rukuk.ogg` | "Ini Rukuk. Badan membungkuk, punggung lurus." | Slide materi Rukuk |
-| ✅ | `itidal.ogg` | "Ini I'tidal. Berdiri tegak lagi setelah rukuk." | Slide materi I'tidal |
+| ✅ | `intro.ogg` | "Modul 2, ayo belajar nama gerakan sholat." | Slide pembuka (setelah `system/mulai.ogg`) |
+| ✅ | `takbir.ogg` | "Ini takbir, sholat dimulai." | Slide materi Takbir |
+| ✅ | `rukuk.ogg` | "Ini rukuk, punggung lurus dan datar." | Slide materi Rukuk |
+| ✅ | `itidal.ogg` | "Ini i'tidal, kita berdiri tegak lagi." | Slide materi I'tidal |
 | ✅ | `sujud.ogg` | "Ini Sujud. Dahi menyentuh lantai." | Slide materi Sujud |
-| ✅ | `duduk.ogg` | "Ini Duduk. Duduk sebentar di antara dua sujud." | Slide materi Duduk (antara sujud) |
-| ✅ | `duduk-tasyahud.ogg` | "Ini Duduk Tasyahud. Duduk di akhir sholat, sambil membaca tasyahud." | Slide materi Duduk Tasyahud |
-| ✅ | `salam.ogg` | "Ini Salam. Menoleh kanan-kiri, sholat pun selesai." | Slide materi Salam |
+| ✅ | `duduk.ogg` | "Ini duduk di antara dua sujud." | Slide materi Duduk (antara sujud) |
+| ✅ | `duduk-tasyahud.ogg` | "Ini duduk tasyahud." | Slide materi Duduk Tasyahud |
+| ✅ | `salam.ogg` | "Ini salam, sholat selesai." | Slide materi Salam |
 | ✅ | `kuis-urutkan.ogg` | "Ayo urutkan gerakan ini dari awal!" | Kuis 4 (Urutkan) |
 | ✅ | `kuis-rukuk-instruksi.ogg` | "Yuk, cari gambar Rukuk!" | Kuis 1 (Pilih Gambar — Rukuk) |
 | ✅ | `kuis-cocokkan.ogg` | "Ayo cocokkan gerakan dengan namanya!" | Kuis 3 (Pasangkan) |

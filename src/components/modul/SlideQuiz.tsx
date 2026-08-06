@@ -92,6 +92,7 @@ export default function SlideQuiz({
             correctAnswerId={slide.correctAnswerId}
             onAnswer={handleAnswer}
             disabled={disabled}
+            hideLabels={slide.hideLabels}
           />
         )}
 
@@ -101,6 +102,7 @@ export default function SlideQuiz({
             pairs={slide.pairs}
             onAnswer={handleAnswer}
             disabled={disabled}
+            hideLabels={slide.hideLabels}
           />
         )}
 

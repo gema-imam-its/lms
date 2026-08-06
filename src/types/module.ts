@@ -48,6 +48,10 @@ export interface ImageChoiceQuizSlide {
   hint?: string; // Petunjuk jika salah
   relatedSlideIndex?: number; // Index slide materi terkait (untuk review)
   narrationUrl?: string | string[]; // Satu file, atau beberapa yang diputar berurutan
+  // Sembunyikan label di bawah tiap gambar saat kuis menguji pengenalan nama
+  // DARI gambar itu sendiri — menampilkan label di situ membocorkan jawaban.
+  // `label` tetap dipakai sebagai alt text gambar (aksesibilitas).
+  hideLabels?: boolean;
 }
 
 export interface MatchingLineQuizSlide {
@@ -58,6 +62,9 @@ export interface MatchingLineQuizSlide {
   hint?: string;
   relatedSlideIndex?: number;
   narrationUrl?: string | string[]; // Satu file, atau beberapa yang diputar berurutan
+  // Sembunyikan leftLabel di sisi gambar — dipakai saat kuis menguji
+  // pencocokan gambar->nama, supaya nama tidak sudah terlihat di sisi kiri.
+  hideLabels?: boolean;
 }
 
 export interface SortOrderQuizSlide {

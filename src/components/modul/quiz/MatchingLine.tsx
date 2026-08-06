@@ -9,6 +9,7 @@ interface MatchingLineProps {
   pairs: MatchingPair[];
   onAnswer: (correct: boolean) => void;
   disabled: boolean;
+  hideLabels?: boolean;
 }
 
 // Per-match palettes (index-aligned) — box tint, SVG line stroke, number badge.
@@ -37,6 +38,7 @@ export default function MatchingLine({
   pairs,
   onAnswer,
   disabled,
+  hideLabels = false,
 }: MatchingLineProps) {
   // Shuffled once at mount via lazy initializer — this component is always
   // given a fresh instance when `pairs` changes (the parent key-remounts the
@@ -224,10 +226,13 @@ export default function MatchingLine({
                 />
               </div>
 
-              {/* Label */}
-              <span className="font-gohan text-xl md:text-2xl font-bold text-left">
-                {item.leftLabel}
-              </span>
+              {/* Label — hidden when the quiz tests matching the pose to its
+                  name; showing the name here would give away the pairing. */}
+              {!hideLabels && (
+                <span className="font-gohan text-xl md:text-2xl font-bold text-left">
+                  {item.leftLabel}
+                </span>
+              )}
 
               {/* Status Icons for full validation */}
               {isFull && isMatched && (
