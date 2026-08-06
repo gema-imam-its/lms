@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { validateIoTApiKey } from "@/lib/auth-iot";
-import { createSupabaseServerClient } from "@/lib/supabase";
+import { createServiceClient } from "@/lib/supabase/service";
 
 export const dynamic = 'force-dynamic'; // Selalu ambil data terbaru
 
@@ -14,7 +14,7 @@ export async function GET(req: NextRequest) {
   if (authError) return authError;
 
   try {
-    const supabase = createSupabaseServerClient();
+    const supabase = createServiceClient();
 
     // Mode "cek sesi berjalan": dipanggil oleh Orange Pi SELAMA merekam
     // (bukan saat standby) untuk tahu apakah sesi ini sudah dibatalkan dari

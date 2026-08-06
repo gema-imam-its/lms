@@ -1,4 +1,5 @@
-import { createSupabaseServerClient } from "@/lib/supabase";
+import { createClient } from "@/lib/supabase/server";
+import { requireGuru } from "@/lib/auth-guru";
 import Link from "next/link";
 import { UserCircle2, Plus } from "lucide-react";
 import { revalidatePath } from "next/cache";
@@ -7,29 +8,30 @@ import type { Metadata } from "next";
 // Server Component (can be made dynamic)
 export const revalidate = 0;
 
-// This page and everything under it list real students' names and
-// individual evaluation data with no auth gate — noindex is deliberate,
-// not an oversight (belt-and-suspenders alongside the /rapor disallow
-// rule in src/app/robots.ts).
+// Lists real students' names — gated by requireGuru() (see (guru)/layout.tsx
+// for the optimistic proxy-level redirect); noindex stays as belt-and-suspenders
+// alongside the /rapor disallow rule in src/app/robots.ts.
 export const metadata: Metadata = {
   title: "Rapor Praktik Sholat",
   robots: { index: false, follow: false },
 };
 
 export default async function DaftarSiswaRapor() {
-  const supabase = createSupabaseServerClient();
-  
+  await requireGuru();
+  const supabase = await createClient();
+
   // Server Action untuk tambah siswa
   async function tambahSiswa(formData: FormData) {
     "use server";
+    await requireGuru();
     const nama = formData.get("nama") as string;
     const kelas = formData.get("kelas") as string;
-    
+
     if (!nama) return;
-    
-    const supabaseServer = createSupabaseServerClient();
+
+    const supabaseServer = await createClient();
     const { error } = await supabaseServer.from("imams").insert([{ nama, kelas }]);
-    
+
     if (error) {
       console.error("Gagal tambah siswa:", error);
       // Anda bisa melihat error ini di terminal tempat Next.js (npm run dev) berjalan.

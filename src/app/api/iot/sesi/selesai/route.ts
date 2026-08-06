@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { validateIoTApiKey } from "@/lib/auth-iot";
-import { createSupabaseServerClient } from "@/lib/supabase";
+import { createServiceClient } from "@/lib/supabase/service";
 import { computeSholatScore } from "@/lib/scoring";
 import type { SelesaiSesiRequest, SelesaiSesiResponse } from "@/types/iot";
 
@@ -84,7 +84,7 @@ export async function POST(req: NextRequest) {
       body.kesalahan_imam || 0
     );
 
-    const supabase = createSupabaseServerClient();
+    const supabase = createServiceClient();
     const { error } = await supabase.rpc("selesaikan_sesi_sholat", {
       p_sesi_id: body.sesi_id,
       p_status: sessionStatus,

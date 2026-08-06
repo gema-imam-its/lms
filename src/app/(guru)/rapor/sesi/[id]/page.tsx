@@ -1,4 +1,5 @@
-import { createSupabaseServerClient } from "@/lib/supabase";
+import { createClient } from "@/lib/supabase/server";
+import { requireGuru } from "@/lib/auth-guru";
 import Link from "next/link";
 import { ArrowLeft, CheckCircle2, XCircle } from "lucide-react";
 import Image from "next/image";
@@ -6,8 +7,8 @@ import type { Metadata } from "next";
 
 export const revalidate = 0;
 
-// Shows one student's individual movement/evaluation data with no auth
-// gate — noindex is deliberate (see src/app/(siswa)/rapor/page.tsx).
+// Shows one student's individual movement/evaluation data — gated by
+// requireGuru(); noindex stays as belt-and-suspenders (see (guru)/rapor/page.tsx).
 export const metadata: Metadata = {
   title: "Detail Sesi Praktik",
   robots: { index: false, follow: false },
@@ -24,8 +25,9 @@ export default async function DetailSesiRapor({
 }: {
   params: Promise<{ id: string }>;
 }) {
+  await requireGuru();
   const { id: sessionId } = await params;
-  const supabase = createSupabaseServerClient();
+  const supabase = await createClient();
 
   // 1. Ambil data sesi + data imam (siswa)
   const { data: session, error: sessionError } = await supabase

@@ -1,4 +1,5 @@
-import { createSupabaseServerClient } from "@/lib/supabase";
+import { createClient } from "@/lib/supabase/server";
+import { requireGuru } from "@/lib/auth-guru";
 import Link from "next/link";
 import { ArrowLeft, Calendar, Clock, Activity, Star } from "lucide-react";
 import { revalidatePath, refresh } from "next/cache";
@@ -9,8 +10,8 @@ import type { Metadata } from "next";
 
 export const revalidate = 0;
 
-// Shows one student's real name and full session history with no auth
-// gate — noindex is deliberate (see src/app/(siswa)/rapor/page.tsx).
+// Shows one student's real name and full session history — gated by
+// requireGuru(); noindex stays as belt-and-suspenders (see (guru)/rapor/page.tsx).
 export const metadata: Metadata = {
   title: "Riwayat Praktik Siswa",
   robots: { index: false, follow: false },
@@ -21,8 +22,9 @@ export default async function DaftarSesiSiswa({
 }: {
   params: Promise<{ id: string }>;
 }) {
+  await requireGuru();
   const { id: studentId } = await params;
-  const supabase = createSupabaseServerClient();
+  const supabase = await createClient();
 
   // Server action untuk men-trigger Orange Pi
   async function mulaiPraktikSekarang(
@@ -30,7 +32,8 @@ export default async function DaftarSesiSiswa({
     _formData: FormData,
   ) {
     "use server";
-    const supabaseServer = createSupabaseServerClient();
+    await requireGuru();
+    const supabaseServer = await createClient();
 
     // Secara fisik cuma ada satu alat/kamera — cek dulu apakah sesi lain
     // (siswa manapun) sedang berjalan sebelum membuat sesi PENDING baru.
@@ -80,7 +83,8 @@ export default async function DaftarSesiSiswa({
   // tanpa guru perlu me-refresh halaman secara manual.
   async function cekStatusSesi() {
     "use server";
-    const supabaseServer = createSupabaseServerClient();
+    await requireGuru();
+    const supabaseServer = await createClient();
     const { data } = await supabaseServer
       .from("sholat_sessions")
       .select("status, created_at")
@@ -105,7 +109,8 @@ export default async function DaftarSesiSiswa({
 
   async function batalkanSesi() {
     "use server";
-    const supabaseServer = createSupabaseServerClient();
+    await requireGuru();
+    const supabaseServer = await createClient();
     await supabaseServer
       .from("sholat_sessions")
       .update({ status: "Dibatalkan" })
@@ -274,7 +279,8 @@ export default async function DaftarSesiSiswa({
                       <DeleteSesiButton
                         deleteAction={async () => {
                           "use server";
-                          const supabaseServer = createSupabaseServerClient();
+                          await requireGuru();
+                          const supabaseServer = await createClient();
                           await supabaseServer
                             .from("sholat_sessions")
                             .delete()

@@ -36,7 +36,9 @@ Per `AGENTS.md`, this project pins `next@16.2.9` / `react@19.2.4`, versions ahea
 
 ### Route groups
 
-- `src/app/(siswa)/` — student-facing pages: home, `/modul` (module list), `/modul/[id]` (slide player), `/rapor` (report list), `/rapor/sesi/[id]` (single prayer-session detail), `/rapor/siswa/[id]` (per-student report).
+- `src/app/(siswa)/` — student-facing pages: home, `/modul` (module list), `/modul/[id]` (slide player).
+- `src/app/(guru)/` — guru (teacher)-only pages, gated by `requireGuru()` (see "Guru login & Supabase access" below): `/rapor` (report list), `/rapor/sesi/[id]` (single prayer-session detail), `/rapor/siswa/[id]` (per-student report, incl. the "Mulai Sesi Baru" action).
+- `src/app/masuk/` — guru login page (`page.tsx` + `actions.ts`), public.
 - `src/app/api/iot/` — unauthenticated-by-header-key REST endpoints consumed by the Orange Pi Python client, not by the frontend.
 - `src/app/tentang/` — about page.
 
@@ -54,11 +56,22 @@ Data flow is **pull-based**, driven by the website, not push-based from the Pi (
 
 **Payload sanitization matters here**: the Orange Pi's Python/AI side sometimes sends sentinel strings (`"-"`, `"Batal"`, `"Selesai"`) or JSON `null` in place of real timestamps or numeric angles. See the sanitization logic in [src/app/api/iot/sesi/selesai/route.ts](src/app/api/iot/sesi/selesai/route.ts) (`parseNumeric`, `isInvalidEntry`/`isInvalidExit`, and `exit_reason` derivation) — replicate this defensive parsing in any new endpoint that consumes Orange Pi payloads rather than trusting the JSON shape in `src/types/iot.ts`. `movement_logs.urutan` (not `entry_time`) is the authoritative sort key for a session's timeline, since `entry_time` can be sanitized to a fake `"00:00:00"`.
 
-### Supabase access
+### Guru login & Supabase access
 
-[src/lib/supabase.ts](src/lib/supabase.ts) exports `createSupabaseServerClient()`, which uses the **service role key** (bypasses RLS) — this is server-only and must never be imported into client components. Env vars: `NEXT_PUBLIC_SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`. Schema lives in `supabase-migration.sql` (tables: `imams`, `sholat_sessions`, `movement_logs`) plus `supabase-migration-002-fixes.sql` (status CHECK constraint, one-active-session partial unique index, `exit_reason`/`urutan` columns, `selesaikan_sesi_sholat` RPC) — both run manually via the Supabase SQL Editor, there's no migration tool wired up. Apply them in order.
+Three Supabase clients under `src/lib/supabase/`, each for a different trust level — never mix them up:
 
-No auth gate exists on `/rapor/*` or the IoT routes' session-control server actions — anyone with the URL can add/delete students, start/cancel a recording session, or view reports. Acceptable for the current campus-prototype stage; revisit before any wider deployment.
+- [client.ts](src/lib/supabase/client.ts) — browser client (anon key), for Client Components.
+- [server.ts](src/lib/supabase/server.ts) — **authenticated** SSR client (anon key + the guru's session cookie via `@supabase/ssr`), for Server Components/Actions/Route Handlers acting *as the logged-in guru*. Subject to RLS.
+- [service.ts](src/lib/supabase/service.ts) — **service-role** client (bypasses RLS). Server-only, and used **only** by the `/api/iot/*` routes (which authenticate via `x-api-key`, not a user session) — never import it into guru-facing page/action code.
+
+Guru auth is Supabase Auth (email/password, accounts created by hand in the dashboard — no public signup):
+
+- `/masuk` ([actions.ts](src/app/masuk/actions.ts)) signs in via `signInWithPassword` and redirects to `/rapor`.
+- [src/lib/auth-guru.ts](src/lib/auth-guru.ts) exports `requireGuru()` (redirects to `/masuk` if unauthenticated) and `getGuru()` (returns `null` instead) — both use `getUser()`, which re-verifies the JWT with Supabase, never the spoofable `getSession()`. **Call `requireGuru()` at the top of every guru page and every `"use server"` action**, including ones inlined inside a page component — the `(guru)/layout.tsx` guard and [src/proxy.ts](src/proxy.ts) redirect are optimistic layers only (a layout doesn't re-render on every navigation, and Server Actions are separate entry points a proxy matcher can silently miss).
+- `src/proxy.ts` (Next 16 renamed `middleware.ts` → `proxy.ts`) refreshes the Supabase session cookie and does the optimistic redirect (unauthenticated off `/rapor/*`, authenticated away from `/masuk`).
+- `supabase-migration-003-rls.sql` enables RLS on all three tables with an "any authenticated user is a guru" policy — the DB-level backstop behind the app-level gate above. Apply after `-002-fixes.sql`, manually via the Supabase SQL Editor (same as the other migrations, no migration tool wired up).
+
+Schema lives in `supabase-migration.sql` (tables: `imams`, `sholat_sessions`, `movement_logs`) plus `supabase-migration-002-fixes.sql` (status CHECK constraint, one-active-session partial unique index, `exit_reason`/`urutan` columns, `selesaikan_sesi_sholat` RPC) and `-003-rls.sql` above — apply all three in order.
 
 ### Module/quiz content model
 
@@ -70,4 +83,4 @@ Tailwind CSS v4 via `@tailwindcss/postcss` (see `postcss.config.mjs`) — no sep
 
 ## Env vars
 
-Required at runtime (see `.env.local`, not committed): `NEXT_PUBLIC_SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, `CLOUDINARY_CLOUD_NAME`, `CLOUDINARY_API_KEY`, `CLOUDINARY_API_SECRET`, `IOT_SECRET_KEY`.
+Required at runtime (see `.env.local`, not committed): `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY`, `CLOUDINARY_CLOUD_NAME`, `CLOUDINARY_API_KEY`, `CLOUDINARY_API_SECRET`, `IOT_SECRET_KEY`.
