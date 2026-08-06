@@ -100,11 +100,12 @@ export const modules: ModuleDefinition[] = [
       {
         // index 0 — text matches the recorded intro.ogg exactly ("Modul 2,
         // ayo belajar nama gerakan sholat"), not a paraphrase, so the
-        // read-along highlight tracks correctly.
+        // read-along highlight tracks correctly. No system/mulai.ogg prefix
+        // here (unlike Modul 1) — intro.ogg already stands alone.
         type: "content",
         mascot: "hello",
         text: "Modul 2. Ayo belajar nama gerakan sholat!",
-        narrationUrl: ["/audio/system/mulai.ogg", "/audio/modul-2/intro.ogg"],
+        narrationUrl: "/audio/modul-2/intro.ogg",
       },
       {
         // index 1 — text matches takbir.ogg ("Ini takbir, sholat dimulai").
