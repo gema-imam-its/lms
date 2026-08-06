@@ -92,68 +92,92 @@ makmum di belakang. (Perbaiki dari versi lama yang arah hadapnya terbalik.)
 
 ## MODUL 2 — Nama Gerakan Sholat
 
-**Tujuan:** siswa tahu nama gerakan.
-**Catatan:** pakai Urutan Gerakan Baku. Nama disederhanakan agar mudah (mis. "takbir").
+**Status: ✅ Shipped** (`src/data/modules.ts`, id `"2"`, `locked: false`). Diperluas dari draf
+awal — 5 kuis (bukan 3) sesuai permintaan, dan pakai I'tidal + Duduk-antara-sujud (bukan
+"Berdiri"/"Duduk Tahiyat") karena itu ilustrasi yang benar-benar ada di
+`public/images/modul/{male,female}/`. Duduk Tasyahud (slide 6) ditambahkan setelah rekaman
+suaranya masuk — diajarkan tapi tidak dikuis sendiri (sama seperti I'tidal), supaya Kuis 5
+("Mana gambar DUDUK?") tetap tidak ambigu terhadap dua pose duduk yang berbeda.
+
+**Tujuan:** siswa tahu nama gerakan. **Urutan yang diajarkan:** Takbiratul Ihram → Rukuk →
+I'tidal → Sujud → Duduk (antara dua sujud) → Duduk Tasyahud → Salam.
+
+**Slide 0 — Materi**
+
+- Teks: "Ayo kenali gerakan-gerakan sholat!"
+- Maskot: `hello` · Suara: `system/mulai.ogg` + `modul-2/intro.ogg` → "Ayo kenali gerakan-gerakan sholat!"
 
 **Slide 1 — Materi**
 
-- Gambar: maskot
-- Teks: "Sholat punya beberapa gerakan. Ayo belajar namanya!"
-- Maskot: `hai` · Suara: "Ayo belajar nama gerakan sholat!"
+- Gambar: `gerakan-takbiratul-ihram.png`
+- Teks: "Ini Takbiratul Ihram. Tangan diangkat, sholat dimulai."
+- Maskot: `book` · Suara: `modul-2/takbir.ogg`
 
 **Slide 2 — Materi**
 
-- Gambar: anak berdiri, tangan diangkat (takbir)
-- Teks: "Ini gerakan takbir. Tangan diangkat, sholat dimulai."
-- Maskot: `ajak-belajar` · Suara: "Ini takbir."
+- Gambar: `gerakan-rukuk.png`
+- Teks: "Ini Rukuk. Badan membungkuk, punggung lurus."
+- Suara: `modul-2/rukuk.ogg`
 
 **Slide 3 — Materi**
 
-- Gambar: anak rukuk
-- Teks: "Ini gerakan rukuk. Badan membungkuk, punggung datar."
-- Suara: "Ini rukuk."
+- Gambar: `gerakan-itidal.png`
+- Teks: "Ini I'tidal. Berdiri tegak lagi setelah rukuk."
+- Suara: `modul-2/itidal.ogg`
 
 **Slide 4 — Materi**
 
-- Gambar: anak berdiri tegak (i'tidal)
-- Teks: "Ini gerakan iktidal. Kita berdiri tegak lagi."
-- Suara: "Ini iktidal."
+- Gambar: `gerakan-sujud.png`
+- Teks: "Ini Sujud. Dahi menyentuh lantai."
+- Suara: `modul-2/sujud.ogg`
 
 **Slide 5 — Materi**
 
-- Gambar: anak sujud
-- Teks: "Ini gerakan sujud. Dahi menyentuh lantai."
-- Suara: "Ini sujud."
+- Gambar: `gerakan-duduk-antara-sujud.png`
+- Teks: "Ini Duduk. Duduk sebentar di antara dua sujud."
+- Suara: `modul-2/duduk.ogg`
 
 **Slide 6 — Materi**
 
-- Gambar: anak duduk (di antara dua sujud)
-- Teks: "Ini gerakan duduk. Duduk di antara dua sujud."
-- Suara: "Ini duduk."
+- Gambar: `gerakan-duduk-tahiyat.png` (pose berbeda dari Slide 5 — jari telunjuk menunjuk)
+- Teks: "Ini Duduk Tasyahud. Duduk di akhir sholat, sambil membaca tasyahud."
+- Suara: `modul-2/duduk-tasyahud.ogg`
 
 **Slide 7 — Materi**
 
-- Gambar: anak salam (menoleh)
-- Teks: "Ini gerakan salam. Kepala menoleh ke kanan dan kiri."
-- Suara: "Ini salam. Sholat selesai."
+- Gambar: `gerakan-salam.png`
+- Teks: "Ini Salam. Menoleh kanan-kiri, sholat pun selesai."
+- Suara: `modul-2/salam.ogg`
 
-**Slide 8 — Kuis (Pilih Gambar)**
+**Slide 8 — Kuis 1 (Pilih Gambar)**
 
-- Pertanyaan: "Mana gambar rukuk?"
-- Pilihan: [rukuk ✅] · [sujud] · [berdiri]
-- Jawaban: rukuk · Hint: "Rukuk itu membungkuk." (ulang ke Slide 3)
+- Pertanyaan: "Mana gambar RUKUK?"
+- Pilihan: [I'tidal] · [Rukuk ✅] · [Takbir]
+- Hint: "Rukuk itu membungkuk, punggung lurus." (ulang ke Slide 2) · Suara: `modul-2/kuis-rukuk-instruksi.ogg`
 
-**Slide 9 — Kuis (Pasangkan)**
+**Slide 9 — Kuis 2 (Pilih Gambar)**
 
-- Pertanyaan: "Pasangkan gerakan dengan namanya!"
-- Pasangan: [gambar rukuk] ↔ "Rukuk" · [gambar sujud] ↔ "Sujud"
-- Hint: "Lihat bentuk badannya." (ulang ke Slide 3/5)
+- Pertanyaan: "Mana gambar SUJUD?"
+- Pilihan: [Rukuk] · [Duduk (Antara Sujud)] · [Sujud ✅]
+- Hint: "Sujud itu dahi menyentuh lantai." (ulang ke Slide 4) · Suara: `system/pilih.ogg`
 
-**Slide 10 — Kuis (Pilih Gambar)**
+**Slide 10 — Kuis 3 (Pasangkan)**
 
-- Pertanyaan: "Mana gambar sujud?"
-- Pilihan: [berdiri] · [sujud ✅] · [rukuk]
-- Jawaban: sujud · Hint: "Sujud, dahi di lantai." (ulang ke Slide 5)
+- Pertanyaan: "Cocokkan gerakan dengan namanya!"
+- Pasangan: Takbir ↔ "Takbir" · Rukuk ↔ "Rukuk" · Sujud ↔ "Sujud" · Salam ↔ "Salam"
+- Hint: "Ingat lagi bentuk setiap gerakan, ya." (ulang ke Slide 1) · Suara: `modul-2/kuis-cocokkan.ogg`
+
+**Slide 11 — Kuis 4 (Urutkan)**
+
+- Pertanyaan: "Susun urutan gerakan ini!"
+- Kartu (acak): "Takbir", "Rukuk", "Sujud" · Urutan benar: Takbir → Rukuk → Sujud
+- Hint: "Mulai dari Takbir, lalu Rukuk, baru Sujud." (ulang ke Slide 1) · Suara: `modul-2/kuis-urutkan.ogg`
+
+**Slide 12 — Kuis 5 (Pilih Gambar)**
+
+- Pertanyaan: "Mana gambar DUDUK?"
+- Pilihan: [Duduk (Antara Sujud) ✅] · [Sujud] · [Salam]
+- Hint: "Duduk dilakukan setelah Sujud selesai." (ulang ke Slide 5) · Suara: `system/pilih.ogg`
 
 ---
 
@@ -333,7 +357,7 @@ tetap dapat bintang — tidak ada yang gagal.
 | Modul | Judul                | Slide | Materi | Kuis |
 | ----- | -------------------- | ----- | ------ | ---- |
 | 1     | Imam &amp; Makmum    | 7     | 4      | 3    |
-| 2     | Nama Gerakan         | 10    | 7      | 3    |
+| 2     | Nama Gerakan         | 13    | 8      | 5    |
 | 3     | Gerakan &amp; Bacaan | 10    | 7      | 3    |
 | 4     | Urutan Gerakan       | 7     | 5      | 2    |
 | 5     | Evaluasi             | 8     | 1      | 7    |

@@ -18,10 +18,10 @@ interface InteractiveMascotProps {
   /** Enables cursor-follow tilt and click-to-react. Default true. */
   interactive?: boolean;
   className?: string;
+  /** Pose to rest/idle in. Default "hello". Click still reacts with the other expressive pose. */
+  pose?: MascotVariant;
 }
 
-const REST_POSE: MascotVariant = "hello";
-const REACT_POSE: MascotVariant = "book";
 const TILT_MAX_DEG = 10;
 const TILT_MAX_DIST = 400;
 
@@ -29,13 +29,17 @@ export default function InteractiveMascot({
   greeting,
   interactive = true,
   className = "",
+  pose: restPose = "hello",
 }: InteractiveMascotProps) {
   const prefersReducedMotion = useReducedMotion();
   const containerRef = useRef<HTMLDivElement>(null);
   const controls = useAnimationControls();
   const isReactingRef = useRef(false);
+  // Click always swaps to the *other* expressive pose so the reaction reads
+  // as a visible change, even when the slide's rest pose is already "book".
+  const reactPose: MascotVariant = restPose === "book" ? "hello" : "book";
 
-  const [pose, setPose] = useState<MascotVariant>(REST_POSE);
+  const [pose, setPose] = useState<MascotVariant>(restPose);
   const [showGreeting, setShowGreeting] = useState(false);
   const [dismissed, setDismissed] = useState(false);
 
@@ -105,11 +109,11 @@ export default function InteractiveMascot({
   const handleClick = () => {
     if (!interactive || isReactingRef.current) return;
     isReactingRef.current = true;
-    setPose(REACT_POSE);
+    setPose(reactPose);
 
     if (prefersReducedMotion) {
       window.setTimeout(() => {
-        setPose(REST_POSE);
+        setPose(restPose);
         isReactingRef.current = false;
       }, 900);
       return;
@@ -122,7 +126,7 @@ export default function InteractiveMascot({
         transition: { duration: 0.7, ease: "easeInOut" },
       })
       .then(() => {
-        setPose(REST_POSE);
+        setPose(restPose);
         startIdleLoop();
         isReactingRef.current = false;
       });

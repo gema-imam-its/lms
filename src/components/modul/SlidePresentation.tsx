@@ -1,18 +1,22 @@
 "use client";
 
 import { useState } from "react";
-import Image from "next/image";
 import { PartyPopper, Star } from "lucide-react";
-import { ModuleDefinition, ModuleResult, QuizResult, MAX_QUIZ_ATTEMPTS, MASCOT_URLS } from "@/types/module";
+import { ModuleDefinition, ModuleResult, QuizResult, MAX_QUIZ_ATTEMPTS } from "@/types/module";
 import { playSystemSound, playSystemSounds } from "@/lib/systemSounds";
 import ProgressBar from "./ProgressBar";
 import SlideContent from "./SlideContent";
 import SlideQuiz from "./SlideQuiz";
+import InteractiveMascot from "@/components/siswa/InteractiveMascot";
 
 interface SlidePresentationProps {
   module: ModuleDefinition;
   onComplete: (result: ModuleResult) => void;
   onBack: () => void;
+  /** Quiz-only mode: navigation visits only quiz slides, skipping content
+   * slides — except during the re-teach review detour, which still needs
+   * its target content slide and works unchanged. */
+  quizOnly?: boolean;
 }
 
 type PresentationState = "presenting" | "reviewing" | "completed";
@@ -28,8 +32,18 @@ export default function SlidePresentation({
   module,
   onComplete,
   onBack,
+  quizOnly = false,
 }: SlidePresentationProps) {
-  const [currentIndex, setCurrentIndex] = useState(0);
+  // Indices of quiz-type slides in original array order — the "playlist"
+  // quizOnly mode steps through, while relatedSlideIndex-driven review
+  // detours still address the full module.slides array directly.
+  const quizIndices = module.slides
+    .map((s, i) => (s.type === "quiz" ? i : -1))
+    .filter((i) => i !== -1);
+
+  const [currentIndex, setCurrentIndex] = useState(() =>
+    quizOnly ? (quizIndices[0] ?? 0) : 0,
+  );
   const [state, setState] = useState<PresentationState>("presenting");
   
   // Track attempts for the current quiz
@@ -57,6 +71,16 @@ export default function SlidePresentation({
       setReviewTargetIndex(null);
       setCurrentAttempts(0); // Reset attempts for final try
       setShowHint(false);
+      return;
+    }
+
+    if (quizOnly) {
+      const pos = quizIndices.indexOf(currentIndex);
+      if (pos === -1 || pos >= quizIndices.length - 1) {
+        completeModule();
+      } else {
+        setCurrentIndex(quizIndices[pos + 1]);
+      }
       return;
     }
 
@@ -177,9 +201,11 @@ export default function SlidePresentation({
             <h1 className="font-gohan text-2xl md:text-3xl text-gema-navy mb-2 flex items-center gap-2">
               Selamat! <PartyPopper size={28} className="text-gema-tosca" />
             </h1>
-            <div className="relative w-24 h-24 md:w-32 md:h-32 drop-shadow-2xl animate-mascot-bob">
-              <Image src={MASCOT_URLS.hello} alt="Mascot Happy" fill className="object-contain" />
-            </div>
+            <InteractiveMascot
+              pose="hello"
+              interactive={false}
+              className="w-24 h-24 md:w-32 md:h-32 drop-shadow-2xl"
+            />
           </div>
 
           {/* Score card */}
@@ -232,7 +258,10 @@ export default function SlidePresentation({
             Mari kita ingat kembali materinya!
           </div>
         ) : (
-          <ProgressBar current={currentIndex + 1} total={module.slides.length} />
+          <ProgressBar
+            current={quizOnly ? quizIndices.indexOf(currentIndex) + 1 : currentIndex + 1}
+            total={quizOnly ? quizIndices.length : module.slides.length}
+          />
         )}
       </div>
 

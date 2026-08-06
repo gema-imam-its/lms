@@ -1,6 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
-import { Lock } from "lucide-react";
+import { Lock, BookOpen, ListChecks } from "lucide-react";
 import { modules } from "@/data/modules";
 import GenderToggle from "@/components/modul/GenderToggle";
 import type { Metadata } from "next";
@@ -70,12 +70,25 @@ export default function ModulListPage() {
                   </p>
 
                   {modul.locked ? (
-                    <div className="mt-auto w-full py-4 rounded-full bg-gray-200 text-gray-400 font-gohan text-xl text-center font-bold min-h-[48px] flex items-center justify-center gap-2">
+                    <div className="mt-auto w-full py-4 rounded-full bg-gray-200 text-gray-400 font-gohan text-xl text-center font-bold min-h-12 flex items-center justify-center gap-2">
                       <Lock size={20} /> Segera Hadir
                     </div>
                   ) : (
-                    <div className="mt-auto w-full py-4 rounded-full bg-gema-tosca text-white font-gohan text-xl text-center font-bold min-h-[48px] shadow-md group-hover:bg-[#1bb3a2] transition-colors flex items-center justify-center">
-                      Mulai Belajar &rarr;
+                    <div className="mt-auto w-full flex gap-3">
+                      <Link
+                        href={`/modul/${modul.id}`}
+                        className="flex-1 py-4 rounded-full bg-gema-tosca text-white font-gohan text-base md:text-lg text-center font-bold min-h-12 shadow-md hover:bg-[#1bb3a2] transition-colors flex items-center justify-center gap-2"
+                      >
+                        <BookOpen size={18} /> Materi
+                      </Link>
+                      {modul.slides.some((s) => s.type === "quiz") && (
+                        <Link
+                          href={`/modul/${modul.id}?mode=quiz`}
+                          className="flex-1 py-4 rounded-full bg-white border-2 border-gema-tosca text-gema-tosca font-gohan text-base md:text-lg text-center font-bold min-h-12 shadow-sm hover:bg-gema-tosca/10 transition-colors flex items-center justify-center gap-2"
+                        >
+                          <ListChecks size={18} /> Kuis
+                        </Link>
+                      )}
                     </div>
                   )}
                 </div>
@@ -95,13 +108,12 @@ export default function ModulListPage() {
             }
 
             return (
-              <Link
-                href={`/modul/${modul.id}`}
+              <div
                 key={modul.id}
-                className="group block bg-white rounded-3xl shadow-md hover:shadow-xl transition-all duration-300 hover:-translate-y-2 border-2 border-transparent hover:border-gema-tosca overflow-hidden flex flex-col h-full"
+                className="group bg-white rounded-3xl shadow-md hover:shadow-xl transition-all duration-300 hover:-translate-y-2 border-2 border-transparent hover:border-gema-tosca overflow-hidden flex flex-col h-full"
               >
                 {cardContent}
-              </Link>
+              </div>
             );
           })}
         </div>

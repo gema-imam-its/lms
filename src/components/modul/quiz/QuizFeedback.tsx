@@ -1,15 +1,15 @@
 "use client";
 
-import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
-import { MASCOT_URLS } from "@/types/module";
 import { Check, X, PartyPopper, Sparkles, Lightbulb, Star } from "lucide-react";
 import { playSystemSound } from "@/lib/systemSounds";
 import { playSoundEffect } from "@/lib/soundEffects";
+import InteractiveMascot from "@/components/siswa/InteractiveMascot";
 
 interface QuizFeedbackProps {
   correct: boolean;
   onContinue: () => void;
+  onRetry?: () => void;
   message?: string;
   hint?: string;
 }
@@ -25,6 +25,7 @@ const CONFETTI_COLORS = [
 export default function QuizFeedback({
   correct,
   onContinue,
+  onRetry,
   message,
   hint,
 }: QuizFeedbackProps) {
@@ -45,50 +46,20 @@ export default function QuizFeedback({
     })),
   );
 
-  // Always the latest onContinue, without making it an effect dependency —
-  // SlideQuiz passes a plain (non-memoized) callback, so its identity can
-  // change on every parent re-render. If that identity were a dependency of
-  // the celebration effect below, a re-render mid-celebration would re-run
-  // the effect; the cleanup from the first run would clear the real pending
-  // dismiss timer, and the hasCelebratedRef guard would then block the
-  // second run from ever scheduling a new one — the modal would get stuck
-  // open forever.
-  const onContinueRef = useRef(onContinue);
-  useEffect(() => {
-    onContinueRef.current = onContinue;
-  });
-
   useEffect(() => {
     const t = setTimeout(() => setShow(true), 50);
     return () => clearTimeout(t);
   }, []);
 
+  // Correct answers get a celebration sound + chime, but no longer
+  // auto-dismiss — the student now explicitly chooses "Coba Lagi" (retry
+  // the same quiz) or "Lanjut" (move on) via the buttons below, so the
+  // audio must never race past those being clickable.
   useEffect(() => {
     if (!correct || hasCelebratedRef.current) return;
     hasCelebratedRef.current = true;
-
-    // Wait for both the "benar" voice line and the celebrate chime to
-    // actually finish (rather than a fixed guess like 2500ms) so the sound
-    // is never cut off mid-playback. A short buffer after both finish, plus
-    // a safety timeout in case a browser ever fails to fire "ended".
-    let finished = 0;
-    let dismissTimer: ReturnType<typeof setTimeout> | undefined;
-    const onOneFinished = () => {
-      finished += 1;
-      if (finished >= 2) {
-        dismissTimer = setTimeout(() => onContinueRef.current(), 400);
-      }
-    };
-
-    playSystemSound("benar", onOneFinished);
-    playSoundEffect("celebrate", onOneFinished);
-
-    const safetyTimer = setTimeout(() => onContinueRef.current(), 8000);
-
-    return () => {
-      if (dismissTimer) clearTimeout(dismissTimer);
-      clearTimeout(safetyTimer);
-    };
+    playSystemSound("benar");
+    playSoundEffect("celebrate");
   }, [correct]);
 
   return (
@@ -100,16 +71,20 @@ export default function QuizFeedback({
       <div
         className={`bg-white rounded-3xl shadow-2xl p-8 max-w-lg w-full flex flex-col items-center text-center transform transition-all duration-500 ${
           show ? "scale-100 opacity-100 translate-y-0" : "scale-90 opacity-0 translate-y-8"
-        } ${correct && show ? "animate-mascot-bob" : ""}`}
+        }`}
       >
+        {/* The mascot itself (below) already idle-bobs via InteractiveMascot —
+            the whole card no longer needs to, especially now that this modal
+            stays open until the student clicks a button instead of
+            auto-dismissing: a permanently bobbing card made "Coba Lagi"/
+            "Lanjut" never sit still under a pointer. */}
         {/* Icon & Mascot Header */}
         <div className="relative w-full flex justify-center mb-6">
           <div className="relative w-40 h-40 drop-shadow-xl z-10">
-            <Image
-              src={correct ? MASCOT_URLS.hello : MASCOT_URLS.book}
-              alt="Feedback Mascot"
-              fill
-              className="object-contain"
+            <InteractiveMascot
+              pose={correct ? "hello" : "book"}
+              interactive={false}
+              className="w-full h-full"
             />
           </div>
 
@@ -155,17 +130,34 @@ export default function QuizFeedback({
           </div>
         )}
 
-        {/* Action Button */}
-        <button
-          onClick={onContinue}
-          className={`w-full min-h-[64px] rounded-full font-gohan text-2xl font-bold text-white transition-transform active:scale-95 shadow-lg hover:shadow-xl ${
-            correct
-              ? "bg-green-500 hover:bg-green-600"
-              : "bg-orange-500 hover:bg-orange-600"
-          }`}
-        >
-          {correct ? "Lanjut" : "Coba Lagi"}
-        </button>
+        {/* Action Button(s) */}
+        {correct && onRetry ? (
+          <div className="w-full flex flex-col sm:flex-row gap-3">
+            <button
+              onClick={onRetry}
+              className="flex-1 min-h-16 rounded-full font-gohan text-xl font-bold text-green-600 bg-white border-4 border-green-500 transition-transform active:scale-95 shadow-md hover:bg-green-50"
+            >
+              Coba Lagi
+            </button>
+            <button
+              onClick={onContinue}
+              className="flex-1 min-h-16 rounded-full font-gohan text-2xl font-bold text-white bg-green-500 hover:bg-green-600 transition-transform active:scale-95 shadow-lg hover:shadow-xl"
+            >
+              Lanjut
+            </button>
+          </div>
+        ) : (
+          <button
+            onClick={onContinue}
+            className={`w-full min-h-16 rounded-full font-gohan text-2xl font-bold text-white transition-transform active:scale-95 shadow-lg hover:shadow-xl ${
+              correct
+                ? "bg-green-500 hover:bg-green-600"
+                : "bg-orange-500 hover:bg-orange-600"
+            }`}
+          >
+            {correct ? "Lanjut" : "Coba Lagi"}
+          </button>
+        )}
       </div>
 
       {/* Confetti burst if correct */}

@@ -95,34 +95,84 @@ export const modules: ModuleDefinition[] = [
     title: "Nama-Nama Gerakan Sholat",
     description: "Mari kenali nama setiap gerakan dalam sholat.",
     iconUrl: "/assets/items/quran-closed-green.svg",
-    locked: true,
+    locked: false,
     slides: [
       {
+        // index 0
         type: "content",
-        mascot: "book",
-        text: "Yuk kenali gerakan-gerakan sholat!",
+        mascot: "hello",
+        text: "Ayo kenali gerakan-gerakan sholat!",
+        narrationUrl: ["/audio/system/mulai.ogg", "/audio/modul-2/intro.ogg"],
       },
       {
+        // index 1
         type: "content",
         mascot: "book",
-        text: "Ini namanya BERDIRI (Qiyam)",
-        imageUrl: "/images/modul/gerakan-berdiri.png",
+        text: "Ini Takbiratul Ihram. Tangan diangkat, sholat dimulai.",
+        imageUrl: "/images/modul/gerakan-takbiratul-ihram.png",
+        narrationUrl: "/audio/modul-2/takbir.ogg",
       },
       {
+        // index 2
         type: "content",
         mascot: "book",
-        text: "Ini namanya RUKUK",
+        text: "Ini Rukuk. Badan membungkuk, punggung lurus.",
         imageUrl: "/images/modul/gerakan-rukuk.png",
+        narrationUrl: "/audio/modul-2/rukuk.ogg",
       },
       {
+        // index 3
+        type: "content",
+        mascot: "book",
+        text: "Ini I'tidal. Berdiri tegak lagi setelah rukuk.",
+        imageUrl: "/images/modul/gerakan-itidal.png",
+        narrationUrl: "/audio/modul-2/itidal.ogg",
+      },
+      {
+        // index 4
+        type: "content",
+        mascot: "book",
+        text: "Ini Sujud. Dahi menyentuh lantai.",
+        imageUrl: "/images/modul/gerakan-sujud.png",
+        narrationUrl: "/audio/modul-2/sujud.ogg",
+      },
+      {
+        // index 5
+        type: "content",
+        mascot: "book",
+        text: "Ini Duduk. Duduk sebentar di antara dua sujud.",
+        imageUrl: "/images/modul/gerakan-duduk-antara-sujud.png",
+        narrationUrl: "/audio/modul-2/duduk.ogg",
+      },
+      {
+        // index 6 — distinct pose from the "Duduk" above (index 5); the
+        // matching-line/sort-order quizzes below only cover
+        // takbir/rukuk/sujud/salam, so this stays taught-not-quizzed, same
+        // as I'tidal (index 3).
+        type: "content",
+        mascot: "book",
+        text: "Ini Duduk Tasyahud. Duduk di akhir sholat, sambil membaca tasyahud.",
+        imageUrl: "/images/modul/gerakan-duduk-tahiyat.png",
+        narrationUrl: "/audio/modul-2/duduk-tasyahud.ogg",
+      },
+      {
+        // index 7
+        type: "content",
+        mascot: "book",
+        text: "Ini Salam. Menoleh kanan-kiri, sholat pun selesai.",
+        imageUrl: "/images/modul/gerakan-salam.png",
+        narrationUrl: "/audio/modul-2/salam.ogg",
+      },
+      {
+        // index 8 — quiz 1
         type: "quiz",
         quizType: "image-choice",
-        question: "Mana yang namanya RUKUK?",
+        question: "Mana gambar RUKUK?",
         options: [
           {
-            id: "berdiri",
-            imageUrl: "/images/modul/gerakan-berdiri.png",
-            label: "Berdiri",
+            id: "itidal",
+            imageUrl: "/images/modul/gerakan-itidal.png",
+            label: "I'tidal",
           },
           {
             id: "rukuk",
@@ -130,31 +180,21 @@ export const modules: ModuleDefinition[] = [
             label: "Rukuk",
           },
           {
-            id: "sujud",
-            imageUrl: "/images/modul/gerakan-sujud.png",
-            label: "Sujud",
+            id: "takbir",
+            imageUrl: "/images/modul/gerakan-takbiratul-ihram.png",
+            label: "Takbir",
           },
         ],
         correctAnswerId: "rukuk",
-        hint: "Rukuk itu membungkuk dan memegang lutut.",
+        hint: "Rukuk itu membungkuk, punggung lurus.",
         relatedSlideIndex: 2,
+        narrationUrl: "/audio/modul-2/kuis-rukuk-instruksi.ogg",
       },
       {
-        type: "content",
-        mascot: "book",
-        text: "Ini namanya SUJUD",
-        imageUrl: "/images/modul/gerakan-sujud.png",
-      },
-      {
-        type: "content",
-        mascot: "book",
-        text: "Ini namanya DUDUK (Tahiyyat)",
-        imageUrl: "/images/modul/gerakan-duduk.png",
-      },
-      {
+        // index 9 — quiz 2
         type: "quiz",
         quizType: "image-choice",
-        question: "Mana yang namanya SUJUD?",
+        question: "Mana gambar SUJUD?",
         options: [
           {
             id: "rukuk",
@@ -162,45 +202,100 @@ export const modules: ModuleDefinition[] = [
             label: "Rukuk",
           },
           {
+            id: "duduk",
+            imageUrl: "/images/modul/gerakan-duduk-antara-sujud.png",
+            label: "Duduk (Antara Sujud)",
+          },
+          {
             id: "sujud",
             imageUrl: "/images/modul/gerakan-sujud.png",
             label: "Sujud",
-          },
-          {
-            id: "duduk",
-            imageUrl: "/images/modul/gerakan-duduk.png",
-            label: "Duduk",
           },
         ],
         correctAnswerId: "sujud",
-        hint: "Sujud itu saat dahi menempel ke lantai.",
+        hint: "Sujud itu dahi menyentuh lantai.",
         relatedSlideIndex: 4,
+        narrationUrl: "/audio/system/pilih.ogg",
       },
       {
-        type: "content",
-        mascot: "book",
-        text: "Ini namanya SALAM",
-        imageUrl: "/images/modul/gerakan-salam.png",
-      },
-      {
+        // index 10 — quiz 3
         type: "quiz",
-        quizType: "image-choice",
-        question: "Mana yang namanya DUDUK?",
-        options: [
+        quizType: "matching-line",
+        question: "Cocokkan gerakan dengan namanya!",
+        pairs: [
           {
-            id: "berdiri",
-            imageUrl: "/images/modul/gerakan-berdiri.png",
-            label: "Berdiri",
+            id: "takbir-nama",
+            leftImageUrl: "/images/modul/gerakan-takbiratul-ihram.png",
+            leftLabel: "Takbir",
+            rightLabel: "Takbir",
+          },
+          {
+            id: "rukuk-nama",
+            leftImageUrl: "/images/modul/gerakan-rukuk.png",
+            leftLabel: "Rukuk",
+            rightLabel: "Rukuk",
+          },
+          {
+            id: "sujud-nama",
+            leftImageUrl: "/images/modul/gerakan-sujud.png",
+            leftLabel: "Sujud",
+            rightLabel: "Sujud",
+          },
+          {
+            id: "salam-nama",
+            leftImageUrl: "/images/modul/gerakan-salam.png",
+            leftLabel: "Salam",
+            rightLabel: "Salam",
+          },
+        ],
+        hint: "Ingat lagi bentuk setiap gerakan, ya.",
+        relatedSlideIndex: 1,
+        narrationUrl: "/audio/modul-2/kuis-cocokkan.ogg",
+      },
+      {
+        // index 11 — quiz 4
+        type: "quiz",
+        quizType: "sort-order",
+        question: "Susun urutan gerakan ini!",
+        items: [
+          {
+            id: "takbir",
+            imageUrl: "/images/modul/gerakan-takbiratul-ihram.png",
+            label: "Takbir",
+            correctOrder: 1,
+          },
+          {
+            id: "rukuk",
+            imageUrl: "/images/modul/gerakan-rukuk.png",
+            label: "Rukuk",
+            correctOrder: 2,
           },
           {
             id: "sujud",
             imageUrl: "/images/modul/gerakan-sujud.png",
             label: "Sujud",
+            correctOrder: 3,
           },
+        ],
+        hint: "Mulai dari Takbir, lalu Rukuk, baru Sujud.",
+        relatedSlideIndex: 1,
+        narrationUrl: "/audio/modul-2/kuis-urutkan.ogg",
+      },
+      {
+        // index 12 — quiz 5
+        type: "quiz",
+        quizType: "image-choice",
+        question: "Mana gambar DUDUK?",
+        options: [
           {
             id: "duduk",
-            imageUrl: "/images/modul/gerakan-duduk.png",
-            label: "Duduk",
+            imageUrl: "/images/modul/gerakan-duduk-antara-sujud.png",
+            label: "Duduk (Antara Sujud)",
+          },
+          {
+            id: "sujud",
+            imageUrl: "/images/modul/gerakan-sujud.png",
+            label: "Sujud",
           },
           {
             id: "salam",
@@ -209,8 +304,9 @@ export const modules: ModuleDefinition[] = [
           },
         ],
         correctAnswerId: "duduk",
-        hint: "Duduk dilakukan setelah sujud.",
+        hint: "Duduk dilakukan setelah Sujud selesai.",
         relatedSlideIndex: 5,
+        narrationUrl: "/audio/system/pilih.ogg",
       },
     ],
   },

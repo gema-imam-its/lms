@@ -11,13 +11,17 @@ import GenderToggle from "@/components/modul/GenderToggle";
 
 export default function ModulDetailPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ id: string }>;
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
   const router = useRouter();
-  
+
   // Use React.use to unwrap the Promise in App Router Next.js 14+
   const { id } = use(params);
+  const { mode } = use(searchParams);
+  const quizOnly = mode === "quiz";
   const modul = getModuleById(id);
 
   if (!modul || modul.locked) {
@@ -62,8 +66,13 @@ export default function ModulDetailPage({
         >
           <ArrowLeft size={28} className="text-gema-navy" />
         </button>
-        <h1 className="font-gohan text-xl md:text-3xl text-gema-navy font-bold flex-1 truncate">
+        <h1 className="font-gohan text-xl md:text-3xl text-gema-navy font-bold flex-1 truncate flex items-center gap-2">
           {modul.title}
+          {quizOnly && (
+            <span className="shrink-0 px-3 py-1 bg-gema-tosca/10 text-gema-tosca text-xs md:text-sm rounded-full font-bold">
+              Mode Kuis
+            </span>
+          )}
         </h1>
         <GenderToggle compact />
       </div>
@@ -74,6 +83,7 @@ export default function ModulDetailPage({
           module={modul}
           onComplete={handleComplete}
           onBack={handleBack}
+          quizOnly={quizOnly}
         />
       </div>
     </div>

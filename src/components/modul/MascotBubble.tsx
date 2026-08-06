@@ -1,10 +1,10 @@
 "use client";
 
-import Image from "next/image";
-import { MascotVariant, MASCOT_URLS } from "@/types/module";
+import { MascotVariant } from "@/types/module";
 import { useNarrationPlayback } from "@/lib/useNarrationPlayback";
 import HighlightedText from "./HighlightedText";
 import NarrationButton from "./NarrationButton";
+import InteractiveMascot from "@/components/siswa/InteractiveMascot";
 
 interface MascotBubbleProps {
   mascot: MascotVariant;
@@ -29,15 +29,8 @@ export default function MascotBubble({
 
   return (
     <div className="flex flex-col md:flex-row items-center gap-6 animate-in slide-in-from-bottom-4 fade-in duration-500">
-      {/* Mascot Image */}
-      <div className={`relative shrink-0 drop-shadow-lg animate-mascot-bob ${sizeClasses[size]}`}>
-        <Image
-          src={MASCOT_URLS[mascot]}
-          alt="Mascot Gema Imam"
-          fill
-          className="object-contain"
-        />
-      </div>
+      {/* Mascot — entrance pop-in, idle bob, and click-to-react via Framer Motion */}
+      <InteractiveMascot pose={mascot} className={`shrink-0 drop-shadow-lg ${sizeClasses[size]}`} />
 
       {/* Speech Bubble */}
       {message && (

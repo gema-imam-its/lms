@@ -26,6 +26,10 @@ export default function SlideQuiz({
 }: SlideQuizProps) {
   const [feedbackState, setFeedbackState] = useState<"idle" | "correct" | "wrong">("idle");
   const [disabled, setDisabled] = useState(false);
+  // Bumped on retry to remount the quiz-type child (ImageChoice/MatchingLine/
+  // SortOrder), clearing its local selection state without touching the
+  // attempt/score tracking that lives in SlidePresentation.
+  const [attemptKey, setAttemptKey] = useState(0);
   const { replay, hasNarration } = useNarrationPlayback(slide.narrationUrl);
 
   const handleAnswer = (isCorrect: boolean) => {
@@ -51,6 +55,15 @@ export default function SlideQuiz({
     }
   };
 
+  // Dismisses the success modal and resets the quiz for another go, without
+  // recording a result or advancing — the correct answer was already given,
+  // this is just "let me try that again" for practice.
+  const handleRetry = () => {
+    setFeedbackState("idle");
+    setDisabled(false);
+    setAttemptKey((k) => k + 1);
+  };
+
   return (
     <div className="flex flex-col h-full w-full justify-start items-center py-2 animate-in zoom-in-95 fade-in duration-500 relative">
 
@@ -74,6 +87,7 @@ export default function SlideQuiz({
       <div className="w-full flex-1 flex items-center justify-center bg-gray-50/50 rounded-3xl p-2 md:p-4">
         {slide.quizType === "image-choice" && (
           <ImageChoice
+            key={attemptKey}
             options={slide.options}
             correctAnswerId={slide.correctAnswerId}
             onAnswer={handleAnswer}
@@ -83,6 +97,7 @@ export default function SlideQuiz({
 
         {slide.quizType === "matching-line" && (
           <MatchingLine
+            key={attemptKey}
             pairs={slide.pairs}
             onAnswer={handleAnswer}
             disabled={disabled}
@@ -91,6 +106,7 @@ export default function SlideQuiz({
 
         {slide.quizType === "sort-order" && (
           <SortOrder
+            key={attemptKey}
             items={slide.items}
             onAnswer={handleAnswer}
             disabled={disabled}
@@ -103,6 +119,7 @@ export default function SlideQuiz({
         <QuizFeedback
           correct={feedbackState === "correct"}
           onContinue={handleFeedbackContinue}
+          onRetry={feedbackState === "correct" ? handleRetry : undefined}
           hint={slide.hint}
         />
       )}

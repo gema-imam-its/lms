@@ -52,7 +52,7 @@ Ini kalimat tetap mascot yang muncul di mana-mana. Aman direkam sekarang (tidak 
 | Nama file | Kata yang dibaca |
 |---|---|
 | `m1-intro.wav` | "Modul satu. Ayo belajar imam dan makmum." |
-| `m2-intro.wav` | "Modul dua. Ayo belajar nama gerakan sholat." |
+| ~~`m2-intro.wav`~~ | *(superseded — see `modul-2/intro.ogg` below)* |
 | `m3-intro.wav` | "Modul tiga. Ayo cocokkan gerakan dan bacaannya." |
 | `m4-intro.wav` | "Modul empat. Ayo belajar urutan gerakan sholat." |
 | `m5-intro.wav` | "Evaluasi. Ayo ulang semua yang sudah kita pelajari!" |
@@ -71,16 +71,31 @@ Ini kalimat tetap mascot yang muncul di mana-mana. Aman direkam sekarang (tidak 
 | `m1-makmum.wav` | "Makmum ada di belakang. Makmum mengikuti imam." |
 | `m1-formasi.wav` | "Semua menghadap kiblat. Imam di depan, makmum di belakang." |
 
-### Modul 2 — Nama Gerakan (satu per gerakan)
-| Nama file | Kata yang dibaca |
-|---|---|
-| `m2-takbir.wav` | "Ini takbir. Sholat dimulai." |
-| `m2-rukuk.wav` | "Ini rukuk. Punggung lurus dan datar." |
-| `m2-itidal.wav` | "Ini iktidal. Kita berdiri tegak lagi." |
-| `m2-sujud.wav` | "Ini sujud. Dahi menyentuh lantai." |
-| `m2-duduk.wav` | "Ini duduk di antara dua sujud." |
-| `m2-tasyahud.wav` | "Ini duduk tasyahud." |
-| `m2-salam.wav` | "Ini salam. Sholat selesai." |
+### Modul 2 — Nama Gerakan (shipped in `src/data/modules.ts`, id `"2"`)
+
+> ⚠️ **Filenames below are the real, live paths the app requests** — they differ from the
+> `m2-*.wav` draft above (that naming was from an earlier abandoned rewrite attempt). Save each
+> file to `public/audio/modul-2/<nama-file>` as **`.ogg`**, matching Modul 1's convention
+> (`public/audio/modul-1/*.ogg`). Until recorded, narration is silently skipped — the app stays
+> fully usable text-only, so these can be recorded incrementally.
+
+| Status | Nama file (di `public/audio/modul-2/`) | Kata yang dibaca | Dipakai di |
+|---|---|---|---|
+| ✅ | `intro.ogg` | "Ayo kenali gerakan-gerakan sholat!" | Slide pembuka (setelah `system/mulai.ogg`) |
+| ✅ | `takbir.ogg` | "Ini Takbiratul Ihram. Tangan diangkat, sholat dimulai." | Slide materi Takbir |
+| ✅ | `rukuk.ogg` | "Ini Rukuk. Badan membungkuk, punggung lurus." | Slide materi Rukuk |
+| ✅ | `itidal.ogg` | "Ini I'tidal. Berdiri tegak lagi setelah rukuk." | Slide materi I'tidal |
+| ✅ | `sujud.ogg` | "Ini Sujud. Dahi menyentuh lantai." | Slide materi Sujud |
+| ✅ | `duduk.ogg` | "Ini Duduk. Duduk sebentar di antara dua sujud." | Slide materi Duduk (antara sujud) |
+| ✅ | `duduk-tasyahud.ogg` | "Ini Duduk Tasyahud. Duduk di akhir sholat, sambil membaca tasyahud." | Slide materi Duduk Tasyahud |
+| ✅ | `salam.ogg` | "Ini Salam. Menoleh kanan-kiri, sholat pun selesai." | Slide materi Salam |
+| ✅ | `kuis-urutkan.ogg` | "Ayo urutkan gerakan ini dari awal!" | Kuis 4 (Urutkan) |
+| ✅ | `kuis-rukuk-instruksi.ogg` | "Yuk, cari gambar Rukuk!" | Kuis 1 (Pilih Gambar — Rukuk) |
+| ✅ | `kuis-cocokkan.ogg` | "Ayo cocokkan gerakan dengan namanya!" | Kuis 3 (Pasangkan) |
+
+Kuis 2 dan Kuis 5 memakai ulang `system/pilih.ogg` (sudah direkam), sama seperti pola hemat-rekam
+di Modul 1. **Semua baris Modul 2 sudah lengkap direkam** (10/10 file khusus modul + 2 baris
+sistem yang dipakai ulang).
 
 ### Modul 3 — Gerakan & Bacaan (penuntun Bahasa Indonesia; bacaan Arab lihat catatan bawah)
 | Nama file | Kata yang dibaca |
