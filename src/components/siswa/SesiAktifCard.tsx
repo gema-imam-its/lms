@@ -4,6 +4,7 @@ import { useEffect, useState, useTransition } from "react";
 import Image from "next/image";
 import { Loader2, WifiOff } from "lucide-react";
 import MulaiSesiButton from "./MulaiSesiButton";
+import LihatKameraPanel from "./LihatKameraPanel";
 
 type SesiStatus = "PENDING" | "ACTIVE" | null;
 
@@ -99,7 +100,8 @@ export default function SesiAktifCard({
   const cancelDisabled = (isPending && !isPendingTimedOut) || isCancelling;
 
   return (
-    <div className="bg-white rounded-3xl p-6 shadow-sm border-2 border-gema-tosca/30 flex flex-col lg:flex-row items-center justify-between gap-6 mb-10">
+    <div className="bg-white rounded-3xl p-6 shadow-sm border-2 border-gema-tosca/30 flex flex-col gap-6 mb-10">
+      <div className="flex flex-col lg:flex-row items-center justify-between gap-6">
       <div className="flex items-center gap-6 min-w-0">
         <div className="w-20 h-20 relative shrink-0">
           <Image
@@ -170,6 +172,12 @@ export default function SesiAktifCard({
           }
         />
       </div>
+      </div>
+
+      {/* Bantu guru mengatur posisi imam di depan kamera — cuma tersedia
+          selagi ada sesi PENDING/ACTIVE, karena hanya saat itu Orange Pi
+          benar-benar berjalan dan bisa mengirim frame. */}
+      {status && <LihatKameraPanel />}
     </div>
   );
 }

@@ -82,3 +82,8 @@ export interface MediaUploadResponse {
   url?: string;
   error?: string;
 }
+
+export interface PreviewFrameUploadResponse {
+  success: boolean;
+  error?: string;
+}

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { validateIoTApiKey } from "@/lib/auth-iot";
 import { createServiceClient } from "@/lib/supabase/service";
+import { isPreviewRequested } from "@/lib/previewChannel";
 
 export const dynamic = 'force-dynamic'; // Selalu ambil data terbaru
 
@@ -29,11 +30,18 @@ export async function GET(req: NextRequest) {
 
       if (sessionError || !session) {
         // Sesi tidak ditemukan (mis. dihapus) — anggap tidak aktif lagi.
-        return NextResponse.json({ active: false, status: "not_found" }, { status: 200 });
+        return NextResponse.json(
+          { active: false, status: "not_found", preview_requested: isPreviewRequested() },
+          { status: 200 },
+        );
       }
 
       return NextResponse.json(
-        { active: session.status === "ACTIVE", status: session.status },
+        {
+          active: session.status === "ACTIVE",
+          status: session.status,
+          preview_requested: isPreviewRequested(),
+        },
         { status: 200 }
       );
     }
@@ -49,7 +57,10 @@ export async function GET(req: NextRequest) {
 
     if (error || !data) {
       // Tidak ada sesi yang PENDING
-      return NextResponse.json({ status: "idle" }, { status: 200 });
+      return NextResponse.json(
+        { status: "idle", preview_requested: isPreviewRequested() },
+        { status: 200 },
+      );
     }
 
     // Jika ada sesi PENDING, ubah statusnya jadi ACTIVE dan suruh Orange Pi merekam
@@ -67,6 +78,7 @@ export async function GET(req: NextRequest) {
       status: "active",
       session_id: data.id,
       student_name: studentName || "Siswa",
+      preview_requested: isPreviewRequested(),
     }, { status: 200 });
 
   } catch (err: unknown) {
