@@ -2,17 +2,47 @@
 // persisted anywhere (no DB row, no Cloudinary upload). This is a live look
 // for positioning, not an archival record, and only works because prod runs
 // as one persistent Node container (docker-compose.prod.yml), not
-// serverless — module state here survives across requests in that process.
+// serverless — this state survives across requests in that process.
 //
 // No per-session/per-imam keying: the one-active-session DB constraint
 // already guarantees there's only ever one physical camera in play system-
 // wide, so a single global "latest frame" is all that's needed.
+//
+// State lives on `globalThis`, not a plain module-level `let` — under
+// `next dev` (Turbopack), different Route Handlers that import this same
+// file can end up on separate on-demand-compiled module instances, which
+// silently breaks a plain module-level singleton (POSTed frames a GET can
+// never see, or vice versa, non-deterministically per dev-server restart —
+// confirmed by reproducing it directly). `globalThis` is the one thing
+// guaranteed to be the same object across those instances within a single
+// Node process, so it's immune to that split. This is the same pattern
+// Next.js's own docs recommend for a Prisma Client singleton in dev mode,
+// for the identical underlying reason.
 
 const PREVIEW_TTL_MS = 90_000;
 const MAX_FRAME_BYTES = 500 * 1024;
 
-let requestedUntil = 0;
-let latestFrame: { buffer: Buffer; contentType: string; capturedAt: number } | null = null;
+interface Frame {
+  buffer: Buffer;
+  contentType: string;
+  capturedAt: number;
+}
+
+interface PreviewChannelState {
+  requestedUntil: number;
+  latestFrame: Frame | null;
+}
+
+declare global {
+  var __gemaPreviewChannel: PreviewChannelState | undefined;
+}
+
+function getState(): PreviewChannelState {
+  if (!globalThis.__gemaPreviewChannel) {
+    globalThis.__gemaPreviewChannel = { requestedUntil: 0, latestFrame: null };
+  }
+  return globalThis.__gemaPreviewChannel;
+}
 
 /**
  * Marks the preview as wanted for the next PREVIEW_TTL_MS. Called both when
@@ -23,12 +53,12 @@ let latestFrame: { buffer: Buffer; contentType: string; capturedAt: number } | n
  * without needing an explicit "stop" action.
  */
 export function requestPreview() {
-  requestedUntil = Date.now() + PREVIEW_TTL_MS;
+  getState().requestedUntil = Date.now() + PREVIEW_TTL_MS;
 }
 
 /** Polled by the Orange Pi (via /api/iot/status) to know whether to start sending frames. */
 export function isPreviewRequested(): boolean {
-  return Date.now() < requestedUntil;
+  return Date.now() < getState().requestedUntil;
 }
 
 /** Rejects oversized frames so a misbehaving/misconfigured client can't grow server memory unbounded. */
@@ -39,10 +69,10 @@ export function storeFrame(
   if (buffer.byteLength > MAX_FRAME_BYTES) {
     return { ok: false, reason: "Frame melebihi batas ukuran" };
   }
-  latestFrame = { buffer, contentType, capturedAt: Date.now() };
+  getState().latestFrame = { buffer, contentType, capturedAt: Date.now() };
   return { ok: true };
 }
 
-export function getLatestFrame() {
-  return latestFrame;
+export function getLatestFrame(): Frame | null {
+  return getState().latestFrame;
 }
